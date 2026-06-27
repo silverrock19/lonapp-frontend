@@ -1,0 +1,31 @@
+import { Loader2 } from 'lucide-react';
+import { cn } from '../../utils/classNames.js';
+
+const base = 'inline-flex items-center justify-center gap-2 font-sans font-semibold transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50';
+
+const variants = {
+  primary:   'bg-primary-500 text-white hover:bg-primary-600 focus-visible:ring-2 focus-visible:ring-primary-100',
+  secondary: 'bg-primary-50 text-primary-700 hover:bg-primary-100',
+  outline:   'border border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50',
+  ghost:     'bg-transparent text-neutral-600 hover:bg-neutral-100',
+  danger:    'bg-error text-white hover:bg-error-text',
+};
+
+const sizes = {
+  sm:      'h-8 px-3 text-small rounded-md',
+  default: 'h-10 px-4 text-body rounded-md',
+  lg:      'h-12 px-6 text-body-lg rounded-md',
+};
+
+export function Button({ variant = 'primary', size = 'default', loading = false, children, className, ...props }) {
+  return (
+    <button
+      className={cn(base, variants[variant], sizes[size], className)}
+      disabled={props.disabled || loading}
+      {...props}
+    >
+      {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+      {children}
+    </button>
+  );
+}

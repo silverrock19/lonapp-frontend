@@ -1,0 +1,129 @@
+/* ============================================================
+   LonApp Design Tokens · v1.1
+   Primary #0C5FC5 · Accent (teal) #0E9AA7 · Manrope
+   Import once at app root (src/main.jsx)
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* ---- Brand / Primary ---- */
+  --color-primary-50: #EAF2FC;
+  --color-primary-100: #CCE0F8;
+  --color-primary-200: #99C0F0;
+  --color-primary-300: #5C99E6;
+  --color-primary-400: #2E79D6;
+  --color-primary-500: #0C5FC5; /* base */
+  --color-primary-600: #0A4FA6;
+  --color-primary-700: #093F84;
+  --color-primary-800: #082F63;
+  --color-primary-900: #06234A;
+
+  /* ---- Accent (teal) ----
+     NON-status emphasis only: customer CTAs, highlights, "new"/promo tags.
+     NEVER for status badges — keeps status legible. */
+  --color-accent-50: #E6FAFB;
+  --color-accent-100: #C2F1F3;
+  --color-accent-200: #8AE3E8;
+  --color-accent-300: #4FCFD6;
+  --color-accent-400: #1FB6BF;
+  --color-accent-500: #0E9AA7; /* base */
+  --color-accent-600: #0B7C87;
+  --color-accent-700: #0A626B;
+  --color-accent-800: #084A51;
+  --color-accent-900: #063338;
+
+  /* ---- Neutrals ---- */
+  --color-neutral-0: #FFFFFF;
+  --color-neutral-50: #F7F8FA;
+  --color-neutral-100: #EEF0F4;
+  --color-neutral-200: #E2E5EB;
+  --color-neutral-300: #CBD0D9;
+  --color-neutral-400: #9AA2B1;
+  --color-neutral-500: #6B7280;
+  --color-neutral-600: #4B5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1F2733;
+  --color-neutral-900: #0F141B;
+
+  /* ---- Semantic ----
+     warning solid (#C77700) → badges/icons/borders only.
+     warning-text (#945800) meets 4.5:1 on white for body copy. */
+  --color-success: #1F9D57;
+  --color-success-bg: #E6F6EE;
+  --color-success-text: #13753F;
+  --color-warning: #C77700;
+  --color-warning-bg: #FFF4E0;
+  --color-warning-text: #945800;
+  --color-error: #D92D20;
+  --color-error-bg: #FDECEA;
+  --color-error-text: #A31C12;
+  --color-info: #0C5FC5;
+  --color-info-bg: #EAF2FC;
+  --color-info-text: #093F84;
+
+  /* ---- Chart / data-viz (categorical) ---- */
+  --chart-1: #0C5FC5;
+  --chart-2: #0E9AA7;
+  --chart-3: #7C5CFC;
+  --chart-4: #E8833A;
+  --chart-5: #E0457B;
+  --chart-6: #2BB673;
+  --chart-grid: #E2E5EB;
+  --chart-axis: #9AA2B1;
+
+  /* ---- Typography ---- */
+  --font-sans: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* ---- Spacing (4px base) ---- */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+  --space-12: 48px; --space-16: 64px;
+
+  /* ---- Radius ---- */
+  --radius-sm: 6px;  --radius-md: 10px; --radius-lg: 14px;
+  --radius-xl: 20px; --radius-full: 999px;
+
+  /* ---- Elevation ---- */
+  --shadow-sm: 0 1px 2px rgba(15,20,27,.06), 0 1px 3px rgba(15,20,27,.08);
+  --shadow-md: 0 4px 12px rgba(15,20,27,.08), 0 2px 4px rgba(15,20,27,.05);
+  --shadow-lg: 0 12px 32px rgba(15,20,27,.12), 0 4px 8px rgba(15,20,27,.06);
+
+  /* ---- Focus ring ---- */
+  --ring-primary: 0 0 0 3px var(--color-primary-100);
+
+  /* ---- Min touch target ---- */
+  --tap-min: 44px;
+}
+
+/* ============================================================
+   Customer theme overlay
+   Wrap customer app root in <div data-theme="customer">
+   ============================================================ */
+.theme-customer,
+[data-theme="customer"] {
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --tap-min: 48px;
+  --app-bg: #FAFAF8;
+  --cta-color: var(--color-accent-500);
+}
+
+/* ---- Tabular figures: apply to all numeric columns ---- */
+.tnum,
+table td,
+.kpi-value,
+[data-numeric] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+html, body {
+  font-family: var(--font-sans);
+  color: var(--color-neutral-800);
+  background: var(--color-neutral-50);
+  -webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
