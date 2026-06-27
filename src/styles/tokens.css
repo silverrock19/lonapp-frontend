@@ -3,8 +3,6 @@
    Primary #0C5FC5 · Accent (teal) #0E9AA7 · Manrope
    Import once at app root (src/main.jsx)
    ============================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
-
 :root {
   /* ---- Brand / Primary ---- */
   --color-primary-50: #EAF2FC;
