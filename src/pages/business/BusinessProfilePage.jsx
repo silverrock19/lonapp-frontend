@@ -7,6 +7,7 @@ import {
 import Input from '../../components/ui/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
 import Alert from '../../components/ui/Alert.jsx';
+import SectionCard from '../../components/ui/SectionCard.jsx';
 import { businessProfile } from '../../data/mock.js';
 
 const TABS = ['Company', 'Outlets', 'Services', 'Payments', 'Documents', 'Holiday Hours'];
@@ -16,21 +17,6 @@ const DAYS  = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const REAPPROVAL_FIELDS = new Set(['name', 'registrationNumber']);
 
 // ─── Shared components ────────────────────────────────────────────────────────
-
-function SectionCard({ title, description, children, action }) {
-  return (
-    <div className="rounded-lg border border-neutral-200 bg-white">
-      <div className="flex items-center justify-between border-b border-neutral-100 px-6 py-4">
-        <div>
-          <h3 className="text-h4 font-semibold text-neutral-900">{title}</h3>
-          {description && <p className="mt-0.5 text-small text-neutral-500">{description}</p>}
-        </div>
-        {action}
-      </div>
-      <div className="p-6">{children}</div>
-    </div>
-  );
-}
 
 function ReadOnlyField({ label, value }) {
   return (
