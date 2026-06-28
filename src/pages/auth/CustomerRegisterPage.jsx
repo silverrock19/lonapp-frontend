@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { isValidEmail } from '../../utils/validate.js';
@@ -9,15 +9,106 @@ import PasswordInput from '../../components/ui/PasswordInput.jsx';
 import OtpInput from '../../components/ui/OtpInput.jsx';
 import Brandmark from '../../components/ui/Brandmark.jsx';
 import GoogleIcon from '../../components/icons/GoogleIcon.jsx';
+import FacebookIcon from '../../components/icons/FacebookIcon.jsx';
+import AppleIcon from '../../components/icons/AppleIcon.jsx';
+import WhatsAppIcon from '../../components/icons/WhatsAppIcon.jsx';
 
+// ── Social button ─────────────────────────────────────────────────────────────
+function SocialBtn({ icon: Icon, label, onClick, iconColor }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex h-12 w-full items-center justify-center gap-2.5 rounded-xl border border-neutral-200 bg-white px-4 text-[14px] font-semibold text-neutral-700 shadow-sm transition-colors hover:bg-neutral-50 active:bg-neutral-100"
+    >
+      <Icon style={{ color: iconColor }} />
+      {label}
+    </button>
+  );
+}
+
+// ── OTP boxes (inline, same as login) ────────────────────────────────────────
+import { useRef } from 'react';
+function OtpBoxes({ otp, setOtp, autoFocus }) {
+  const refs = useRef([]);
+  useEffect(() => { if (autoFocus) refs.current[0]?.focus(); }, [autoFocus]);
+
+  function handleChange(i, val) {
+    const d = val.replace(/\D/g, '').slice(-1);
+    const next = [...otp];
+    next[i] = d;
+    setOtp(next);
+    if (d && i < 5) refs.current[i + 1]?.focus();
+  }
+  function handleKeyDown(i, e) {
+    if (e.key === 'Backspace' && !otp[i] && i > 0) refs.current[i - 1]?.focus();
+  }
+  function handlePaste(e) {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    const next = [...Array(6).fill('')];
+    pasted.split('').forEach((c, i) => { next[i] = c; });
+    setOtp(next);
+    refs.current[Math.min(pasted.length, 5)]?.focus();
+  }
+  return (
+    <div className="flex justify-center gap-2" onPaste={handlePaste}>
+      {otp.map((digit, i) => (
+        <input
+          key={i}
+          ref={el => (refs.current[i] = el)}
+          type="text" inputMode="numeric" maxLength={1}
+          value={digit}
+          onChange={e => handleChange(i, e.target.value)}
+          onKeyDown={e => handleKeyDown(i, e)}
+          className="h-14 w-12 rounded-xl border text-center text-[22px] font-bold outline-none transition-all"
+          style={{ borderRadius: 8, borderColor: digit ? '#0E9AA7' : '#E5E7EB', color: '#111827' }}
+          onFocus={e => { e.target.style.borderColor = '#0E9AA7'; e.target.style.boxShadow = '0 0 0 3px rgba(14,154,167,0.15)'; }}
+          onBlur={e => { e.target.style.borderColor = digit ? '#0E9AA7' : '#E5E7EB'; e.target.style.boxShadow = ''; }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ── Password strength meter ───────────────────────────────────────────────────
+function strengthScore(pw) {
+  if (!pw) return { score: 0, label: '', color: '#E5E7EB' };
+  let s = 0;
+  if (pw.length >= 8) s++;
+  if (/[A-Z]/.test(pw)) s++;
+  if (/\d/.test(pw)) s++;
+  if (/[!@#$%^&*(),.?":{}|<>]/.test(pw)) s++;
+  const map = [
+    { label: '', color: '#E5E7EB' },
+    { label: 'Weak', color: '#EF4444' },
+    { label: 'Fair', color: '#F97316' },
+    { label: 'Good', color: '#EAB308' },
+    { label: 'Strong', color: '#22C55E' },
+  ];
+  return { score: s, ...map[s] };
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
 const CustomerRegisterPage = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
-  const { form, setForm, errors, setErrors, set } = useForm({ firstName: '', lastName: '', email: '', password: '', terms: false, privacy: false });
+  const [step, setStep] = useState(0); // 0=form, 1=otp
+  const { form, setForm, errors, setErrors, set } = useForm({
+    firstName: '', lastName: '', email: '', password: '', terms: false, privacy: false,
+  });
   const [loading, setLoading] = useState(false);
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState(Array(6).fill(''));
   const [otpError, setOtpError] = useState('');
-  const [resendCooldown, setResendCooldown] = useState(0);
+  const [cooldown, setCooldown] = useState(30);
+
+  // OTP resend countdown
+  useEffect(() => {
+    if (step !== 1 || cooldown <= 0) return;
+    const t = setInterval(() => setCooldown(c => Math.max(0, c - 1)), 1000);
+    return () => clearInterval(t);
+  }, [step, cooldown]);
+
+  const str = strengthScore(form.password);
 
   function validateStep0() {
     const e = {};
@@ -27,27 +118,23 @@ const CustomerRegisterPage = () => {
     else if (!isValidEmail(form.email)) e.email = 'Enter a valid email address';
     if (!form.password) {
       e.password = 'Password is required';
-    } else {
-      const rules = [
-        form.password.length >= 8,
-        /[A-Z]/.test(form.password),
-        /\d/.test(form.password),
-        /[!@#$%^&*(),.?":{}|<>]/.test(form.password),
-      ];
-      if (!rules.every(Boolean)) e.password = 'Password does not meet all requirements';
+    } else if (str.score < 4) {
+      e.password = 'Password does not meet all requirements';
     }
     if (!form.terms)   e.terms   = 'You must agree to the Terms of Service';
     if (!form.privacy) e.privacy = 'You must acknowledge the Privacy Policy';
     return e;
   }
 
-  async function handleStep0(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     const errs = validateStep0();
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setLoading(true);
     try {
-      // TODO: dispatch(registerCustomer(form)) → sends OTP to email
+      await new Promise(r => setTimeout(r, 700));
+      setOtp(Array(6).fill(''));
+      setCooldown(30);
       setStep(1);
     } catch {
       setErrors({ email: 'This email is already registered.' });
@@ -58,10 +145,11 @@ const CustomerRegisterPage = () => {
 
   async function handleVerify(e) {
     e.preventDefault();
-    if (otp.length < 6) { setOtpError('Enter the 6-digit code'); return; }
+    const filled = otp.filter(Boolean).length;
+    if (filled < 6) { setOtpError('Enter the 6-digit code'); return; }
     setLoading(true);
     try {
-      // TODO: dispatch(verifyOtp({ email: form.email, otp }))
+      await new Promise(r => setTimeout(r, 700));
       navigate('/customer/login');
     } catch {
       setOtpError('Incorrect code. Please try again.');
@@ -71,91 +159,82 @@ const CustomerRegisterPage = () => {
   }
 
   async function handleResend() {
-    // TODO: dispatch(resendOtp({ email: form.email }))
-    setResendCooldown(60);
-    const t = setInterval(() => setResendCooldown(c => { if (c <= 1) { clearInterval(t); return 0; } return c - 1; }), 1000);
+    setCooldown(60);
+    setOtp(Array(6).fill(''));
+    setOtpError('');
   }
 
-  // Step 1 — OTP verification
+  // ── Step 1: OTP verification ──────────────────────────────────────────────
   if (step === 1) {
     return (
-      <div className="text-center w-full">
+      <div className="w-full text-center">
         <Brandmark />
-        <h1 className="text-h2 font-bold text-neutral-900">Verify your email</h1>
-        <p className="mt-2 mb-8 text-body text-neutral-500">
-          Enter the 6-digit code sent to{' '}
+        <h1 className="text-[24px] font-bold text-neutral-900 tracking-tight mt-1">Verify your email</h1>
+        <p className="mt-2 mb-8 text-[15px] text-neutral-500">
+          We sent a 6-digit code to{' '}
           <strong className="text-neutral-700">{form.email}</strong>
         </p>
 
         <form onSubmit={handleVerify} noValidate className="space-y-5">
-          <div className="flex justify-center">
-            <OtpInput
-              length={6}
-              value={otp}
-              onChange={v => { setOtp(v); setOtpError(''); }}
-              error={otpError}
-              disabled={loading}
-            />
-          </div>
+          <OtpBoxes otp={otp} setOtp={v => { setOtp(v); setOtpError(''); }} autoFocus />
 
-          {otpError && (
-            <p className="text-small text-error">{otpError}</p>
-          )}
+          {otpError && <p className="text-[13px] text-red-500">{otpError}</p>}
 
-          <Button type="submit" pill className="w-full justify-center" size="lg" loading={loading}>
-            Verify &amp; continue
-          </Button>
-
-          <Button
-            type="button"
-            variant="ghost"
-            pill
-            className="w-full justify-center"
-            size="lg"
-            disabled={resendCooldown > 0}
-            onClick={handleResend}
+          <button
+            type="submit"
+            disabled={loading || otp.filter(Boolean).length < 6}
+            className="w-full h-12 rounded-2xl text-white text-[15px] font-semibold transition-all disabled:opacity-50"
+            style={{ background: '#0E9AA7' }}
           >
-            {resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : "Didn't get it? Resend code"}
-          </Button>
+            {loading ? 'Verifying…' : 'Verify & create account'}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={cooldown > 0}
+            className="w-full text-[14px] text-neutral-500 disabled:opacity-50"
+          >
+            {cooldown > 0 ? `Resend code in ${cooldown}s` : "Didn't get it? Resend"}
+          </button>
         </form>
 
         <button
           type="button"
           onClick={() => setStep(0)}
-          className="mt-5 flex items-center justify-center gap-1.5 text-small text-neutral-500 hover:text-neutral-700 w-full"
+          className="mt-6 flex items-center justify-center gap-1.5 text-[13px] text-neutral-400 hover:text-neutral-600 w-full transition-colors"
         >
-          <ArrowLeft className="h-3.5 w-3.5" /> Back
+          <ArrowLeft className="h-3.5 w-3.5" /> Back to registration
         </button>
       </div>
     );
   }
 
-  // Step 0 — Registration form
+  // ── Step 0: Registration form ─────────────────────────────────────────────
   return (
-    <div className="text-center w-full">
-      <Brandmark />
-      <h1 className="text-h2 font-bold text-neutral-900 tracking-tight">Create your account</h1>
-      <p className="mt-2 mb-8 text-body text-neutral-500">Start booking laundry in minutes.</p>
+    <div className="w-full">
+      <div className="text-center mb-6">
+        <Brandmark />
+        <h1 className="text-[24px] font-bold text-neutral-900 tracking-tight mt-1">Create your account</h1>
+        <p className="mt-1.5 text-[15px] text-neutral-500">Start booking laundry in minutes.</p>
+      </div>
 
-      {/* Social sign-up */}
-      <div className="mb-6">
-        <button
-          type="button"
-          className="flex h-11 w-full items-center justify-center gap-2.5 rounded-md border border-neutral-200 bg-white px-4 text-small font-semibold text-neutral-700 shadow-sm hover:bg-neutral-50 transition-colors"
-          onClick={() => {/* TODO: socialLogin('google') */}}
-        >
-          <GoogleIcon /> Sign up with Google
-        </button>
+      {/* Social sign-up — 2×2 grid matching login */}
+      <div className="grid grid-cols-2 gap-3 mb-5">
+        <SocialBtn icon={GoogleIcon}   label="Google"   iconColor="#4285F4" onClick={() => {}} />
+        <SocialBtn icon={FacebookIcon} label="Facebook" iconColor="#1877F2" onClick={() => {}} />
+        <SocialBtn icon={AppleIcon}    label="Apple"    iconColor="#1D1D1F" onClick={() => {}} />
+        <SocialBtn icon={WhatsAppIcon} label="WhatsApp" iconColor="#25D366" onClick={() => {}} />
       </div>
 
       {/* Divider */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="flex-1 h-px bg-neutral-300" />
-        <span className="text-caption text-neutral-500">or</span>
-        <div className="flex-1 h-px bg-neutral-300" />
+      <div className="flex items-center gap-3 mb-5">
+        <div className="flex-1 h-px bg-neutral-200" />
+        <span className="text-[13px] text-neutral-400">or continue with email</span>
+        <div className="flex-1 h-px bg-neutral-200" />
       </div>
 
-      <form onSubmit={handleStep0} noValidate className="text-left space-y-5">
+      <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <Input
             label="First name"
@@ -198,42 +277,75 @@ const CustomerRegisterPage = () => {
             error={errors.password}
             autoComplete="new-password"
           />
-          <p className="mt-1 text-caption text-neutral-400">8+ chars · 1 uppercase · 1 number · 1 special character</p>
+          {/* Strength meter */}
+          {form.password && (
+            <div className="mt-2">
+              <div className="flex gap-1">
+                {[1,2,3,4].map(n => (
+                  <div
+                    key={n}
+                    className="h-1 flex-1 rounded-full transition-all"
+                    style={{ background: str.score >= n ? str.color : '#E5E7EB' }}
+                  />
+                ))}
+              </div>
+              {str.label && (
+                <p className="mt-1 text-[12px] font-medium" style={{ color: str.color }}>{str.label}</p>
+              )}
+            </div>
+          )}
+          {!errors.password && (
+            <p className="mt-1 text-[12px] text-neutral-400">8+ chars · 1 uppercase · 1 number · 1 special character</p>
+          )}
         </div>
 
         <div className="space-y-2.5 pt-1">
           {[
-            { key: 'terms',   label: 'I agree to the Terms of Service',  error: errors.terms },
-            { key: 'privacy', label: 'I have read the Privacy Policy',    error: errors.privacy },
-          ].map(({ key, label, error }) => (
+            { key: 'terms',   label: 'I agree to the Terms of Service',  href: '#' },
+            { key: 'privacy', label: 'I have read the Privacy Policy',    href: '#' },
+          ].map(({ key, label, href }) => (
             <div key={key}>
               <label className="flex cursor-pointer items-start gap-3">
-                <input
-                  type="checkbox"
-                  className="mt-0.5 h-4 w-4 flex-shrink-0 rounded accent-primary-500"
-                  checked={form[key]}
-                  onChange={e => { setForm(f => ({ ...f, [key]: e.target.checked })); setErrors(err => ({ ...err, [key]: '' })); }}
-                />
-                <span className="text-small text-neutral-700">{label}</span>
+                <span
+                  onClick={() => { setForm(f => ({ ...f, [key]: !f[key] })); setErrors(err => ({ ...err, [key]: '' })); }}
+                  className={`mt-0.5 flex h-5 w-5 flex-shrink-0 cursor-pointer items-center justify-center rounded border-2 transition-colors ${
+                    form[key] ? 'border-[#0E9AA7] bg-[#0E9AA7]' : 'border-neutral-300 bg-white'
+                  }`}
+                >
+                  {form[key] && (
+                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                      <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </span>
+                <span className="text-[14px] text-neutral-700">
+                  {label.split(' ').slice(0, -3).join(' ')}{' '}
+                  <a href={href} className="text-[#0E9AA7] underline underline-offset-2">
+                    {label.split(' ').slice(-3).join(' ')}
+                  </a>
+                </span>
               </label>
-              {error && <p className="mt-0.5 ml-7 text-caption text-error">{error}</p>}
+              {errors[key] && <p className="mt-0.5 ml-8 text-[12px] text-red-500">{errors[key]}</p>}
             </div>
           ))}
         </div>
 
-        <Button type="submit" pill className="w-full justify-center mt-2" size="lg" loading={loading}>
-          Create account
-        </Button>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full h-12 rounded-2xl text-white text-[15px] font-semibold transition-all disabled:opacity-60 mt-2"
+          style={{ background: '#0E9AA7' }}
+        >
+          {loading ? 'Creating account…' : 'Create account'}
+        </button>
       </form>
 
-      <p className="mt-4 text-small text-neutral-500">
+      <p className="mt-5 text-center text-[14px] text-neutral-500">
         Already have an account?{' '}
-        <Link to="/customer/login" className="font-bold text-primary-600 hover:underline">Sign in</Link>
+        <Link to="/customer/login" className="font-bold text-[#0E9AA7] hover:underline">Sign in</Link>
       </p>
     </div>
   );
-}
+};
 
 export default CustomerRegisterPage;
-
-

@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import { Home, Building2, MapPin, Plus, Pencil, Trash2, X, Check, ChevronLeft } from 'lucide-react';
+import { Home, Building2, MapPin, Plus, Pencil, Trash2, X, Check, ChevronLeft, Crosshair, Loader2 } from 'lucide-react';
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -93,6 +93,29 @@ function AddressCard({ address, onSetDefault, onEdit, onDelete }) {
 function AddressSheet({ initial, onSave, onClose }) {
   const [form, setForm] = useState(initial || emptyForm);
   const [errors, setErrors] = useState({});
+  const [gpsLoading, setGpsLoading] = useState(false);
+  const [gpsError, setGpsError] = useState('');
+
+  function useMyLocation() {
+    if (!navigator.geolocation) {
+      setGpsError('Geolocation is not supported by your browser.');
+      return;
+    }
+    setGpsLoading(true);
+    setGpsError('');
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setForm(f => ({ ...f, gps: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}` }));
+        setGpsLoading(false);
+      },
+      () => {
+        setGpsError('Could not get location. Please enter your GPS code manually.');
+        setGpsLoading(false);
+      },
+      { timeout: 8000 },
+    );
+  }
 
   function set(k) { return v => { setForm(f => ({ ...f, [k]: v })); setErrors(e => ({ ...e, [k]: '' })); } }
 
@@ -180,14 +203,28 @@ function AddressSheet({ initial, onSave, onClose }) {
 
         {/* GPS */}
         <div>
-          <label className="mb-1 block text-[13px] font-semibold text-neutral-700">
-            GPS / Digital address <span className="font-normal text-neutral-400">(optional)</span>
-          </label>
-          <input className={fieldCls(false)} placeholder="e.g. GA-045-3721"
+          <div className="mb-1 flex items-center justify-between">
+            <label className="text-[13px] font-semibold text-neutral-700">
+              GPS / Digital address <span className="font-normal text-neutral-400">(optional)</span>
+            </label>
+            <button
+              type="button"
+              onClick={useMyLocation}
+              disabled={gpsLoading}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-[12px] font-semibold text-neutral-600 transition-colors hover:bg-neutral-50 disabled:opacity-60"
+            >
+              {gpsLoading
+                ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Locating…</>
+                : <><Crosshair className="h-3.5 w-3.5" /> Use my location</>
+              }
+            </button>
+          </div>
+          <input className={fieldCls(false)} placeholder="e.g. GA-045-3721 or 5.6037, -0.1870"
             value={form.gps} onChange={e => set('gps')(e.target.value)} />
-          <p className="mt-1 text-[12px] text-neutral-400">
-            GhanaPostGPS code or decimal coordinates (lat, lng)
-          </p>
+          {gpsError
+            ? <p className="mt-1 text-[12px] text-red-500">{gpsError}</p>
+            : <p className="mt-1 text-[12px] text-neutral-400">GhanaPostGPS code or decimal coordinates (lat, lng)</p>
+          }
         </div>
       </div>
     </div>

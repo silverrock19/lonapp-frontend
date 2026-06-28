@@ -1,7 +1,7 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, ClipboardList, Store, Users, Tag, Wallet,
-  Building2, Settings, Bell, Search, LogOut, UserCircle2,
+  Building2, Settings, Bell, Search, LogOut, UserCircle2, BookUser,
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { cn } from '../../utils/classNames.js';
@@ -21,9 +21,10 @@ const ALL_NAV_GROUPS = [
   {
     label: 'Management',
     items: [
-      { to: '/staff',    icon: Users,     label: 'Staff & Roles'      },
-      { to: '/services', icon: Tag,       label: 'Services & Pricing' },
-      { to: '/payments', icon: Wallet,    label: 'Payments'           },
+      { to: '/customers', icon: BookUser,  label: 'Customers'          },
+      { to: '/staff',     icon: Users,     label: 'Staff & Roles'      },
+      { to: '/services',  icon: Tag,       label: 'Services & Pricing' },
+      { to: '/payments',  icon: Wallet,    label: 'Payments'           },
     ],
   },
   {
@@ -40,8 +41,8 @@ const ALL_NAV_GROUPS = [
 const ROLE_ALLOWED_PATHS = {
   owner:        null,
   ops_manager:  null,
-  cashier:      new Set(['/', '/orders', '/profile', '/settings']),
-  receptionist: new Set(['/', '/orders', '/profile', '/settings']),
+  cashier:      new Set(['/', '/orders', '/customers', '/profile', '/settings']),
+  receptionist: new Set(['/', '/orders', '/customers', '/profile', '/settings']),
 };
 
 function getNavGroups(role) {

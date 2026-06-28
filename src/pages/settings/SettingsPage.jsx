@@ -266,21 +266,24 @@ function DangerZone() {
   }
 
   return (
-    <div className="rounded-lg border bg-white" style={{ borderColor: '#FDECEA' }}>
-      <div className="flex items-start gap-2.5 border-b border-neutral-100 px-6 py-4">
-        <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-error" />
+    <div className="overflow-hidden rounded-xl border bg-white" style={{ borderColor: '#FDECEA' }}>
+      {/* Header — faint error-tinted bg */}
+      <div className="flex items-center gap-3 border-b px-6 py-4" style={{ borderColor: '#FDECEA', background: '#FFF8F7' }}>
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg" style={{ background: '#FDECEA' }}>
+          <AlertTriangle className="h-4 w-4 text-error" />
+        </div>
         <div>
           <h3 className="text-h4 font-semibold text-neutral-900">Danger zone</h3>
-          <p className="mt-0.5 text-small text-neutral-500">These actions affect your business's availability to customers.</p>
+          <p className="mt-0.5 text-small text-neutral-500">These actions affect your business's visibility and data.</p>
         </div>
       </div>
 
       <div className="divide-y divide-neutral-100">
         {/* US-0014 – Pause */}
-        <div className="flex items-start justify-between px-6 py-5">
-          <div className="flex items-start gap-3">
-            <PauseCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-warning-text" />
-            <div>
+        <div className="flex items-center justify-between gap-6 px-6 py-5">
+          <div className="flex min-w-0 items-start gap-3">
+            <PauseCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
+            <div className="min-w-0">
               <p className="text-small font-semibold text-neutral-900">
                 {isPaused ? 'Business is currently paused' : 'Temporarily pause your business'}
               </p>
@@ -291,13 +294,12 @@ function DangerZone() {
               </p>
             </div>
           </div>
-          <div className="ml-6 flex-shrink-0">
+          <div className="shrink-0">
             {isPaused ? (
-              <Button onClick={() => setIsPaused(false)}>▶ Reactivate</Button>
+              <Button size="sm" onClick={() => setIsPaused(false)}>Reactivate</Button>
             ) : (
-              <Button variant="outline" onClick={() => setPauseModal(true)}
-                style={{ borderColor: '#C77700', color: '#945800' }}>
-                ⏸ Pause business
+              <Button size="sm" variant="warning" onClick={() => setPauseModal(true)}>
+                Pause business
               </Button>
             )}
           </div>
@@ -305,19 +307,18 @@ function DangerZone() {
 
         {/* US-0015 – Permanent closure */}
         {!isClosed ? (
-          <div className="flex items-start justify-between px-6 py-5">
-            <div className="flex items-start gap-3">
-              <XCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-error" />
-              <div>
+          <div className="flex items-center justify-between gap-6 px-6 py-5">
+            <div className="flex min-w-0 items-start gap-3">
+              <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-error" />
+              <div className="min-w-0">
                 <p className="text-small font-semibold text-neutral-900">Permanently close your business</p>
                 <p className="mt-0.5 text-small text-neutral-500">
                   This is irreversible. All data will be scheduled for deletion within 30 days.
                 </p>
               </div>
             </div>
-            <div className="ml-6 flex-shrink-0">
-              <Button onClick={() => { setCloseStep(1); setConfirmText(''); setCloseModal(true); }}
-                style={{ background: '#D92D20', color: '#fff', borderColor: '#D92D20' }}>
+            <div className="shrink-0">
+              <Button size="sm" variant="danger" onClick={() => { setCloseStep(1); setConfirmText(''); setCloseModal(true); }}>
                 Close account
               </Button>
             </div>
@@ -334,21 +335,34 @@ function DangerZone() {
       {pauseModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.4)' }}>
           <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-2xl">
-            <h3 className="text-h4 font-bold text-neutral-900">Pause your business?</h3>
-            <p className="mt-1.5 mb-4 text-small text-neutral-600">
-              Your business will be hidden from customers immediately. You can reactivate at any time.
-            </p>
-            <label className="mb-1.5 block text-small font-medium text-neutral-700">Reason <span className="text-error">*</span></label>
-            <select value={pauseReason} onChange={e => setPauseReason(e.target.value)}
-              className="w-full rounded-md border border-neutral-200 px-3 py-2 text-small text-neutral-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100">
-              <option value="">— select a reason —</option>
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-50">
+                <PauseCircle className="h-5 w-5 text-amber-500" />
+              </div>
+              <div>
+                <h3 className="text-h4 font-bold text-neutral-900">Pause your business?</h3>
+                <p className="text-small text-neutral-500">You can reactivate at any time.</p>
+              </div>
+            </div>
+            <label className="mb-1.5 block text-small font-medium text-neutral-700">
+              Reason <span className="text-error">*</span>
+            </label>
+            <select
+              value={pauseReason}
+              onChange={e => setPauseReason(e.target.value)}
+              className="w-full rounded-lg border border-neutral-200 px-3 py-2.5 text-small text-neutral-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+            >
+              <option value="">— Select a reason —</option>
               {PAUSE_REASONS.map(r => <option key={r}>{r}</option>)}
             </select>
-            <div className="mt-5 flex justify-end gap-3">
-              <Button variant="outline" onClick={() => setPauseModal(false)}>Cancel</Button>
-              <Button disabled={!pauseReason}
-                style={{ background: '#C77700', color: '#fff', borderColor: '#C77700' }}
-                onClick={() => { setIsPaused(true); setPauseModal(false); setPauseReason(''); }}>
+            <div className="mt-5 flex justify-end gap-2">
+              <Button size="sm" variant="outline" onClick={() => setPauseModal(false)}>Cancel</Button>
+              <Button
+                size="sm"
+                variant="warning"
+                disabled={!pauseReason}
+                onClick={() => { setIsPaused(true); setPauseModal(false); setPauseReason(''); }}
+              >
                 Pause business
               </Button>
             </div>
@@ -363,7 +377,7 @@ function DangerZone() {
             {closeStep === 1 ? (
               <>
                 <div className="mb-4 flex items-start gap-3">
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full" style={{ background: '#FDECEA' }}>
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full" style={{ background: '#FDECEA' }}>
                     <Download className="h-5 w-5 text-error" />
                   </div>
                   <div>
@@ -374,7 +388,7 @@ function DangerZone() {
                   </div>
                 </div>
                 <div className="mb-5 rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3">
-                  <p className="text-small font-medium text-neutral-700">Data export includes:</p>
+                  <p className="text-small font-medium text-neutral-700">Export includes:</p>
                   <ul className="mt-1.5 space-y-0.5 text-small text-neutral-500">
                     {['All order history', 'Customer records', 'Payment & invoice history', 'Staff records & activity logs'].map(i => (
                       <li key={i} className="flex items-center gap-1.5"><Check className="h-3 w-3 text-success" />{i}</li>
@@ -382,13 +396,10 @@ function DangerZone() {
                   </ul>
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                  <Button variant="outline" onClick={() => setCloseModal(false)}>Cancel</Button>
+                  <Button size="sm" variant="outline" onClick={() => setCloseModal(false)}>Cancel</Button>
                   <div className="flex gap-2">
-                    <Button variant="outline"><Download className="h-3.5 w-3.5" /> Export data</Button>
-                    <Button onClick={() => setCloseStep(2)}
-                      style={{ background: '#D92D20', color: '#fff', borderColor: '#D92D20' }}>
-                      Skip &amp; continue
-                    </Button>
+                    <Button size="sm" variant="outline"><Download className="h-3.5 w-3.5" /> Export data</Button>
+                    <Button size="sm" variant="danger" onClick={() => setCloseStep(2)}>Skip &amp; continue</Button>
                   </div>
                 </div>
               </>
@@ -407,18 +418,20 @@ function DangerZone() {
                 <label className="mb-1.5 block text-small font-medium text-neutral-700">
                   Type <strong>{BUSINESS_NAME}</strong> to confirm
                 </label>
-                <input
-                  className="w-full rounded-md border border-neutral-200 px-3 py-2 text-small text-neutral-900 outline-none focus:border-error focus:ring-2 focus:ring-error/20"
+                <Input
                   placeholder={BUSINESS_NAME}
                   value={confirmText}
                   onChange={e => setConfirmText(e.target.value)}
+                  error={confirmText && confirmText !== BUSINESS_NAME ? 'Exact business name required' : ''}
                 />
-                <div className="mt-5 flex justify-end gap-3">
-                  <Button variant="outline" onClick={() => setCloseModal(false)}>Cancel</Button>
+                <div className="mt-5 flex justify-end gap-2">
+                  <Button size="sm" variant="outline" onClick={() => setCloseModal(false)}>Cancel</Button>
                   <Button
+                    size="sm"
+                    variant="danger"
                     disabled={confirmText !== BUSINESS_NAME}
                     onClick={confirmClose}
-                    style={{ background: '#D92D20', color: '#fff', borderColor: '#D92D20', opacity: confirmText !== BUSINESS_NAME ? 0.4 : 1 }}>
+                  >
                     Permanently close account
                   </Button>
                 </div>

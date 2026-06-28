@@ -28,6 +28,18 @@ const ROLES = [
     bg: '#F3F0FF',
     dot: '#7C3AED',
   },
+  {
+    label: 'Customer',
+    sublabel: 'Adwoa Mensah',
+    role: 'customer',
+    name: 'Adwoa Mensah',
+    email: 'adwoa.mensah@gmail.com',
+    to: '/app',
+    initials: 'AM',
+    accent: '#0E9AA7',
+    bg: '#E8F9FA',
+    dot: '#0E9AA7',
+  },
 ];
 
 function setAuth(r) {

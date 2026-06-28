@@ -43,9 +43,13 @@ function StatusBadge({ status }) {
 
 function Section({ title, children }) {
   return (
-    <div className="border-b border-neutral-100 px-6 py-5 last:border-b-0">
-      {title && <p className="mb-3 text-caption font-semibold uppercase tracking-wide text-neutral-400">{title}</p>}
-      {children}
+    <div className="mx-4 my-3 overflow-hidden rounded-lg border border-neutral-100 bg-white shadow-sm">
+      {title && (
+        <div className="border-b border-neutral-100 bg-neutral-50 px-5 py-2.5">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400">{title}</p>
+        </div>
+      )}
+      <div className="px-5 py-4">{children}</div>
     </div>
   );
 }
@@ -615,48 +619,69 @@ const BusinessApprovalPage = () => {
         </table>
       </div>
 
-      {/* Backdrop */}
+      {/* Dimmed backdrop */}
       {reviewing && (
-        <div className="fixed inset-0 z-40" style={{ background: 'rgba(0,0,0,0.22)' }} onClick={closeDrawer} />
+        <div
+          className="fixed inset-0 z-40 transition-opacity"
+          style={{ background: 'rgba(15,23,42,0.40)' }}
+          onClick={closeDrawer}
+        />
       )}
 
       {/* Review drawer */}
       {reviewing && (
         <div
-          className="fixed right-0 top-0 bottom-0 z-50 flex flex-col bg-white shadow-2xl"
-          style={{ width: 680, fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}
+          className="fixed right-0 top-0 bottom-0 z-50 flex flex-col bg-white"
+          style={{
+            width: 720,
+            fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+            boxShadow: '-8px 0 32px -4px rgba(15,23,42,0.14), -2px 0 8px -2px rgba(15,23,42,0.08)',
+          }}
         >
-          {/* Drawer header */}
-          <div className="flex shrink-0 items-start justify-between gap-4 border-b border-neutral-200 px-6 py-4">
-            <div>
-              <div className="mb-1 flex items-center gap-2">
-                <StatusBadge status={reviewing.status} />
-                {reviewing.resubmissionCount > 0 && (
-                  <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: '#EAF2FC', color: '#093F84' }}>
-                    Resubmission #{reviewing.resubmissionCount}
-                  </span>
-                )}
+          {/* ── Sticky header ── */}
+          <div className="flex shrink-0 items-center justify-between gap-4 border-b border-neutral-200 bg-white px-6 py-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <div
+                className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl text-[13px] font-bold"
+                style={bizColor(reviewing.name)}
+              >
+                {bizInitials(reviewing.name)}
               </div>
-              <h2 className="text-h4 font-bold text-neutral-900">{reviewing.name}</h2>
-              <p className="text-caption text-neutral-500">{reviewing.id} · Submitted {reviewing.submittedLabel}</p>
+              <div className="min-w-0">
+                <div className="mb-1 flex flex-wrap items-center gap-2">
+                  <h2 className="truncate text-[16px] font-bold leading-tight text-neutral-900">{reviewing.name}</h2>
+                  <StatusBadge status={reviewing.status} />
+                  {reviewing.resubmissionCount > 0 && (
+                    <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: '#EAF2FC', color: '#093F84' }}>
+                      Resubmission #{reviewing.resubmissionCount}
+                    </span>
+                  )}
+                </div>
+                <p className="text-caption text-neutral-400">
+                  <span className="font-mono">{reviewing.id}</span>
+                  {' · '}Submitted {reviewing.submittedLabel}
+                </p>
+              </div>
             </div>
             <button
               onClick={closeDrawer}
-              className="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 transition-colors"
+              className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
 
-          {/* Drawer tab nav */}
-          <div className="flex shrink-0 items-center overflow-x-auto border-b border-neutral-200 px-6">
+          {/* ── Sticky tab bar ── */}
+          <div className="flex shrink-0 items-center gap-0 overflow-x-auto border-b border-neutral-200 bg-white px-5">
             {DRAWER_TABS.map(tab => (
               <button
                 key={tab}
                 onClick={() => setDrawerTab(tab)}
                 className={cn(
-                  '-mb-px flex-shrink-0 border-b-2 px-3 py-2.5 text-small font-medium transition-colors',
-                  drawerTab === tab ? 'border-primary-500 text-primary-600' : 'border-transparent text-neutral-500 hover:text-neutral-800'
+                  '-mb-px flex-shrink-0 border-b-2 px-3.5 py-2.5 text-small font-medium transition-colors',
+                  drawerTab === tab
+                    ? 'border-primary-500 text-primary-600'
+                    : 'border-transparent text-neutral-500 hover:text-neutral-800'
                 )}
               >
                 {tab}
@@ -664,137 +689,178 @@ const BusinessApprovalPage = () => {
             ))}
           </div>
 
-          {/* Drawer scrollable content */}
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          {/* ── Scrollable area: tab content + decision forms ── */}
+          <div className="min-h-0 flex-1 overflow-y-auto bg-neutral-50/60 pb-2">
             <DrawerContent biz={reviewing} tab={drawerTab} />
+
+            {/* Decision + forms (scrollable, above sticky footer) */}
+            {ACTIONABLE.has(reviewing.status) && (
+              <div className="mx-4 my-3 overflow-hidden rounded-lg border border-neutral-100 bg-white shadow-sm">
+                <div className="border-b border-neutral-100 bg-neutral-50 px-5 py-2.5">
+                  <p className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400">Decision</p>
+                </div>
+                <div className="space-y-5 px-5 py-5">
+
+                  {/* Decision cards */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      {
+                        value: 'approve',
+                        title: 'Approve',
+                        sub: 'Activate this business',
+                        icon: CheckCircle2,
+                        activeBorder: '#1F9D57',
+                        activeBg: '#E6F6EE',
+                        activeIconBg: '#1F9D57',
+                        activeColor: '#13753F',
+                        hoverBg: '#F4FBF7',
+                      },
+                      {
+                        value: 'reject',
+                        title: 'Reject',
+                        sub: 'Decline this registration',
+                        icon: XCircle,
+                        activeBorder: '#D92D20',
+                        activeBg: '#FEF2F2',
+                        activeIconBg: '#D92D20',
+                        activeColor: '#A31C12',
+                        hoverBg: '#FFF7F7',
+                      },
+                    ].map(opt => {
+                      const isActive = action === opt.value;
+                      const Icon = opt.icon;
+                      return (
+                        <label
+                          key={opt.value}
+                          className="flex cursor-pointer flex-col gap-3 p-4 transition-all"
+                          style={{
+                            borderRadius: 10,
+                            border: isActive ? `2px solid ${opt.activeBorder}` : '1.5px solid #E5E7EB',
+                            background: isActive ? opt.activeBg : '#FAFAFA',
+                          }}
+                        >
+                          <input
+                            type="radio" name="action" className="sr-only"
+                            value={opt.value} checked={isActive}
+                            onChange={() => { setAction(opt.value); setFormErrors({}); }}
+                          />
+                          <div
+                            className="flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+                            style={{
+                              background: isActive ? opt.activeBg : '#F3F4F6',
+                              border: isActive ? `1.5px solid ${opt.activeBorder}` : '1.5px solid transparent',
+                            }}
+                          >
+                            <Icon
+                              className="h-5 w-5 transition-colors"
+                              style={{ color: isActive ? opt.activeBorder : '#9CA3AF' }}
+                              strokeWidth={isActive ? 2.5 : 2}
+                            />
+                          </div>
+                          <div>
+                            <p className="text-[14px] font-semibold leading-tight transition-colors"
+                              style={{ color: isActive ? opt.activeColor : '#374151' }}>
+                              {opt.title}
+                            </p>
+                            <p className="mt-0.5 text-caption text-neutral-500">{opt.sub}</p>
+                          </div>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  {formErrors.action && <p className="text-caption text-error">{formErrors.action}</p>}
+
+                  {/* Rejection reason */}
+                  {action === 'reject' && (
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-small font-semibold text-neutral-700">
+                        Rejection reason <span className="text-error">*</span>
+                      </label>
+                      <select
+                        className={cn('w-full appearance-none border bg-white px-3.5 py-2.5 text-small text-neutral-800 outline-none transition-all focus:border-primary-400 focus:ring-[3px] focus:ring-primary-100', formErrors.rejectionReason ? 'border-error' : 'border-neutral-200')}
+                        style={{ borderRadius: 8 }}
+                        value={rejectionReason}
+                        onChange={e => { setRejection(e.target.value); setFormErrors(p => ({ ...p, rejectionReason: undefined })); }}
+                      >
+                        <option value="">Select a reason…</option>
+                        {REJECTION_REASONS.map(r => <option key={r} value={r}>{r}</option>)}
+                      </select>
+                      {formErrors.rejectionReason && <p className="text-caption text-error">{formErrors.rejectionReason}</p>}
+                    </div>
+                  )}
+
+                  {/* Message to business */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-small font-semibold text-neutral-700">
+                      Message to business{isOther && <span className="text-error ml-0.5">*</span>}
+                      <span className="ml-1.5 font-normal text-neutral-400">(sent to business email)</span>
+                    </label>
+                    <textarea
+                      rows={3} maxLength={1000}
+                      placeholder={action === 'reject' ? 'Explain what the business needs to fix and resubmit…' : 'Optional message to the business…'}
+                      className={cn('w-full resize-none border px-3.5 py-2.5 text-small text-neutral-800 placeholder:text-neutral-400 outline-none transition-all focus:border-primary-400 focus:ring-[3px] focus:ring-primary-100', formErrors.additionalNotes ? 'border-error' : 'border-neutral-200 bg-white')}
+                      style={{ borderRadius: 8 }}
+                      value={additionalNotes}
+                      onChange={e => { setAdditional(e.target.value); setFormErrors(p => ({ ...p, additionalNotes: undefined })); }}
+                    />
+                    <div className="flex items-center justify-between">
+                      {formErrors.additionalNotes
+                        ? <p className="text-caption text-error">{formErrors.additionalNotes}</p>
+                        : <span />}
+                      <p className="text-caption text-neutral-400">{additionalNotes.length}/1000</p>
+                    </div>
+                  </div>
+
+                  {/* Internal notes */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-small font-semibold text-neutral-700">
+                      Internal notes
+                      <span className="ml-1.5 font-normal text-neutral-400">(admin only, not sent)</span>
+                    </label>
+                    <textarea
+                      rows={3} maxLength={1000}
+                      placeholder="Notes for the review team…"
+                      className="w-full resize-none border border-neutral-200 bg-white px-3.5 py-2.5 text-small text-neutral-800 placeholder:text-neutral-400 outline-none transition-all focus:border-primary-400 focus:ring-[3px] focus:ring-primary-100"
+                      style={{ borderRadius: 8 }}
+                      value={internalNotes}
+                      onChange={e => setInternal(e.target.value)}
+                    />
+                    <p className="text-right text-caption text-neutral-400">{internalNotes.length}/1000</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Resolved notice (also scrollable) */}
+            {!ACTIONABLE.has(reviewing.status) && (
+              <div className="mx-4 my-3">
+                <Alert type={reviewing.status === 'approved' ? 'success' : 'error'}>
+                  This registration was <strong>{reviewing.status}</strong>
+                  {(reviewing.approvedAt || reviewing.rejectedAt) && <> on {reviewing.approvedAt || reviewing.rejectedAt}</>}
+                  {reviewing.rejectionReason && <> — <em>{reviewing.rejectionReason}</em></>}.
+                </Alert>
+              </div>
+            )}
           </div>
 
-          {/* Action panel — only for actionable statuses */}
-          {ACTIONABLE.has(reviewing.status) && (
-            <div className="shrink-0 space-y-4 border-t border-neutral-200 bg-neutral-50 px-6 py-5">
-              <p className="text-small font-semibold text-neutral-700">Decision</p>
-
-              {/* Action radio cards */}
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  {
-                    value: 'approve', title: 'Approve', sub: 'Activate this business',
-                    icon: CheckCircle2,
-                    activeBorder: '#1F9D57', activeBg: '#E6F6EE', activeColor: '#13753F',
-                  },
-                  {
-                    value: 'reject', title: 'Reject', sub: 'Decline this registration',
-                    icon: XCircle,
-                    activeBorder: '#D92D20', activeBg: '#FDECEA', activeColor: '#A31C12',
-                  },
-                ].map(opt => {
-                  const isActive = action === opt.value;
-                  const Icon = opt.icon;
-                  return (
-                    <label
-                      key={opt.value}
-                      className="flex cursor-pointer flex-col gap-2 border p-3.5 transition-all"
-                      style={{
-                        borderRadius: 10,
-                        borderColor: isActive ? opt.activeBorder : '#E5E7EB',
-                        background: isActive ? opt.activeBg : '#fff',
-                      }}
-                    >
-                      <input type="radio" name="action" className="sr-only" value={opt.value} checked={isActive}
-                        onChange={() => { setAction(opt.value); setFormErrors({}); }} />
-                      <Icon
-                        className="h-5 w-5"
-                        style={{ color: isActive ? opt.activeBorder : '#D1D5DB' }}
-                      />
-                      <div>
-                        <p className="text-small font-semibold" style={{ color: isActive ? opt.activeColor : '#374151' }}>{opt.title}</p>
-                        <p className="text-caption text-neutral-500">{opt.sub}</p>
-                      </div>
-                    </label>
-                  );
-                })}
-              </div>
-              {formErrors.action && <p className="text-caption text-error">{formErrors.action}</p>}
-
-              {/* Rejection reason */}
-              {action === 'reject' && (
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-small font-semibold text-neutral-700">
-                    Rejection reason <span className="text-error">*</span>
-                  </label>
-                  <select
-                    className={cn('w-full appearance-none border bg-white px-3.5 py-2 text-small text-neutral-800 outline-none transition-all focus:border-primary-400 focus:ring-[3px] focus:ring-primary-100', formErrors.rejectionReason ? 'border-error' : 'border-neutral-200')}
-                    style={{ borderRadius: 8 }}
-                    value={rejectionReason}
-                    onChange={e => { setRejection(e.target.value); setFormErrors(p => ({ ...p, rejectionReason: undefined })); }}
-                  >
-                    <option value="">Select a reason…</option>
-                    {REJECTION_REASONS.map(r => <option key={r} value={r}>{r}</option>)}
-                  </select>
-                  {formErrors.rejectionReason && <p className="text-caption text-error">{formErrors.rejectionReason}</p>}
-                </div>
-              )}
-
-              {/* Additional notes (visible to business) */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-small font-semibold text-neutral-700">
-                  Message to business{isOther && <span className="text-error ml-0.5">*</span>}
-                  <span className="ml-1 font-normal text-neutral-400">(sent to business email)</span>
-                </label>
-                <textarea
-                  rows={2} maxLength={1000}
-                  placeholder={action === 'reject' ? 'Explain what the business needs to fix and resubmit…' : 'Optional message to the business…'}
-                  className={cn('w-full resize-none border px-3.5 py-2 text-small text-neutral-800 placeholder:text-neutral-400 outline-none transition-all focus:border-primary-400 focus:ring-[3px] focus:ring-primary-100', formErrors.additionalNotes ? 'border-error' : 'border-neutral-200 bg-white')}
-                  style={{ borderRadius: 8 }}
-                  value={additionalNotes}
-                  onChange={e => { setAdditional(e.target.value); setFormErrors(p => ({ ...p, additionalNotes: undefined })); }}
-                />
-                <div className="flex items-center justify-between">
-                  {formErrors.additionalNotes
-                    ? <p className="text-caption text-error">{formErrors.additionalNotes}</p>
-                    : <span />}
-                  <p className="text-caption text-neutral-400">{additionalNotes.length}/1000</p>
-                </div>
-              </div>
-
-              {/* Internal notes */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-small font-semibold text-neutral-700">
-                  Internal notes
-                  <span className="ml-1 font-normal text-neutral-400">(admin only, not sent)</span>
-                </label>
-                <textarea
-                  rows={2} maxLength={1000}
-                  placeholder="Notes for the review team…"
-                  className="w-full resize-none border border-neutral-200 bg-white px-3.5 py-2 text-small text-neutral-800 placeholder:text-neutral-400 outline-none transition-all focus:border-primary-400 focus:ring-[3px] focus:ring-primary-100"
-                  style={{ borderRadius: 8 }}
-                  value={internalNotes}
-                  onChange={e => setInternal(e.target.value)}
-                />
-                <p className="text-right text-caption text-neutral-400">{internalNotes.length}/1000</p>
-              </div>
-
-              {/* Buttons */}
-              <div className="flex items-center justify-between border-t border-neutral-200 pt-3">
-                <Button variant="outline" size="sm" onClick={handleClarification}>Request Clarification</Button>
-                <div className="flex gap-2">
-                  <Button variant="ghost" size="sm" onClick={closeDrawer}>Cancel</Button>
+          {/* ── Sticky footer ── */}
+          <div className="shrink-0 border-t border-neutral-200 bg-white px-6 py-4">
+            {ACTIONABLE.has(reviewing.status) ? (
+              <div className="flex items-center justify-between">
+                <Button variant="ghost" size="sm" onClick={handleClarification}>
+                  Request Clarification
+                </Button>
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={closeDrawer}>Cancel</Button>
                   <Button size="sm" onClick={handleSubmit}>Submit Decision</Button>
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* Read-only footer for resolved businesses */}
-          {!ACTIONABLE.has(reviewing.status) && (
-            <div className="shrink-0 border-t border-neutral-200 bg-neutral-50 px-6 py-4">
-              <Alert type={reviewing.status === 'approved' ? 'success' : 'error'}>
-                This registration was <strong>{reviewing.status}</strong>
-                {(reviewing.approvedAt || reviewing.rejectedAt) && <> on {reviewing.approvedAt || reviewing.rejectedAt}</>}
-                {reviewing.rejectionReason && <> — <em>{reviewing.rejectionReason}</em></>}.
-              </Alert>
-            </div>
-          )}
+            ) : (
+              <div className="flex justify-end">
+                <Button variant="outline" size="sm" onClick={closeDrawer}>Close</Button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
