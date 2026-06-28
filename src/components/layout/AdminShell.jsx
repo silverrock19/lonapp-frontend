@@ -3,8 +3,10 @@ import {
   LayoutDashboard, Building2, Users, BarChart2, ShieldCheck,
   Settings, Bell, Search, LogOut, Clock,
 } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import { cn } from '../../utils/classNames.js';
-import { useAuth } from '../../context/AuthContext.jsx';
+import { selectUser } from '../../store/slices/authSlice.js';
+import { logout } from '../../store/actions/auth.js';
 import { mockBusinesses } from '../../data/mockAdminData.js';
 
 const pendingCount = mockBusinesses.filter(b => b.status === 'pending' || b.status === 'resubmission').length;
@@ -40,8 +42,8 @@ function initials(name) {
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
-export default function AdminShell() {
-  const { user, logout } = useAuth();
+const AdminShell = () => {
+  const user = useSelector(selectUser);
   const navigate = useNavigate();
 
   function handleLogout() { logout(); navigate('/login'); }
@@ -156,4 +158,6 @@ export default function AdminShell() {
       </div>
     </div>
   );
-}
+};
+
+export default AdminShell;

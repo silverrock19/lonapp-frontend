@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button } from '../../../components/ui/Button.jsx';
+﻿import { useState } from 'react';
+import Button from '../../../components/ui/Button.jsx';
 import { Plus, Trash2, CreditCard, Smartphone, Banknote } from 'lucide-react';
 
 const BANKS_BY_COUNTRY = {
@@ -157,7 +157,7 @@ function MethodCard({ method, index, errors, onChange, onRemove, banks, momoProv
   );
 }
 
-export default function Step4Payment({ data, country, onNext, onBack, onSaveDraft }) {
+const Step4Payment = ({ data, country, onNext, onBack, onSaveDraft }) => {
   const banks = BANKS_BY_COUNTRY[country] || DEFAULT_BANKS;
   const momoProviders = MOMO_BY_COUNTRY[country] || DEFAULT_MOMO;
   const [methods, setMethods]       = useState(data.methods   || []);
@@ -247,3 +247,7 @@ export default function Step4Payment({ data, country, onNext, onBack, onSaveDraf
     </div>
   );
 }
+
+export default Step4Payment;
+
+

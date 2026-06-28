@@ -4,9 +4,10 @@ import {
   MoreHorizontal, Mail, Phone, MapPin, Calendar, Briefcase,
   AlertTriangle, CheckCircle2, Info, Send, Upload, Download, FileUp,
 } from 'lucide-react';
-import { Button } from '../../components/ui/Button.jsx';
-import { Input } from '../../components/ui/Input.jsx';
-import { Alert } from '../../components/ui/Alert.jsx';
+import Button from '../../components/ui/Button.jsx';
+import Input from '../../components/ui/Input.jsx';
+import Alert from '../../components/ui/Alert.jsx';
+import SectionCard from '../../components/ui/SectionCard.jsx';
 import {
   ROLES, STAFF_STATUS, RBAC_FEATURES, PERMISSION_CODES, mockStaff,
 } from '../../data/mockStaff.js';
@@ -320,21 +321,6 @@ function Avatar({ name, size = 'md' }) {
       style={pal}
     >
       {initials(name)}
-    </div>
-  );
-}
-
-function SectionCard({ title, description, children, action }) {
-  return (
-    <div className="rounded-lg border border-neutral-200 bg-white">
-      <div className="flex items-start justify-between border-b border-neutral-100 px-6 py-4">
-        <div>
-          <h3 className="text-h4 font-semibold text-neutral-900">{title}</h3>
-          {description && <p className="mt-0.5 text-small text-neutral-500">{description}</p>}
-        </div>
-        {action}
-      </div>
-      <div className="p-6">{children}</div>
     </div>
   );
 }
@@ -997,7 +983,7 @@ const TABS = [
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
-export default function StaffPage() {
+const StaffPage = () => {
   const [activeTab, setActiveTab] = useState('staff');
 
   return (
@@ -1034,3 +1020,7 @@ export default function StaffPage() {
     </div>
   );
 }
+
+export default StaffPage;
+
+

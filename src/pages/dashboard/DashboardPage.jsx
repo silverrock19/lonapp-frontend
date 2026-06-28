@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Minus, ArrowRight, CheckCircle2, Circle } from 'lucide-react';
+﻿import { TrendingUp, TrendingDown, Minus, ArrowRight, CheckCircle2, Circle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { kpiData, recentOrders, setupChecklist } from '../../data/mock.js';
@@ -40,7 +40,7 @@ function KPICard({ label, value, trend, up, down }) {
   );
 }
 
-export default function DashboardPage() {
+const DashboardPage = () => {
   const user = useSelector(s => s.auth.user);
   const firstName = user?.name?.split(' ')[0] ?? 'there';
   const done = setupChecklist.filter(i => i.done).length;
@@ -161,3 +161,6 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+export default DashboardPage;
+

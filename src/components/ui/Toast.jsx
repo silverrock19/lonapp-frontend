@@ -39,7 +39,7 @@ function ToastItem({ toast }) {
   );
 }
 
-export function ToastContainer() {
+const ToastContainer = () => {
   const toasts = useAppSelector(selectToasts);
   return (
     <div
@@ -50,4 +50,6 @@ export function ToastContainer() {
       {toasts.map((t) => <ToastItem key={t.id} toast={t} />)}
     </div>
   );
-}
+};
+
+export default ToastContainer;

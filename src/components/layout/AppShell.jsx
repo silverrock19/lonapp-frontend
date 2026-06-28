@@ -3,9 +3,11 @@ import {
   LayoutDashboard, ClipboardList, Store, Users, Tag, Wallet,
   Building2, Settings, Bell, Search, LogOut, UserCircle2,
 } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import { cn } from '../../utils/classNames.js';
-import { useAuth } from '../../context/AuthContext.jsx';
 import { useLogo } from '../../context/LogoContext.jsx';
+import { selectUser } from '../../store/slices/authSlice.js';
+import { logout } from '../../store/actions/auth.js';
 
 const ALL_NAV_GROUPS = [
   {
@@ -55,8 +57,8 @@ function initials(name) {
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
-export default function AppShell() {
-  const { user, logout } = useAuth();
+const AppShell = () => {
+  const user = useSelector(selectUser);
   const navigate = useNavigate();
   const { logoUrl } = useLogo();
   const navGroups = getNavGroups(user?.role);
@@ -180,4 +182,6 @@ export default function AppShell() {
       </div>
     </div>
   );
-}
+};
+
+export default AppShell;

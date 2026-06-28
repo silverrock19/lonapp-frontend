@@ -1,10 +1,7 @@
 import { forwardRef } from 'react';
 import { cn } from '../../utils/classNames.js';
 
-export const Input = forwardRef(function Input(
-  { label, required, helper, error, className, id, ...props },
-  ref
-) {
+const Input = forwardRef(({ label, required, helper, error, className, id, ...props }, ref) => {
   const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
   return (
     <div className="flex flex-col gap-1.5">
@@ -33,3 +30,5 @@ export const Input = forwardRef(function Input(
     </div>
   );
 });
+
+export default Input;

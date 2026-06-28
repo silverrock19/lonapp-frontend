@@ -16,11 +16,13 @@ const dots = {
   neutral: 'bg-neutral-400',
 };
 
-export function Badge({ variant = 'neutral', dot = false, children, className }) {
+const Badge = ({ variant = 'neutral', dot = false, children, className }) => {
   return (
     <span className={cn('inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-caption font-medium', variants[variant], className)}>
       {dot && <span className={cn('h-1.5 w-1.5 rounded-full', dots[variant])} aria-hidden="true" />}
       {children}
     </span>
   );
-}
+};
+
+export default Badge;

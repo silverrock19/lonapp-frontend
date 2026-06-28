@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button } from '../../../components/ui/Button.jsx';
+﻿import { useState } from 'react';
+import Button from '../../../components/ui/Button.jsx';
 import {
   Plus, Trash2, ChevronDown, ChevronUp, Store, Factory,
   AlertTriangle, Building2, GitBranch, Lock, Info, CheckCircle2,
@@ -504,7 +504,7 @@ function StepBadge({ n, active }) {
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
-export default function Step2Outlets({ data, onNext, onBack, onSaveDraft }) {
+const Step2Outlets = ({ data, onNext, onBack, onSaveDraft }) => {
   const [model, setModel]         = useState(data.model    || '');
   const [outlets, setOutlets]     = useState(data.outlets  || []);
   const [factories, setFactories] = useState(data.factories || []);
@@ -789,3 +789,7 @@ export default function Step2Outlets({ data, onNext, onBack, onSaveDraft }) {
     </div>
   );
 }
+
+export default Step2Outlets;
+
+

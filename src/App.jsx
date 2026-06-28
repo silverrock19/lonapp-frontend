@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+﻿import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppShell from './components/layout/AppShell.jsx';
 import AdminShell from './components/layout/AdminShell.jsx';
 import DevRoleSwitcher from './components/dev/DevRoleSwitcher.jsx';
@@ -34,7 +34,7 @@ function ComingSoon({ title }) {
   );
 }
 
-export default function App() {
+const App = () => {
   return (
     <LogoProvider>
       <BrowserRouter>
@@ -97,3 +97,6 @@ export default function App() {
     </LogoProvider>
   );
 }
+
+export default App;
+

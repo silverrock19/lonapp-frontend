@@ -1,13 +1,15 @@
-import { useState, useMemo } from 'react';
+﻿import { useState, useMemo } from 'react';
 import {
   User, Building2, Bell, Lock, Monitor, ClipboardList,
-  Eye, EyeOff, Upload, AlertTriangle, Info, Check, X,
+  Upload, AlertTriangle, Info, Check, X,
   Smartphone, Globe, LogOut, Trash2, Search, ChevronDown,
   Download, ShieldAlert, PauseCircle, XCircle, ShieldCheck, Key,
 } from 'lucide-react';
-import { Input } from '../../components/ui/Input.jsx';
-import { Button } from '../../components/ui/Button.jsx';
-import { Alert } from '../../components/ui/Alert.jsx';
+import Input from '../../components/ui/Input.jsx';
+import Button from '../../components/ui/Button.jsx';
+import Alert from '../../components/ui/Alert.jsx';
+import SectionCard from '../../components/ui/SectionCard.jsx';
+import PasswordInput from '../../components/ui/PasswordInput.jsx';
 import { adminProfile } from '../../data/mock.js';
 import { mockSessions, mockAuditLogs, AUDIT_CATEGORIES, AUDIT_CATEGORY_META } from '../../data/mockStaff.js';
 
@@ -72,21 +74,6 @@ function ProfileCompleteness({ profile }) {
 }
 
 // ─── Shared ────────────────────────────────────────────────────────────────────
-
-function SectionCard({ title, description, children, action }) {
-  return (
-    <div className="rounded-lg border border-neutral-200 bg-white">
-      <div className="flex items-start justify-between border-b border-neutral-100 px-6 py-4">
-        <div>
-          <h3 className="text-h4 font-semibold text-neutral-900">{title}</h3>
-          {description && <p className="mt-0.5 text-small text-neutral-500">{description}</p>}
-        </div>
-        {action}
-      </div>
-      <div className="p-6">{children}</div>
-    </div>
-  );
-}
 
 function Toggle({ checked, onChange }) {
   return (
@@ -604,9 +591,6 @@ function SecurityTab() {
   const [current, setCurrent]     = useState('');
   const [newPw, setNewPw]         = useState('');
   const [confirm, setConfirm]     = useState('');
-  const [showCurrent, setShowCurrent] = useState(false);
-  const [showNew, setShowNew]     = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [saved, setSaved]         = useState(false);
   const [error, setError]         = useState('');
   const [logoutSent, setLogoutSent] = useState(false);
@@ -639,34 +623,20 @@ function SecurityTab() {
           {error && <Alert type="error" title={error} />}
 
           {/* Current password */}
-          <div className="relative">
-            <Input
-              label="Current password"
-              type={showCurrent ? 'text' : 'password'}
-              value={current}
-              onChange={e => { setCurrent(e.target.value); setSaved(false); }}
-              autoComplete="current-password"
-            />
-            <button type="button" onClick={() => setShowCurrent(v => !v)}
-              className="absolute right-3.5 top-9 text-neutral-400 hover:text-neutral-600">
-              {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
-          </div>
+          <PasswordInput
+            label="Current password"
+            value={current}
+            onChange={e => { setCurrent(e.target.value); setSaved(false); }}
+            autoComplete="current-password"
+          />
 
           {/* New password */}
-          <div className="relative">
-            <Input
-              label="New password"
-              type={showNew ? 'text' : 'password'}
-              value={newPw}
-              onChange={e => { setNewPw(e.target.value); setSaved(false); }}
-              autoComplete="new-password"
-            />
-            <button type="button" onClick={() => setShowNew(v => !v)}
-              className="absolute right-3.5 top-9 text-neutral-400 hover:text-neutral-600">
-              {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
-          </div>
+          <PasswordInput
+            label="New password"
+            value={newPw}
+            onChange={e => { setNewPw(e.target.value); setSaved(false); }}
+            autoComplete="new-password"
+          />
 
           {/* Strength meter */}
           {newPw && (
@@ -699,18 +669,13 @@ function SecurityTab() {
           )}
 
           {/* Confirm */}
-          <div className="relative">
-            <Input
+          <div>
+            <PasswordInput
               label="Confirm new password"
-              type={showConfirm ? 'text' : 'password'}
               value={confirm}
               onChange={e => { setConfirm(e.target.value); setSaved(false); }}
               autoComplete="new-password"
             />
-            <button type="button" onClick={() => setShowConfirm(v => !v)}
-              className="absolute right-3.5 top-9 text-neutral-400 hover:text-neutral-600">
-              {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
             {confirm && newPw && (
               <p className={`mt-1 text-caption ${confirm === newPw ? 'text-success-text' : 'text-error-text'}`}>
                 {confirm === newPw ? 'Passwords match' : 'Passwords do not match'}
@@ -1335,7 +1300,7 @@ function AuditLogTab() {
 
 // ─── Main page ─────────────────────────────────────────────────────────────────
 
-export default function SettingsPage() {
+const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState('personal');
   const [profile, setProfile]     = useState(adminProfile);
 
@@ -1376,3 +1341,7 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+export default SettingsPage;
+
+

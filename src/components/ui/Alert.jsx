@@ -8,7 +8,7 @@ const config = {
   info:    { icon: Info,          bar: 'bg-primary-400',  bg: 'bg-primary-50',   border: 'border-primary-200',  iconCls: 'text-primary-500',   textCls: 'text-neutral-700' },
 };
 
-export function Alert({ type = 'info', title, children, className }) {
+const Alert = ({ type = 'info', title, children, className }) => {
   const { icon: Icon, bar, bg, border, iconCls, textCls } = config[type];
   return (
     <div
@@ -25,4 +25,6 @@ export function Alert({ type = 'info', title, children, className }) {
       </div>
     </div>
   );
-}
+};
+
+export default Alert;

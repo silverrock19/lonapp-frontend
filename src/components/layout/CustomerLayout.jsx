@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 
 // Mobile-first customer app layout with bottom tab bar.
 // Wrapped in <div data-theme="customer"> by App.jsx for the teal theme overlay.
-export default function CustomerLayout() {
+const CustomerLayout = () => {
   return (
     <div className="flex min-h-screen flex-col bg-[--app-bg]">
       <main className="flex-1 overflow-y-auto pb-16">
@@ -14,4 +14,6 @@ export default function CustomerLayout() {
       </nav>
     </div>
   );
-}
+};
+
+export default CustomerLayout;

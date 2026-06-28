@@ -1,28 +1,18 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { Input } from '../../components/ui/Input.jsx';
-import { Button } from '../../components/ui/Button.jsx';
-import { Brandmark } from '../../components/ui/Brandmark.jsx';
+import Input from '../../components/ui/Input.jsx';
+import Button from '../../components/ui/Button.jsx';
+import PasswordInput from '../../components/ui/PasswordInput.jsx';
+import useForm from '../../hooks/useForm.js';
+import Brandmark from '../../components/ui/Brandmark.jsx';
 
-export default function AdminLoginPage() {
+const AdminLoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ identifier: '', password: '', remember: false });
-  const [showPass, setShowPass] = useState(false);
-  const [errors, setErrors] = useState({});
+  const { form, setForm, errors, setErrors, set } = useForm({ identifier: '', password: '', remember: false });
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  function set(field) {
-    return e => {
-      const val = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-      setForm(f => ({ ...f, [field]: val }));
-      setErrors(err => ({ ...err, [field]: '' }));
-      setServerError('');
-    };
-  }
 
   function validate() {
     const e = {};
@@ -76,33 +66,22 @@ export default function AdminLoginPage() {
           autoComplete="username"
         />
 
-        <div className="relative">
-          <Input
-            label="Password"
-            type={showPass ? 'text' : 'password'}
-            required
-            placeholder="••••••••"
-            value={form.password}
-            onChange={set('password')}
-            error={errors.password}
-            autoComplete="current-password"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPass(v => !v)}
-            aria-label={showPass ? 'Hide password' : 'Show password'}
-            className="absolute right-3 top-9 text-neutral-400 hover:text-neutral-600 transition-colors"
-          >
-            {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </button>
-        </div>
+        <PasswordInput
+          label="Password"
+          required
+          placeholder="••••••••"
+          value={form.password}
+          onChange={set('password')}
+          error={errors.password}
+          autoComplete="current-password"
+        />
 
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-2 cursor-pointer select-none text-small text-neutral-700">
             <input
               type="checkbox"
               checked={form.remember}
-              onChange={set('remember')}
+              onChange={e => setForm(f => ({ ...f, remember: e.target.checked }))}
               className="h-4 w-4 rounded border-neutral-300 accent-primary-500"
             />
             Remember me
@@ -126,3 +105,7 @@ export default function AdminLoginPage() {
     </div>
   );
 }
+
+export default AdminLoginPage;
+
+

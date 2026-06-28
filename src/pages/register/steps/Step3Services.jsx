@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button } from '../../../components/ui/Button.jsx';
+﻿import { useState } from 'react';
+import Button from '../../../components/ui/Button.jsx';
 
 const RETAIL_SERVICES = ['Washing', 'Ironing', 'Dry Cleaning', 'Wash & Iron', 'Wash & Fold'];
 const COMMERCIAL_SERVICES = ['Bulk Washing', 'Linen Service', 'Uniform Cleaning', 'Industrial Laundry'];
@@ -85,7 +85,7 @@ function TurnaroundRow({ label, durationVal, durationUnit, surcharge, showSurcha
   );
 }
 
-export default function Step3Services({ data, onNext, onBack, onSaveDraft }) {
+const Step3Services = ({ data, onNext, onBack, onSaveDraft }) => {
   const [f, setF] = useState({ ...data });
   const [errors, setErrors] = useState({});
 
@@ -227,3 +227,7 @@ export default function Step3Services({ data, onNext, onBack, onSaveDraft }) {
     </div>
   );
 }
+
+export default Step3Services;
+
+
