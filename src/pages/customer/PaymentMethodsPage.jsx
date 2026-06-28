@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Smartphone, CreditCard, Trash2, Plus, X } from 'lucide-react';
 import { MOCK_PAYMENT_METHODS } from '../../data/mockCustomer.js';
+import Button from '../../components/ui/Button.jsx';
 
 const PaymentMethodsPage = () => {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ const PaymentMethodsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 pb-24">
+    <div className="min-h-screen pb-24" style={{ background: '#FAFAF8' }}>
       {/* Header */}
       <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b border-neutral-100 bg-white px-4">
         <button onClick={() => navigate(-1)} className="flex items-center justify-center h-10 w-10 -ml-2">
@@ -142,12 +143,14 @@ const PaymentMethodsPage = () => {
                   >
                     Cancel
                   </button>
-                  <button
+                  <Button
+                    variant="danger"
                     onClick={() => handleDeleteConfirm(method.id)}
-                    className="flex-1 h-10 rounded-full bg-red-500 text-white text-[14px] font-semibold"
+                    className="flex-1"
+                    size="sm"
                   >
                     Remove
-                  </button>
+                  </Button>
                 </div>
               </div>
             ) : (

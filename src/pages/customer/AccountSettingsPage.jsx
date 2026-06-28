@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, AlertTriangle, Trash2, Check, X, ShieldAlert } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { ChevronLeft, ChevronRight, AlertTriangle, Trash2, Check, X, ShieldAlert, LogOut } from 'lucide-react';
 import PasswordInput from '../../components/ui/PasswordInput.jsx';
+import Button from '../../components/ui/Button.jsx';
+import { resetAuth } from '../../store/slices/authSlice.js';
 
 const PauseModal = ({ onClose }) => {
   return (
@@ -145,13 +148,14 @@ const DeleteModal = ({ onClose, onConfirm }) => {
           </span>
         </button>
 
-        <button
+        <Button
+          variant="danger"
           onClick={handleConfirm}
           disabled={!isValid}
-          className="w-full h-12 rounded-2xl border border-red-500 text-red-600 text-[15px] font-semibold mb-3 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="w-full mb-3"
         >
           Delete Account
-        </button>
+        </Button>
         <button
           onClick={onClose}
           className="w-full h-12 rounded-2xl border border-neutral-200 text-neutral-600 text-[15px] font-semibold"
@@ -163,12 +167,42 @@ const DeleteModal = ({ onClose, onConfirm }) => {
   );
 };
 
+const LogOutAllDevicesModal = ({ onClose, onConfirm }) => (
+  <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40">
+    <div className="w-full max-w-md rounded-t-3xl bg-white p-6 pb-10">
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="text-[17px] font-semibold text-neutral-900">Log out all devices?</h2>
+        <button onClick={onClose} className="h-8 w-8 flex items-center justify-center rounded-full bg-neutral-100">
+          <X className="h-4 w-4 text-neutral-600" />
+        </button>
+      </div>
+      <p className="mb-6 text-[15px] text-neutral-600 leading-relaxed">
+        This will sign you out of all browsers and devices. You'll need to sign in again on each device.
+      </p>
+      <button
+        onClick={onConfirm}
+        className="w-full h-12 rounded-2xl bg-[#0E9AA7] text-white text-[15px] font-semibold mb-3"
+      >
+        Log Out All Devices
+      </button>
+      <button
+        onClick={onClose}
+        className="w-full h-12 rounded-2xl border border-neutral-200 text-neutral-600 text-[15px] font-semibold"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+);
+
 const AccountSettingsPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [showPauseModal, setShowPauseModal] = useState(false);
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showLogOutAllModal, setShowLogOutAllModal] = useState(false);
   const [toast, setToast] = useState(null);
 
   const showToast = (message, type = 'success') => {
@@ -186,6 +220,13 @@ const AccountSettingsPage = () => {
     setShowDeleteModal(false);
     showToast('Deletion scheduled. You have 30 days to cancel via email.', 'success');
     setTimeout(() => navigate('/customer/login'), 2000);
+  };
+
+  const handleLogOutAllConfirm = () => {
+    setShowLogOutAllModal(false);
+    // Mock "all devices" API call — in production this would invalidate all sessions server-side
+    dispatch(resetAuth());
+    navigate('/customer/login');
   };
 
   return (
@@ -209,6 +250,23 @@ const AccountSettingsPage = () => {
           </div>
         </div>
       )}
+
+      {/* SECURITY Section */}
+      <p className="px-4 pt-5 pb-1 text-[11px] font-semibold uppercase tracking-widest text-neutral-400">
+        Security
+      </p>
+      <div className="border-t border-neutral-100 bg-white">
+        <button
+          onClick={() => setShowLogOutAllModal(true)}
+          className="flex items-center justify-between h-14 px-4 w-full border-b border-neutral-100 last:border-0"
+        >
+          <div className="flex items-center gap-3">
+            <LogOut className="h-5 w-5 text-[#0E9AA7]" />
+            <span className="text-[15px] text-[#0E9AA7] font-medium">Log out all devices</span>
+          </div>
+          <ChevronRight className="h-5 w-5 text-neutral-400" />
+        </button>
+      </div>
 
       {/* ACCOUNT STATUS Section */}
       <p className="px-4 pt-5 pb-1 text-[11px] font-semibold uppercase tracking-widest text-neutral-400">
@@ -328,12 +386,13 @@ const AccountSettingsPage = () => {
           </div>
 
           {/* CTA */}
-          <button
+          <Button
+            variant="danger"
             onClick={() => setShowDeleteModal(true)}
-            className="w-full h-12 rounded-2xl border border-red-500 text-red-600 text-[15px] font-semibold"
+            className="w-full"
           >
             Delete My Account
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -353,6 +412,13 @@ const AccountSettingsPage = () => {
         <DeleteModal
           onClose={() => setShowDeleteModal(false)}
           onConfirm={handleDeleteConfirm}
+        />
+      )}
+
+      {showLogOutAllModal && (
+        <LogOutAllDevicesModal
+          onClose={() => setShowLogOutAllModal(false)}
+          onConfirm={handleLogOutAllConfirm}
         />
       )}
     </div>

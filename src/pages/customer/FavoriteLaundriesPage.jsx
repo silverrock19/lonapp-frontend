@@ -27,7 +27,7 @@ const FavoriteLaundriesPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-neutral-50 pb-24">
+    <div className="min-h-screen pb-24" style={{ background: '#FAFAF8' }}>
       {/* Header */}
       <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b border-neutral-100 bg-white px-4">
         <button onClick={() => navigate(-1)} className="flex items-center justify-center h-10 w-10 -ml-2">

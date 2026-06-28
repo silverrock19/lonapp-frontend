@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import { MOCK_CUSTOMER } from '../../data/mockCustomer.js';
+import Input from '../../components/ui/Input.jsx';
 
 const CustomerProfileEditPage = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const CustomerProfileEditPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 pb-24">
+    <div className="min-h-screen pb-24" style={{ background: '#FAFAF8' }}>
       {/* Header */}
       <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b border-neutral-100 bg-white px-4">
         <button onClick={() => navigate(-1)} className="flex items-center justify-center h-9 w-9">
@@ -103,42 +104,33 @@ const CustomerProfileEditPage = () => {
       <div className="mx-4 rounded-2xl border border-neutral-200 bg-white overflow-hidden">
         {/* First Name */}
         <div className="px-4 pt-4 pb-3 border-b border-neutral-100">
-          <label className="block text-[11px] font-semibold uppercase tracking-widest text-neutral-400 mb-1">
-            First name <span className="text-red-400">*</span>
-          </label>
-          <input
-            type="text"
+          <Input
+            label="First name"
+            required
+            placeholder="First name"
             value={form.firstName}
             onChange={handleChange('firstName')}
-            placeholder="First name"
-            className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-[15px] outline-none focus:border-[#0E9AA7] focus:ring-2 focus:ring-[#0E9AA7]/20 transition-all"
           />
         </div>
 
         {/* Last Name */}
         <div className="px-4 pt-4 pb-3 border-b border-neutral-100">
-          <label className="block text-[11px] font-semibold uppercase tracking-widest text-neutral-400 mb-1">
-            Last name <span className="text-red-400">*</span>
-          </label>
-          <input
-            type="text"
+          <Input
+            label="Last name"
+            required
+            placeholder="Last name"
             value={form.lastName}
             onChange={handleChange('lastName')}
-            placeholder="Last name"
-            className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-[15px] outline-none focus:border-[#0E9AA7] focus:ring-2 focus:ring-[#0E9AA7]/20 transition-all"
           />
         </div>
 
         {/* Date of Birth */}
         <div className="px-4 pt-4 pb-3">
-          <label className="block text-[11px] font-semibold uppercase tracking-widest text-neutral-400 mb-1">
-            Date of birth
-          </label>
-          <input
+          <Input
+            label="Date of birth"
             type="date"
             value={form.dob}
             onChange={handleChange('dob')}
-            className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-[15px] outline-none focus:border-[#0E9AA7] focus:ring-2 focus:ring-[#0E9AA7]/20 transition-all text-neutral-700"
           />
         </div>
       </div>

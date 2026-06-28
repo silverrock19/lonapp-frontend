@@ -1,5 +1,7 @@
 ﻿import { useState } from 'react';
 import { Home, Building2, MapPin, Plus, Pencil, Trash2, X, Check, ChevronLeft, Crosshair, Loader2 } from 'lucide-react';
+import Button from '../../components/ui/Button.jsx';
+import Input from '../../components/ui/Input.jsx';
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -28,13 +30,6 @@ const TYPE_META = {
 };
 
 const emptyForm = { label: '', type: 'home', street: '', suburb: '', city: 'Accra', gps: '' };
-
-// ─── Input helpers ────────────────────────────────────────────────────────────
-
-const fieldCls = err =>
-  `w-full rounded-xl border px-4 py-3 text-[15px] text-neutral-900 outline-none focus:ring-2 transition-all ${
-    err ? 'border-red-400 focus:ring-red-100' : 'border-neutral-200 focus:border-blue-400 focus:ring-blue-100'
-  }`;
 
 // ─── Address card ─────────────────────────────────────────────────────────────
 
@@ -148,12 +143,14 @@ function AddressSheet({ initial, onSave, onClose }) {
       {/* Body */}
       <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4">
         {/* Label */}
-        <div>
-          <label className="mb-1.5 block text-[13px] font-semibold text-neutral-700">Label *</label>
-          <input className={fieldCls(errors.label)} placeholder="e.g. Home, Mum's place, Work"
-            value={form.label} onChange={e => set('label')(e.target.value)} />
-          {errors.label && <p className="mt-1 text-[12px] text-red-500">{errors.label}</p>}
-        </div>
+        <Input
+          label="Label"
+          required
+          placeholder="e.g. Home, Mum's place, Work"
+          value={form.label}
+          onChange={e => set('label')(e.target.value)}
+          error={errors.label}
+        />
 
         {/* Type */}
         <div>
@@ -179,34 +176,39 @@ function AddressSheet({ initial, onSave, onClose }) {
         </div>
 
         {/* Street */}
-        <div>
-          <label className="mb-1.5 block text-[13px] font-semibold text-neutral-700">Street address *</label>
-          <input className={fieldCls(errors.street)} placeholder="e.g. 14 Liberation Road"
-            value={form.street} onChange={e => set('street')(e.target.value)} />
-          {errors.street && <p className="mt-1 text-[12px] text-red-500">{errors.street}</p>}
-        </div>
+        <Input
+          label="Street address"
+          required
+          placeholder="e.g. 14 Liberation Road"
+          value={form.street}
+          onChange={e => set('street')(e.target.value)}
+          error={errors.street}
+        />
 
         {/* Suburb + City */}
         <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="mb-1.5 block text-[13px] font-semibold text-neutral-700">Suburb / Area</label>
-            <input className={fieldCls(false)} placeholder="e.g. Osu"
-              value={form.suburb} onChange={e => set('suburb')(e.target.value)} />
-          </div>
-          <div>
-            <label className="mb-1.5 block text-[13px] font-semibold text-neutral-700">City *</label>
-            <input className={fieldCls(errors.city)} placeholder="e.g. Accra"
-              value={form.city} onChange={e => set('city')(e.target.value)} />
-            {errors.city && <p className="mt-1 text-[12px] text-red-500">{errors.city}</p>}
-          </div>
+          <Input
+            label="Suburb / Area"
+            placeholder="e.g. Osu"
+            value={form.suburb}
+            onChange={e => set('suburb')(e.target.value)}
+          />
+          <Input
+            label="City"
+            required
+            placeholder="e.g. Accra"
+            value={form.city}
+            onChange={e => set('city')(e.target.value)}
+            error={errors.city}
+          />
         </div>
 
         {/* GPS */}
         <div>
           <div className="mb-1 flex items-center justify-between">
-            <label className="text-[13px] font-semibold text-neutral-700">
+            <span className="text-[13px] font-semibold text-neutral-700">
               GPS / Digital address <span className="font-normal text-neutral-400">(optional)</span>
-            </label>
+            </span>
             <button
               type="button"
               onClick={useMyLocation}
@@ -219,12 +221,13 @@ function AddressSheet({ initial, onSave, onClose }) {
               }
             </button>
           </div>
-          <input className={fieldCls(false)} placeholder="e.g. GA-045-3721 or 5.6037, -0.1870"
-            value={form.gps} onChange={e => set('gps')(e.target.value)} />
-          {gpsError
-            ? <p className="mt-1 text-[12px] text-red-500">{gpsError}</p>
-            : <p className="mt-1 text-[12px] text-neutral-400">GhanaPostGPS code or decimal coordinates (lat, lng)</p>
-          }
+          <Input
+            placeholder="e.g. GA-045-3721 or 5.6037, -0.1870"
+            value={form.gps}
+            onChange={e => set('gps')(e.target.value)}
+            error={gpsError || undefined}
+            helper={!gpsError ? 'GhanaPostGPS code or decimal coordinates (lat, lng)' : undefined}
+          />
         </div>
       </div>
     </div>
@@ -249,11 +252,9 @@ function DeleteModal({ address, onConfirm, onCancel }) {
             className="flex-1 rounded-xl border border-neutral-200 py-3.5 text-[15px] font-semibold text-neutral-700">
             Cancel
           </button>
-          <button onClick={onConfirm}
-            className="flex-1 rounded-xl py-3.5 text-[15px] font-semibold text-white"
-            style={{ background: '#D92D20' }}>
+          <Button variant="danger" onClick={onConfirm} className="flex-1">
             Remove
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -293,7 +294,7 @@ const AddressesPage = () => {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: '#F4F6FA', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ background: '#FAFAF8', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
       {/* Top header */}
       <div className="sticky top-0 z-10 border-b border-neutral-100 bg-white px-4 py-3.5">
         <div className="flex items-center gap-3">

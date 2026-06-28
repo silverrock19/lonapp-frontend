@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import CustomerSettingsLayout, { SettingsSection } from '../../components/layout/CustomerSettingsLayout.jsx';
 import { MOCK_CUSTOMER } from '../../data/mockCustomer.js';
+import Input from '../../components/ui/Input.jsx';
 
 // ── Mock initial profile ──────────────────────────────────────────────────────
 
@@ -60,25 +61,6 @@ const TIER_META = {
 };
 
 // ── Small field helpers ───────────────────────────────────────────────────────
-function FieldCls(hasErr) {
-  return `w-full rounded-xl border px-4 py-3 text-[15px] text-neutral-900 outline-none transition-all focus:ring-2 ${
-    hasErr
-      ? 'border-red-400 focus:border-red-400 focus:ring-red-100'
-      : 'border-neutral-200 focus:border-[#0E9AA7] focus:ring-[#0E9AA7]/20'
-  }`;
-}
-
-function FieldLabel({ children, required }) {
-  return (
-    <label className="block text-[13px] font-medium text-neutral-700 mb-1">
-      {children}{required && <span className="ml-0.5 text-red-500">*</span>}
-    </label>
-  );
-}
-
-function FieldError({ msg }) {
-  return msg ? <p className="mt-1 text-[12px] text-red-600">{msg}</p> : null;
-}
 
 function FieldHint({ children }) {
   return <p className="mt-1 text-[12px] text-neutral-400">{children}</p>;
@@ -301,16 +283,24 @@ export default function CustomerProfilePage() {
           <div className="space-y-4">
             {/* Name row */}
             <div className="grid grid-cols-2 gap-3">
-              <div>
-                <FieldLabel required>First name</FieldLabel>
-                <input value={form.firstName} onChange={set('firstName')} className={FieldCls(errors.firstName)} placeholder="First name" autoComplete="given-name" />
-                <FieldError msg={errors.firstName} />
-              </div>
-              <div>
-                <FieldLabel required>Last name</FieldLabel>
-                <input value={form.lastName} onChange={set('lastName')} className={FieldCls(errors.lastName)} placeholder="Last name" autoComplete="family-name" />
-                <FieldError msg={errors.lastName} />
-              </div>
+              <Input
+                label="First name"
+                required
+                placeholder="First name"
+                value={form.firstName}
+                onChange={set('firstName')}
+                error={errors.firstName}
+                autoComplete="given-name"
+              />
+              <Input
+                label="Last name"
+                required
+                placeholder="Last name"
+                value={form.lastName}
+                onChange={set('lastName')}
+                error={errors.lastName}
+                autoComplete="family-name"
+              />
             </div>
 
             {/* Divider */}
@@ -319,68 +309,65 @@ export default function CustomerProfilePage() {
             {/* Email */}
             <div>
               <div className="mb-1 flex items-center justify-between">
-                <FieldLabel required>Email address</FieldLabel>
+                <span className="text-[13px] font-medium text-neutral-700">
+                  Email address <span className="ml-0.5 text-red-500">*</span>
+                </span>
                 <VerifiedBadge verified={form.emailVerified} />
               </div>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
-                <input
+                <Mail className="absolute left-3 top-[calc(0.625rem+1px)] h-4 w-4 text-neutral-400 z-10 pointer-events-none" />
+                <Input
                   type="email"
                   value={form.email}
                   onChange={set('email')}
-                  className={FieldCls(errors.email) + ' pl-10'}
+                  error={errors.email}
                   placeholder="you@email.com"
                   autoComplete="email"
+                  className="pl-10"
+                  helper={!errors.email ? 'Changing your email will require verification via OTP' : undefined}
                 />
               </div>
-              <FieldError msg={errors.email} />
-              {!errors.email && (
-                <FieldHint>Changing your email will require verification via OTP</FieldHint>
-              )}
             </div>
 
             {/* Phone */}
             <div>
               <div className="mb-1 flex items-center justify-between">
-                <FieldLabel required>Phone number</FieldLabel>
+                <span className="text-[13px] font-medium text-neutral-700">
+                  Phone number <span className="ml-0.5 text-red-500">*</span>
+                </span>
                 <VerifiedBadge verified={form.phoneVerified} />
               </div>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
-                <input
+                <Phone className="absolute left-3 top-[calc(0.625rem+1px)] h-4 w-4 text-neutral-400 z-10 pointer-events-none" />
+                <Input
                   type="tel"
                   value={form.phone}
                   onChange={set('phone')}
-                  className={FieldCls(errors.phone) + ' pl-10'}
+                  error={errors.phone}
                   placeholder="+233 24 000 0000"
                   autoComplete="tel"
+                  className="pl-10"
+                  helper={!errors.phone ? 'Changing your phone number will require SMS verification' : undefined}
                 />
               </div>
-              <FieldError msg={errors.phone} />
-              {!errors.phone && (
-                <FieldHint>Changing your phone number will require SMS verification</FieldHint>
-              )}
             </div>
 
             {/* Divider */}
             <div className="border-t border-neutral-100" />
 
             {/* DOB */}
-            <div>
-              <FieldLabel>Date of birth</FieldLabel>
-              <input
-                type="date"
-                value={form.dateOfBirth}
-                onChange={set('dateOfBirth')}
-                className={FieldCls(false)}
-              />
-              <FieldHint>Used for age verification and birthday offers</FieldHint>
-            </div>
+            <Input
+              label="Date of birth"
+              type="date"
+              value={form.dateOfBirth}
+              onChange={set('dateOfBirth')}
+              helper="Used for age verification and birthday offers"
+            />
 
             {/* Gender */}
             <div>
-              <FieldLabel>Gender</FieldLabel>
-              <select value={form.gender} onChange={set('gender')} className={FieldCls(false)}>
+              <label className="block text-[13px] font-medium text-neutral-700 mb-1">Gender</label>
+              <select value={form.gender} onChange={set('gender')} className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-[15px] text-neutral-900 outline-none transition-all focus:border-[#0E9AA7] focus:ring-2 focus:ring-[#0E9AA7]/20">
                 {GENDERS.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
               </select>
             </div>
@@ -390,27 +377,30 @@ export default function CustomerProfilePage() {
         {/* ── 3. Emergency contact ───────────────────────────────────────────── */}
         <SettingsSection id="emergency" icon={AlertCircle} title="Emergency contact" helper="Someone we can reach if we're unable to contact you">
           <div className="space-y-4">
+            <Input
+              label="Full name"
+              placeholder="Contact name"
+              value={form.emergencyName}
+              onChange={set('emergencyName')}
+              autoComplete="off"
+            />
             <div>
-              <FieldLabel>Full name</FieldLabel>
-              <input value={form.emergencyName} onChange={set('emergencyName')} className={FieldCls(false)} placeholder="Contact name" autoComplete="off" />
-            </div>
-            <div>
-              <FieldLabel>Phone number</FieldLabel>
+              <label className="block text-[13px] font-medium text-neutral-700 mb-1">Phone number</label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
-                <input
+                <Phone className="absolute left-3 top-[calc(0.625rem+1px)] h-4 w-4 text-neutral-400 z-10 pointer-events-none" />
+                <Input
                   type="tel"
                   value={form.emergencyPhone}
                   onChange={set('emergencyPhone')}
-                  className={FieldCls(errors.emergencyPhone) + ' pl-10'}
+                  error={errors.emergencyPhone}
                   placeholder="+233 20 000 0000"
+                  className="pl-10"
                 />
               </div>
-              <FieldError msg={errors.emergencyPhone} />
             </div>
             <div>
-              <FieldLabel>Relationship</FieldLabel>
-              <select value={form.emergencyRel} onChange={set('emergencyRel')} className={FieldCls(false)}>
+              <label className="block text-[13px] font-medium text-neutral-700 mb-1">Relationship</label>
+              <select value={form.emergencyRel} onChange={set('emergencyRel')} className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-[15px] text-neutral-900 outline-none transition-all focus:border-[#0E9AA7] focus:ring-2 focus:ring-[#0E9AA7]/20">
                 <option value="">— Select —</option>
                 {RELATIONSHIPS.map(r => <option key={r}>{r}</option>)}
               </select>

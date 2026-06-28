@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import { MOCK_ACTIVITIES } from '../../data/mockCustomer.js';
 
+const PAGE_SIZE = 10;
+
 const FILTERS = [
   { key: 'all', label: 'All' },
   { key: 'login', label: 'Login' },
@@ -81,11 +83,14 @@ const ActivityHistoryPage = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
   const [toast, setToast] = useState(null);
+  const [page, setPage] = useState(1);
 
   const filtered = EXTENDED_ACTIVITIES.filter((a) => {
     if (activeFilter === 'all') return true;
     return TYPE_TO_FILTER[a.type] === activeFilter;
   });
+
+  const paginated = filtered.slice(0, page * PAGE_SIZE);
 
   const handleSecureAccount = () => {
     setShowModal(false);
@@ -117,7 +122,7 @@ const ActivityHistoryPage = () => {
         {FILTERS.map((f) => (
           <button
             key={f.key}
-            onClick={() => setActiveFilter(f.key)}
+            onClick={() => { setActiveFilter(f.key); setPage(1); }}
             className={`flex-none h-8 rounded-full px-4 text-[13px] font-medium transition-colors ${
               activeFilter === f.key
                 ? 'text-white'
@@ -135,7 +140,12 @@ const ActivityHistoryPage = () => {
         {filtered.length === 0 && (
           <p className="py-10 text-center text-[14px] text-neutral-400">No activity found.</p>
         )}
-        {filtered.map((activity) => {
+        {filtered.length > 0 && (
+          <p className="text-[13px] text-neutral-400 pb-1">
+            Showing {paginated.length} of {filtered.length} activities
+          </p>
+        )}
+        {paginated.map((activity) => {
           const colors = statusColors[activity.status] || statusColors.success;
           const IconComponent = ICON_MAP[activity.icon] || ShieldAlert;
           const isSuspicious = activity.status === 'suspicious';
@@ -199,6 +209,14 @@ const ActivityHistoryPage = () => {
             </div>
           );
         })}
+        {filtered.length > page * PAGE_SIZE && (
+          <button
+            onClick={() => setPage(p => p + 1)}
+            className="w-full py-3 text-sm font-medium text-[#0E9AA7] hover:bg-[#0E9AA7]/5 rounded-xl transition-colors border border-[#0E9AA7]/20"
+          >
+            Load more activity
+          </button>
+        )}
       </div>
 
       {/* Modal */}

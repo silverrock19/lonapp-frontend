@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../store/slices/authSlice.js';
 import Breadcrumbs from '../../components/ui/Breadcrumbs.jsx';
 import {
   User, Building2, ChevronDown, ChevronUp, CheckCircle2,
@@ -232,6 +234,19 @@ const SuccessState = ({ customerId, onCreateOrder, onViewProfile, onRegisterAnot
 
 const WalkInRegistrationPage = () => {
   const navigate = useNavigate();
+  const user = useSelector(selectUser);
+  const allowedRoles = ['owner', 'ops_manager', 'receptionist', 'cashier', 'front_desk'];
+  if (user && !allowedRoles.includes(user.role)) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-50 mb-4">
+          <AlertTriangle className="h-8 w-8 text-red-500" />
+        </div>
+        <h2 className="text-lg font-semibold text-neutral-800 mb-1">Access restricted</h2>
+        <p className="text-sm text-neutral-500 max-w-xs">You don't have permission to register walk-in customers. Contact your manager.</p>
+      </div>
+    );
+  }
 
   // Customer type
   const [customerType, setCustomerType] = useState('individual');
