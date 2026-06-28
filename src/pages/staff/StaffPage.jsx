@@ -5,7 +5,7 @@ import {
   AlertTriangle, CheckCircle2, Info, Send,
 } from 'lucide-react';
 import Button from '../../components/ui/Button.jsx';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 import Alert from '../../components/ui/Alert.jsx';
 import SectionCard from '../../components/ui/SectionCard.jsx';
 import {

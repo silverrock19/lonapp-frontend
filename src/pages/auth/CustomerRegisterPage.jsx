@@ -3,10 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { isValidEmail } from '../../utils/validate.js';
 import useForm from '../../hooks/useForm.js';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
-import PasswordInput from '../../components/ui/PasswordInput.jsx';
-import OtpInput from '../../components/ui/OtpInput.jsx';
+import PasswordInput from '../../components/forms/PasswordInput.jsx';
+import OtpInput from '../../components/forms/OtpInput.jsx';
 import Brandmark from '../../components/ui/Brandmark.jsx';
 import GoogleIcon from '../../components/icons/GoogleIcon.jsx';
 

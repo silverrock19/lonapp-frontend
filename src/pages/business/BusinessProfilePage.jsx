@@ -4,7 +4,7 @@ import {
   AlertTriangle, CheckCircle2, Lock, X, ChevronDown,
   Upload, CalendarDays, FileText,
 } from 'lucide-react';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
 import Alert from '../../components/ui/Alert.jsx';
 import SectionCard from '../../components/ui/SectionCard.jsx';

@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react';
-import Input from '../../../components/ui/Input.jsx';
+import Input from '../../../components/forms/Input.jsx';
 import Button from '../../../components/ui/Button.jsx';
 import { Paperclip } from 'lucide-react';
 

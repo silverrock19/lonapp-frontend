@@ -5,11 +5,11 @@ import {
   Smartphone, Globe, LogOut, Trash2, Search, ChevronDown,
   Download, ShieldAlert, PauseCircle, XCircle,
 } from 'lucide-react';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
 import Alert from '../../components/ui/Alert.jsx';
 import SectionCard from '../../components/ui/SectionCard.jsx';
-import PasswordInput from '../../components/ui/PasswordInput.jsx';
+import PasswordInput from '../../components/forms/PasswordInput.jsx';
 import { adminProfile } from '../../data/mock.js';
 import { mockSessions, mockAuditLogs, AUDIT_CATEGORIES, AUDIT_CATEGORY_META } from '../../data/mockStaff.js';
 
