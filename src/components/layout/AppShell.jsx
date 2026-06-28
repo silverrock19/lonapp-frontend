@@ -3,8 +3,10 @@ import {
   LayoutDashboard, ClipboardList, Store, Users, Tag, Wallet,
   Building2, Settings, Bell, Search, LogOut,
 } from 'lucide-react';
+import { useSelector } from 'react-redux';
 import { cn } from '../../utils/classNames.js';
-import { useAuth } from '../../context/AuthContext.jsx';
+import { selectUser } from '../../store/slices/authSlice.js';
+import { logout } from '../../store/actions/auth.js';
 
 const navGroups = [
   {
@@ -38,7 +40,7 @@ function initials(name) {
 }
 
 const AppShell = () => {
-  const { user, logout } = useAuth();
+  const user = useSelector(selectUser);
   const navigate = useNavigate();
 
   function handleLogout() {

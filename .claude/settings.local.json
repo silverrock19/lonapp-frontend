@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"C:\\\\Users\\\\DELL PRECISION 5530\\\\OneDrive\\\\Desktop\\\\js_files\\\\mangotv\\\\mangotv-main\\\\src\" -type d -name \"*icon*\" -o -type d -name \"*svg*\" -o -type d -name \"*assets*\" | head -20)",
+      "Read(//c/Users/DELL PRECISION 5530/OneDrive/Desktop/js_files/mangotv/mangotv-main/src/**)"
+    ]
+  }
+}
