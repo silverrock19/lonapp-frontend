@@ -4,6 +4,7 @@ import { ArrowLeft, Mail } from 'lucide-react';
 import { Input } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { Brandmark } from '../../components/ui/Brandmark.jsx';
+import { AuthCard } from '../../components/ui/AuthCard.jsx';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -28,6 +29,7 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
+      <AuthCard>
       <div className="text-center space-y-5">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary-50">
           <Mail className="h-7 w-7 text-primary-500" />
@@ -50,10 +52,12 @@ export default function ForgotPasswordPage() {
           <ArrowLeft className="h-3.5 w-3.5" /> Back to sign in
         </Link>
       </div>
+      </AuthCard>
     );
   }
 
   return (
+    <AuthCard>
     <div className="text-center">
       <Brandmark />
       <h1 className="text-h2 font-bold text-neutral-900">Forgot your password?</h1>
@@ -85,5 +89,6 @@ export default function ForgotPasswordPage() {
         <ArrowLeft className="h-3.5 w-3.5" /> Back to sign in
       </Link>
     </div>
+    </AuthCard>
   );
 }

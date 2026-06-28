@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui/Button.jsx';
 import { Brandmark } from '../../components/ui/Brandmark.jsx';
+import { AuthCard } from '../../components/ui/AuthCard.jsx';
 
 function GoogleIcon() {
   return (
@@ -22,6 +23,7 @@ export default function RetailOnboardingPage() {
   }
 
   return (
+    <AuthCard>
     <div className="text-center">
       <Brandmark />
       <h1 className="text-h2 font-bold text-neutral-900 tracking-tight">Create your LonApp account</h1>
@@ -75,5 +77,6 @@ export default function RetailOnboardingPage() {
         </Link>
       </p>
     </div>
+    </AuthCard>
   );
 }

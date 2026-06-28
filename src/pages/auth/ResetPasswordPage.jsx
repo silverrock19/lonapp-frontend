@@ -4,6 +4,7 @@ import { Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 import { Input } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { Brandmark } from '../../components/ui/Brandmark.jsx';
+import { AuthCard } from '../../components/ui/AuthCard.jsx';
 
 function passwordStrength(pw) {
   if (!pw) return { score: 0, label: '', color: '' };
@@ -63,6 +64,7 @@ export default function ResetPasswordPage() {
 
   if (done) {
     return (
+      <AuthCard>
       <div className="text-center space-y-5">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success-bg">
           <CheckCircle2 className="h-7 w-7 text-success" />
@@ -75,10 +77,12 @@ export default function ResetPasswordPage() {
           Sign in
         </Button>
       </div>
+      </AuthCard>
     );
   }
 
   return (
+    <AuthCard>
     <div className="text-center">
       <Brandmark />
       <h1 className="text-h2 font-bold text-neutral-900">Set a new password</h1>
@@ -155,5 +159,6 @@ export default function ResetPasswordPage() {
         <Link to="/login" className="font-bold text-primary-600 hover:underline">Sign in</Link>
       </p>
     </div>
+    </AuthCard>
   );
 }

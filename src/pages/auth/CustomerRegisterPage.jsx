@@ -5,6 +5,7 @@ import { Input } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { OtpInput } from '../../components/ui/OtpInput.jsx';
 import { Brandmark } from '../../components/ui/Brandmark.jsx';
+import { AuthCard } from '../../components/ui/AuthCard.jsx';
 
 function GoogleIcon() {
   return (
@@ -80,9 +81,10 @@ export default function CustomerRegisterPage() {
     const t = setInterval(() => setResendCooldown(c => { if (c <= 1) { clearInterval(t); return 0; } return c - 1; }), 1000);
   }
 
-  // Step 1 — OTP verification (centered column, no card)
+  // Step 1 — OTP verification
   if (step === 1) {
     return (
+      <AuthCard>
       <div className="text-center">
         <Brandmark />
         <h1 className="text-h2 font-bold text-neutral-900">Verify your email</h1>
@@ -131,6 +133,7 @@ export default function CustomerRegisterPage() {
           <ArrowLeft className="h-3.5 w-3.5" /> Back
         </button>
       </div>
+      </AuthCard>
     );
   }
 

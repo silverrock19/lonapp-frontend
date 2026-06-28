@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Input } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { Brandmark } from '../../components/ui/Brandmark.jsx';
+import { AuthCard } from '../../components/ui/AuthCard.jsx';
 
 function GoogleIcon() {
   return (
@@ -59,6 +60,7 @@ export default function CustomerLoginPage() {
   }
 
   return (
+    <AuthCard>
     <div className="text-center">
       <Brandmark />
       <h1 className="text-h2 font-bold text-neutral-900 tracking-tight">Welcome back</h1>
@@ -180,5 +182,6 @@ export default function CustomerLoginPage() {
         </Link>
       </p>
     </div>
+    </AuthCard>
   );
 }
