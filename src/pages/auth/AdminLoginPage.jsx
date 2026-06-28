@@ -1,16 +1,15 @@
 ﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import Input from '../../components/ui/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
+import PasswordInput from '../../components/ui/PasswordInput.jsx';
 import Brandmark from '../../components/ui/Brandmark.jsx';
 
 const AdminLoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form, setForm] = useState({ identifier: '', password: '', remember: false });
-  const [showPass, setShowPass] = useState(false);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -70,26 +69,15 @@ const AdminLoginPage = () => {
           autoComplete="username"
         />
 
-        <div className="relative">
-          <Input
-            label="Password"
-            type={showPass ? 'text' : 'password'}
-            required
-            placeholder="••••••••"
-            value={form.password}
-            onChange={set('password')}
-            error={errors.password}
-            autoComplete="current-password"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPass(v => !v)}
-            aria-label={showPass ? 'Hide password' : 'Show password'}
-            className="absolute right-3 top-9 text-neutral-400 hover:text-neutral-600 transition-colors"
-          >
-            {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </button>
-        </div>
+        <PasswordInput
+          label="Password"
+          required
+          placeholder="••••••••"
+          value={form.password}
+          onChange={set('password')}
+          error={errors.password}
+          autoComplete="current-password"
+        />
 
         <div className="flex items-center justify-between">
           <label className="flex items-center gap-2 cursor-pointer select-none text-small text-neutral-700">

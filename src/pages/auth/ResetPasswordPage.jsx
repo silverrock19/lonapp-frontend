@@ -1,8 +1,8 @@
 ﻿import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Eye, EyeOff, CheckCircle2 } from 'lucide-react';
-import Input from '../../components/ui/Input.jsx';
+import { CheckCircle2 } from 'lucide-react';
 import Button from '../../components/ui/Button.jsx';
+import PasswordInput from '../../components/ui/PasswordInput.jsx';
 import Brandmark from '../../components/ui/Brandmark.jsx';
 
 function passwordStrength(pw) {
@@ -23,7 +23,6 @@ const ResetPasswordPage = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const [form, setForm] = useState({ password: '', confirm: '' });
-  const [show, setShow] = useState({ password: false, confirm: false });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -86,26 +85,15 @@ const ResetPasswordPage = () => {
 
       <form onSubmit={handleSubmit} noValidate className="text-left space-y-5">
         <div className="space-y-1">
-          <div className="relative">
-            <Input
-              label="New password"
-              type={show.password ? 'text' : 'password'}
-              required
-              placeholder="••••••••"
-              value={form.password}
-              onChange={set('password')}
-              error={errors.password}
-              autoComplete="new-password"
-            />
-            <button
-              type="button"
-              onClick={() => setShow(s => ({ ...s, password: !s.password }))}
-              aria-label={show.password ? 'Hide password' : 'Show password'}
-              className="absolute right-3 top-9 text-neutral-400 hover:text-neutral-600 transition-colors"
-            >
-              {show.password ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-            </button>
-          </div>
+          <PasswordInput
+            label="New password"
+            required
+            placeholder="••••••••"
+            value={form.password}
+            onChange={set('password')}
+            error={errors.password}
+            autoComplete="new-password"
+          />
 
           {form.password && (
             <div className="space-y-1 pt-1">
@@ -124,26 +112,15 @@ const ResetPasswordPage = () => {
           )}
         </div>
 
-        <div className="relative">
-          <Input
-            label="Confirm password"
-            type={show.confirm ? 'text' : 'password'}
-            required
-            placeholder="••••••••"
-            value={form.confirm}
-            onChange={set('confirm')}
-            error={errors.confirm}
-            autoComplete="new-password"
-          />
-          <button
-            type="button"
-            onClick={() => setShow(s => ({ ...s, confirm: !s.confirm }))}
-            aria-label={show.confirm ? 'Hide password' : 'Show password'}
-            className="absolute right-3 top-9 text-neutral-400 hover:text-neutral-600 transition-colors"
-          >
-            {show.confirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </button>
-        </div>
+        <PasswordInput
+          label="Confirm password"
+          required
+          placeholder="••••••••"
+          value={form.confirm}
+          onChange={set('confirm')}
+          error={errors.confirm}
+          autoComplete="new-password"
+        />
 
         <Button type="submit" pill className="w-full justify-center" size="lg" loading={loading}>
           Reset password

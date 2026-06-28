@@ -1,8 +1,9 @@
 ﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Input from '../../components/ui/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
+import PasswordInput from '../../components/ui/PasswordInput.jsx';
 import OtpInput from '../../components/ui/OtpInput.jsx';
 import Brandmark from '../../components/ui/Brandmark.jsx';
 import GoogleIcon from '../../components/icons/GoogleIcon.jsx';
@@ -11,7 +12,6 @@ const CustomerRegisterPage = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({ firstName: '', email: '', password: '' });
-  const [showPass, setShowPass] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
@@ -171,10 +171,9 @@ const CustomerRegisterPage = () => {
           autoComplete="email"
         />
 
-        <div className="relative">
-          <Input
+        <div>
+          <PasswordInput
             label="Password"
-            type={showPass ? 'text' : 'password'}
             required
             placeholder="Min 8 characters"
             value={form.password}
@@ -182,14 +181,6 @@ const CustomerRegisterPage = () => {
             error={errors.password}
             autoComplete="new-password"
           />
-          <button
-            type="button"
-            onClick={() => setShowPass(v => !v)}
-            aria-label={showPass ? 'Hide password' : 'Show password'}
-            className="absolute right-3 top-9 text-neutral-400 hover:text-neutral-600 transition-colors"
-          >
-            {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </button>
           <p className="mt-1 text-caption text-neutral-400">Min 8 chars · 1 uppercase · 1 number · 1 special</p>
         </div>
 
