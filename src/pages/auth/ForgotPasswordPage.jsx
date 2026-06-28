@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Mail } from 'lucide-react';
+import { isValidEmail } from '../../utils/validate.js';
 import Input from '../../components/ui/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
 import Brandmark from '../../components/ui/Brandmark.jsx';
@@ -14,7 +15,7 @@ const ForgotPasswordPage = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!email) { setError('Email is required'); return; }
-    if (!/\S+@\S+\.\S+/.test(email)) { setError('Enter a valid email address'); return; }
+    if (!isValidEmail(email)) { setError('Enter a valid email address'); return; }
     setLoading(true);
     try {
       // TODO: dispatch(requestPasswordReset(email))

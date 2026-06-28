@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { isValidEmail } from '../../utils/validate.js';
 import Input from '../../components/ui/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
 import PasswordInput from '../../components/ui/PasswordInput.jsx';
@@ -29,7 +30,7 @@ const CustomerRegisterPage = () => {
     const e = {};
     if (!form.firstName.trim()) e.firstName = 'First name is required';
     if (!form.email) e.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email address';
+    else if (!isValidEmail(form.email)) e.email = 'Enter a valid email address';
     if (!form.password) e.password = 'Password is required';
     else if (form.password.length < 8) e.password = 'Must be at least 8 characters';
     return e;
