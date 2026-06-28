@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { Button } from '../../../components/ui/Button.jsx';
+﻿import { useState, useRef, useEffect } from 'react';
+import Button from '../../../components/ui/Button.jsx';
 import { Eye, EyeOff, Check } from 'lucide-react';
 
 const TITLES = ['Mr', 'Mrs', 'Ms', 'Dr', 'Prof'];
@@ -368,7 +368,7 @@ function PasswordForm({ email, onNext, onBack, onSaveDraft }) {
 }
 
 // ── Orchestrator ─────────────────────────────────────────────
-export default function Step5Admin({ data, onNext, onBack, onSaveDraft }) {
+const Step5Admin = ({ data, onNext, onBack, onSaveDraft }) => {
   const [sub, setSub] = useState(data.sub || 0);
   const [profileData, setProfileData]   = useState(data.profile   || { title: '', firstName: '', lastName: '', phone: data.companyPhone || '', whatsapp: '', role: '', idType: '', idDoc: '' });
   const [passwordData, setPasswordData] = useState(data.password  || {});
@@ -384,3 +384,7 @@ export default function Step5Admin({ data, onNext, onBack, onSaveDraft }) {
   return          <PasswordForm email={data.companyEmail || ''} onNext={onPasswordNext}
     onBack={() => setSub(1)} onSaveDraft={d => onSaveDraft({ profile: profileData, password: d })} />;
 }
+
+export default Step5Admin;
+
+

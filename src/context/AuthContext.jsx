@@ -5,7 +5,7 @@ import { logout } from '../store/actions/auth.js';
 
 const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
+const AuthProvider = ({ children }) => {
   const user = useSelector(selectUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const role = useSelector(selectUserRole);
@@ -18,10 +18,12 @@ export function AuthProvider({ children }) {
   }), [user, isAuthenticated, role]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
+};
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used within AuthProvider');
   return ctx;
 };
+
+export default AuthProvider;

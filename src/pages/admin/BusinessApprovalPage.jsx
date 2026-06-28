@@ -1,8 +1,9 @@
-import { useState, useMemo } from 'react';
+﻿import { useState, useMemo } from 'react';
 import { Search, X, CheckCircle2, XCircle, FileText } from 'lucide-react';
 import { cn } from '../../utils/classNames.js';
-import { Button } from '../../components/ui/Button.jsx';
-import { Alert } from '../../components/ui/Alert.jsx';
+import Button from '../../components/ui/Button.jsx';
+import Alert from '../../components/ui/Alert.jsx';
+import CheckIcon from '../../components/icons/CheckIcon.jsx';
 import { mockBusinesses, REJECTION_REASONS, STATUS_META } from '../../data/mockAdminData.js';
 
 const BIZ_PALETTE = [
@@ -343,11 +344,7 @@ function Checkbox({ checked, onChange }) {
   return (
     <button onClick={onChange} className="flex items-center justify-center text-neutral-400 hover:text-neutral-700">
       <div className={cn('flex h-4 w-4 items-center justify-center border', checked ? 'border-primary-500 bg-primary-500' : 'border-neutral-300 bg-white')} style={{ borderRadius: 2 }}>
-        {checked && (
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
+        {checked && <CheckIcon />}
       </div>
     </button>
   );
@@ -357,7 +354,7 @@ function Checkbox({ checked, onChange }) {
 
 const ACTIONABLE = new Set(['pending', 'resubmission', 'awaiting_clarification']);
 
-export default function BusinessApprovalPage() {
+const BusinessApprovalPage = () => {
   const [businesses, setBusinesses]     = useState(mockBusinesses);
   const [filterStatus, setFilterStatus] = useState('all');
   const [search, setSearch]             = useState('');
@@ -803,3 +800,7 @@ export default function BusinessApprovalPage() {
     </div>
   );
 }
+
+export default BusinessApprovalPage;
+
+

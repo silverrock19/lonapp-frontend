@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Home, Building2, MapPin, Plus, Pencil, Trash2, X, Check, ChevronLeft } from 'lucide-react';
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
@@ -225,7 +225,7 @@ function DeleteModal({ address, onConfirm, onCancel }) {
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
-export default function AddressesPage() {
+const AddressesPage = () => {
   const [addresses, setAddresses] = useState(initAddresses);
   const [sheet, setSheet]         = useState(null);   // null | { mode: 'add' | 'edit', address?: obj }
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -321,3 +321,6 @@ export default function AddressesPage() {
     </div>
   );
 }
+
+export default AddressesPage;
+

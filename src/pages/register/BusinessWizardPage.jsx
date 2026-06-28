@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Stepper } from '../../components/ui/Stepper.jsx';
-import { Brandmark } from '../../components/ui/Brandmark.jsx';
+﻿import { useState } from 'react';
+import Stepper from '../../components/ui/Stepper.jsx';
+import Brandmark from '../../components/ui/Brandmark.jsx';
 import Step1Company from './steps/Step1Company.jsx';
 import Step2Outlets from './steps/Step2Outlets.jsx';
 import Step3Services from './steps/Step3Services.jsx';
@@ -25,7 +25,7 @@ const defaultStep3 = {
 const defaultStep4 = { methods: [], cashEnabled: false };
 const defaultStep5 = {};
 
-export default function BusinessWizardPage() {
+const BusinessWizardPage = () => {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState({
     company:  { ...defaultStep1 },
@@ -136,3 +136,7 @@ export default function BusinessWizardPage() {
     </div>
   );
 }
+
+export default BusinessWizardPage;
+
+

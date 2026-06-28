@@ -1,12 +1,12 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import {
   Plus, MapPin, Phone, Building2, Pencil, Trash2, CreditCard,
   AlertTriangle, CheckCircle2, Lock, X, ChevronDown,
   Upload, CalendarDays, FileText,
 } from 'lucide-react';
-import { Input } from '../../components/ui/Input.jsx';
-import { Button } from '../../components/ui/Button.jsx';
-import { Alert } from '../../components/ui/Alert.jsx';
+import Input from '../../components/ui/Input.jsx';
+import Button from '../../components/ui/Button.jsx';
+import Alert from '../../components/ui/Alert.jsx';
 import { businessProfile } from '../../data/mock.js';
 
 const TABS = ['Company', 'Outlets', 'Services', 'Payments', 'Documents', 'Holiday Hours'];
@@ -840,7 +840,7 @@ function HolidayHoursTab() {
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
-export default function BusinessProfilePage() {
+const BusinessProfilePage = () => {
   const [activeTab, setActiveTab] = useState('Company');
 
   return (
@@ -878,3 +878,7 @@ export default function BusinessProfilePage() {
     </div>
   );
 }
+
+export default BusinessProfilePage;
+
+

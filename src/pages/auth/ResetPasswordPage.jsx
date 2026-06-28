@@ -1,9 +1,9 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, CheckCircle2 } from 'lucide-react';
-import { Input } from '../../components/ui/Input.jsx';
-import { Button } from '../../components/ui/Button.jsx';
-import { Brandmark } from '../../components/ui/Brandmark.jsx';
+import Input from '../../components/ui/Input.jsx';
+import Button from '../../components/ui/Button.jsx';
+import Brandmark from '../../components/ui/Brandmark.jsx';
 
 function passwordStrength(pw) {
   if (!pw) return { score: 0, label: '', color: '' };
@@ -19,7 +19,7 @@ function passwordStrength(pw) {
   return { score, label: 'Strong', color: 'bg-success' };
 }
 
-export default function ResetPasswordPage() {
+const ResetPasswordPage = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const [form, setForm] = useState({ password: '', confirm: '' });
@@ -157,3 +157,7 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+
+export default ResetPasswordPage;
+
+

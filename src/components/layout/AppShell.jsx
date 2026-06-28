@@ -37,7 +37,7 @@ function initials(name) {
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
-export default function AppShell() {
+const AppShell = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -155,4 +155,6 @@ export default function AppShell() {
       </div>
     </div>
   );
-}
+};
+
+export default AppShell;

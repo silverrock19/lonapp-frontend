@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import ChevronRightIcon from '../icons/ChevronRightIcon.jsx';
+import ChevronDownIcon from '../icons/ChevronDownIcon.jsx';
+import LogoutIcon from '../icons/LogoutIcon.jsx';
 
 const ROLES = [
   {
@@ -41,7 +44,7 @@ function setAuth(r) {
   window.location.href = r.to;
 }
 
-export default function DevRoleSwitcher() {
+const DevRoleSwitcher = () => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -101,9 +104,7 @@ export default function DevRoleSwitcher() {
                 </div>
 
                 {/* Arrow */}
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink: 0, color: '#D1D5DB' }}>
-                  <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <ChevronRightIcon color="#D1D5DB" style={{ flexShrink: 0 }} />
               </button>
             ))}
           </div>
@@ -121,9 +122,7 @@ export default function DevRoleSwitcher() {
               onMouseEnter={e => e.currentTarget.style.background = '#FEF2F2'}
               onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
             >
-              <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                <path d="M5 2H2.5A1 1 0 001.5 3v7a1 1 0 001 1H5M9 9.5l3-3-3-3M12 6.5H5" stroke="#EF4444" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <LogoutIcon />
               <span style={{ fontSize: 12, fontWeight: 500, color: '#EF4444' }}>Clear session → Login</span>
             </button>
           </div>
@@ -145,13 +144,13 @@ export default function DevRoleSwitcher() {
       >
         <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22C55E', flexShrink: 0 }} />
         <span style={{ fontSize: 11, fontWeight: 700, color: '#fff', letterSpacing: '0.06em' }}>DEV</span>
-        <svg
-          width="10" height="10" viewBox="0 0 10 10" fill="none"
-          style={{ color: '#6B7280', transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
-        >
-          <path d="M2 3.5l3 3 3-3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <ChevronDownIcon
+          color="#6B7280"
+          style={{ transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
+        />
       </button>
     </div>
   );
-}
+};
+
+export default DevRoleSwitcher;

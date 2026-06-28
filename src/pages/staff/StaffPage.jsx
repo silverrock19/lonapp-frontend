@@ -1,12 +1,12 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import {
   Users, ShieldCheck, Plus, Search, X, ChevronDown,
   MoreHorizontal, Mail, Phone, MapPin, Calendar, Briefcase,
   AlertTriangle, CheckCircle2, Info, Send,
 } from 'lucide-react';
-import { Button } from '../../components/ui/Button.jsx';
-import { Input } from '../../components/ui/Input.jsx';
-import { Alert } from '../../components/ui/Alert.jsx';
+import Button from '../../components/ui/Button.jsx';
+import Input from '../../components/ui/Input.jsx';
+import Alert from '../../components/ui/Alert.jsx';
 import {
   ROLES, STAFF_STATUS, RBAC_FEATURES, PERMISSION_CODES, mockStaff,
 } from '../../data/mockStaff.js';
@@ -719,7 +719,7 @@ const TABS = [
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
-export default function StaffPage() {
+const StaffPage = () => {
   const [activeTab, setActiveTab] = useState('staff');
 
   return (
@@ -756,3 +756,7 @@ export default function StaffPage() {
     </div>
   );
 }
+
+export default StaffPage;
+
+

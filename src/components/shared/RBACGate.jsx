@@ -2,7 +2,7 @@ import { useRBAC } from '../../hooks/useRBAC.js';
 
 // Renders children if the current user has the required permission.
 // If not, renders a disabled clone with a tooltip explaining why — never hides the control.
-export function RBACGate({ permission, disabledMessage = 'You do not have permission to perform this action', children }) {
+const RBACGate = ({ permission, disabledMessage = 'You do not have permission to perform this action', children }) => {
   const { can } = useRBAC();
 
   if (can(permission)) return children;
@@ -14,4 +14,6 @@ export function RBACGate({ permission, disabledMessage = 'You do not have permis
       </span>
     </span>
   );
-}
+};
+
+export default RBACGate;

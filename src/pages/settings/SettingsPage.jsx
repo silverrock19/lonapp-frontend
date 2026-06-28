@@ -1,13 +1,13 @@
-import { useState, useMemo } from 'react';
+﻿import { useState, useMemo } from 'react';
 import {
   User, Building2, Bell, Lock, Monitor, ClipboardList,
   Eye, EyeOff, Upload, AlertTriangle, Info, Check, X,
   Smartphone, Globe, LogOut, Trash2, Search, ChevronDown,
   Download, ShieldAlert, PauseCircle, XCircle,
 } from 'lucide-react';
-import { Input } from '../../components/ui/Input.jsx';
-import { Button } from '../../components/ui/Button.jsx';
-import { Alert } from '../../components/ui/Alert.jsx';
+import Input from '../../components/ui/Input.jsx';
+import Button from '../../components/ui/Button.jsx';
+import Alert from '../../components/ui/Alert.jsx';
 import { adminProfile } from '../../data/mock.js';
 import { mockSessions, mockAuditLogs, AUDIT_CATEGORIES, AUDIT_CATEGORY_META } from '../../data/mockStaff.js';
 
@@ -1006,7 +1006,7 @@ function AuditLogTab() {
 
 // ─── Main page ─────────────────────────────────────────────────────────────────
 
-export default function SettingsPage() {
+const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState('personal');
   const [profile, setProfile]     = useState(adminProfile);
 
@@ -1047,3 +1047,7 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+export default SettingsPage;
+
+

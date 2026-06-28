@@ -6,7 +6,7 @@
  *   fullLabels   – long labels used in the caption   e.g. ['Company information', 'Outlets & factories', …]
  *   currentStep  – 0-based index of the active step
  */
-export function Stepper({ steps, fullLabels, currentStep }) {
+const Stepper = ({ steps, fullLabels, currentStep }) => {
   const caption = (fullLabels ?? steps)[currentStep];
 
   return (
@@ -64,4 +64,6 @@ export function Stepper({ steps, fullLabels, currentStep }) {
 
     </div>
   );
-}
+};
+
+export default Stepper;

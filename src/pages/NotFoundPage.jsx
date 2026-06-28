@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
-import { Button } from '../components/ui/Button.jsx';
+﻿import { Link } from 'react-router-dom';
+import Button from '../components/ui/Button.jsx';
 
-export default function NotFoundPage() {
+const NotFoundPage = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 text-center">
       <p className="text-display font-bold text-neutral-200">404</p>
@@ -11,3 +11,7 @@ export default function NotFoundPage() {
     </div>
   );
 }
+
+export default NotFoundPage;
+
+

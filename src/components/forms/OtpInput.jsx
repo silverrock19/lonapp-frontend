@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { cn } from '../../utils/classNames.js';
 
-export function OtpInput({ length = 6, value = '', onChange, error }) {
+const OtpInput = ({ length = 6, value = '', onChange, error }) => {
   const inputs = useRef([]);
   const cells = value.split('').concat(Array(length).fill('')).slice(0, length);
 
@@ -48,4 +48,6 @@ export function OtpInput({ length = 6, value = '', onChange, error }) {
       {error && <p className="mt-1.5 text-caption text-error-text">{error}</p>}
     </div>
   );
-}
+};
+
+export default OtpInput;

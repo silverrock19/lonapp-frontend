@@ -1,4 +1,4 @@
-export function AuthCard({ children, className = '' }) {
+const AuthCard = ({ children, className = '' }) => {
   return (
     <div
       className={`bg-white rounded-[16px] px-10 py-12 ${className}`}
@@ -7,4 +7,6 @@ export function AuthCard({ children, className = '' }) {
       {children}
     </div>
   );
-}
+};
+
+export default AuthCard;

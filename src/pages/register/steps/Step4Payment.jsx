@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button } from '../../../components/ui/Button.jsx';
+﻿import { useState } from 'react';
+import Button from '../../../components/ui/Button.jsx';
 import { Plus, Trash2, CreditCard, Smartphone, Banknote } from 'lucide-react';
 
 const BANKS = ['GCB Bank', 'Ecobank Ghana', 'Fidelity Bank', 'Stanbic Bank', 'Absa Ghana', 'Standard Chartered', 'Agricultural Development Bank', 'Consolidated Bank Ghana'];
@@ -141,7 +141,7 @@ function MethodCard({ method, index, errors, onChange, onRemove }) {
   );
 }
 
-export default function Step4Payment({ data, onNext, onBack, onSaveDraft }) {
+const Step4Payment = ({ data, onNext, onBack, onSaveDraft }) => {
   const [methods, setMethods]       = useState(data.methods   || []);
   const [cashEnabled, setCash]      = useState(data.cashEnabled || false);
   const [methodErrors, setMethodErrors] = useState([]);
@@ -228,3 +228,7 @@ export default function Step4Payment({ data, onNext, onBack, onSaveDraft }) {
     </div>
   );
 }
+
+export default Step4Payment;
+
+

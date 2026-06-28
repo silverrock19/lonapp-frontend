@@ -19,7 +19,7 @@ const sizes = {
   lg:      'h-11 px-6 text-body-lg',
 };
 
-export function Button({ variant = 'primary', size = 'default', loading = false, pill = false, children, className, ...props }) {
+const Button = ({ variant = 'primary', size = 'default', loading = false, pill = false, children, className, ...props }) => {
   return (
     <button
       className={cn(base, variants[variant], sizes[size], className)}
@@ -31,4 +31,6 @@ export function Button({ variant = 'primary', size = 'default', loading = false,
       {children}
     </button>
   );
-}
+};
+
+export default Button;

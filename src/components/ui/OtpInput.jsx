@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { cn } from '../../utils/classNames.js';
 
-export function OtpInput({ length = 6, value = '', onChange, error, disabled }) {
+const OtpInput = ({ length = 6, value = '', onChange, error, disabled }) => {
   const refs = useRef([]);
 
   function handleChange(i, e) {
@@ -65,4 +65,6 @@ export function OtpInput({ length = 6, value = '', onChange, error, disabled }) 
       {error && <p className="mt-2 text-center text-caption text-error-text">{error}</p>}
     </div>
   );
-}
+};
+
+export default OtpInput;

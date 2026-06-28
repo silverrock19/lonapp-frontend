@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Input } from '../../../components/ui/Input.jsx';
-import { Button } from '../../../components/ui/Button.jsx';
+﻿import { useState } from 'react';
+import Input from '../../../components/ui/Input.jsx';
+import Button from '../../../components/ui/Button.jsx';
 import { Paperclip } from 'lucide-react';
 
 const COUNTRIES = ['Ghana', 'Nigeria', 'Kenya', 'South Africa', 'Rwanda', 'Uganda'];
@@ -28,7 +28,7 @@ function validate(f) {
   return e;
 }
 
-export default function Step1Company({ data, onNext, onSaveDraft }) {
+const Step1Company = ({ data, onNext, onSaveDraft }) => {
   const [f, setF] = useState({ ...data });
   const [errors, setErrors] = useState({});
 
@@ -248,3 +248,7 @@ export default function Step1Company({ data, onNext, onSaveDraft }) {
     </div>
   );
 }
+
+export default Step1Company;
+
+

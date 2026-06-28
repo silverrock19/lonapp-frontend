@@ -40,7 +40,7 @@ function removeBgIfNeeded(img) {
   return clean.toDataURL('image/png');
 }
 
-export function Brandmark({ className = '' }) {
+const Brandmark = ({ className = '' }) => {
   const [src, setSrc] = useState(null);
 
   useEffect(() => {
@@ -59,4 +59,6 @@ export function Brandmark({ className = '' }) {
       <img src={src} alt="LonApp" className="h-[100px] w-auto object-contain" />
     </div>
   );
-}
+};
+
+export default Brandmark;

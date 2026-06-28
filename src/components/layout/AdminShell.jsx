@@ -40,7 +40,7 @@ function initials(name) {
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
-export default function AdminShell() {
+const AdminShell = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -156,4 +156,6 @@ export default function AdminShell() {
       </div>
     </div>
   );
-}
+};
+
+export default AdminShell;

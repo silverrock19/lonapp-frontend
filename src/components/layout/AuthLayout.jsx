@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
-export default function AuthLayout() {
+const AuthLayout = () => {
   return (
     <div className="relative min-h-screen flex items-center justify-center px-5 py-14 overflow-hidden bg-white">
 
@@ -70,4 +70,6 @@ export default function AuthLayout() {
       </div>
     </div>
   );
-}
+};
+
+export default AuthLayout;

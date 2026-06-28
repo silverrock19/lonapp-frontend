@@ -1,7 +1,7 @@
 import { Check } from 'lucide-react';
 import { cn } from '../../utils/classNames.js';
 
-export function Stepper({ steps, currentStep }) {
+const Stepper = ({ steps, currentStep }) => {
   return (
     <nav aria-label="Progress" className="flex items-center gap-0">
       {steps.map((step, i) => {
@@ -33,4 +33,6 @@ export function Stepper({ steps, currentStep }) {
       })}
     </nav>
   );
-}
+};
+
+export default Stepper;

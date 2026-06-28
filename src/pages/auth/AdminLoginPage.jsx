@@ -1,12 +1,12 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { Input } from '../../components/ui/Input.jsx';
-import { Button } from '../../components/ui/Button.jsx';
-import { Brandmark } from '../../components/ui/Brandmark.jsx';
+import Input from '../../components/ui/Input.jsx';
+import Button from '../../components/ui/Button.jsx';
+import Brandmark from '../../components/ui/Brandmark.jsx';
 
-export default function AdminLoginPage() {
+const AdminLoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form, setForm] = useState({ identifier: '', password: '', remember: false });
@@ -120,3 +120,7 @@ export default function AdminLoginPage() {
     </div>
   );
 }
+
+export default AdminLoginPage;
+
+

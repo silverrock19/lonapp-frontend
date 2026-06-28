@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button } from '../../components/ui/Button.jsx';
+﻿import { useState } from 'react';
+import Button from '../../components/ui/Button.jsx';
 import { CheckCircle2, Building2, Store, Factory, CreditCard, Smartphone, Banknote, User } from 'lucide-react';
 
 function Row({ label, value }) {
@@ -24,7 +24,7 @@ function Section({ title, icon: Icon, children, color = 'text-primary-500' }) {
   );
 }
 
-export default function StepReview({ data, onBack, onEdit }) {
+const StepReview = ({ data, onBack, onEdit }) => {
   const [submitted, setSubmitted] = useState(false);
   const { company, outlets: outletData, services, payment, admin } = data;
 
@@ -173,3 +173,7 @@ export default function StepReview({ data, onBack, onEdit }) {
     </div>
   );
 }
+
+export default StepReview;
+
+
