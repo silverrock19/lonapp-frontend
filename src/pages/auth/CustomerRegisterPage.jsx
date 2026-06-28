@@ -211,7 +211,7 @@ export default function CustomerRegisterPage() {
 
           <button
             type="button"
-            className="flex w-full items-center justify-center gap-2 rounded-full border border-neutral-200 bg-white px-4 py-2.5 text-small font-semibold text-neutral-700 hover:bg-neutral-50 transition-colors h-12"
+            className="flex w-full items-center justify-center gap-2 rounded-[12px] border border-neutral-200 bg-white px-4 py-2.5 text-small font-semibold text-neutral-700 hover:bg-neutral-50 transition-colors h-12"
             onClick={() => {/* TODO: socialLogin('google') */}}
           >
             <GoogleIcon /> Sign up with Google

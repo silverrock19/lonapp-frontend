@@ -21,7 +21,7 @@ const sizes = {
 export function Button({ variant = 'primary', size = 'default', loading = false, pill = false, children, className, ...props }) {
   return (
     <button
-      className={cn(base, variants[variant], sizes[size], pill ? 'rounded-full' : 'rounded-md', className)}
+      className={cn(base, variants[variant], sizes[size], pill ? 'rounded-[12px]' : 'rounded-md', className)}
       disabled={props.disabled || loading}
       {...props}
     >
