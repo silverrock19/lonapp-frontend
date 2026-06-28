@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2 } from 'lucide-react';
 import Button from '../../components/ui/Button.jsx';
 import PasswordInput from '../../components/ui/PasswordInput.jsx';
+import useForm from '../../hooks/useForm.js';
 import Brandmark from '../../components/ui/Brandmark.jsx';
 
 function passwordStrength(pw) {
@@ -22,19 +23,11 @@ function passwordStrength(pw) {
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const [form, setForm] = useState({ password: '', confirm: '' });
-  const [errors, setErrors] = useState({});
+  const { form, errors, setErrors, set } = useForm({ password: '', confirm: '' });
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
   const strength = passwordStrength(form.password);
-
-  function set(field) {
-    return e => {
-      setForm(f => ({ ...f, [field]: e.target.value }));
-      setErrors(err => ({ ...err, [field]: '' }));
-    };
-  }
 
   function validate() {
     const e = {};

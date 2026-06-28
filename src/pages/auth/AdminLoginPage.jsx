@@ -4,24 +4,15 @@ import { useDispatch } from 'react-redux';
 import Input from '../../components/ui/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
 import PasswordInput from '../../components/ui/PasswordInput.jsx';
+import useForm from '../../hooks/useForm.js';
 import Brandmark from '../../components/ui/Brandmark.jsx';
 
 const AdminLoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ identifier: '', password: '', remember: false });
-  const [errors, setErrors] = useState({});
+  const { form, setForm, errors, setErrors, set } = useForm({ identifier: '', password: '', remember: false });
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  function set(field) {
-    return e => {
-      const val = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
-      setForm(f => ({ ...f, [field]: val }));
-      setErrors(err => ({ ...err, [field]: '' }));
-      setServerError('');
-    };
-  }
 
   function validate() {
     const e = {};
@@ -84,7 +75,7 @@ const AdminLoginPage = () => {
             <input
               type="checkbox"
               checked={form.remember}
-              onChange={set('remember')}
+              onChange={e => setForm(f => ({ ...f, remember: e.target.checked }))}
               className="h-4 w-4 rounded border-neutral-300 accent-primary-500"
             />
             Remember me

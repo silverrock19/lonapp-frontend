@@ -2,6 +2,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { isValidEmail } from '../../utils/validate.js';
+import useForm from '../../hooks/useForm.js';
 import Input from '../../components/ui/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
 import PasswordInput from '../../components/ui/PasswordInput.jsx';
@@ -12,19 +13,11 @@ import GoogleIcon from '../../components/icons/GoogleIcon.jsx';
 const CustomerRegisterPage = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState({ firstName: '', email: '', password: '' });
-  const [errors, setErrors] = useState({});
+  const { form, setForm, errors, setErrors, set } = useForm({ firstName: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
   const [otpError, setOtpError] = useState('');
   const [resendCooldown, setResendCooldown] = useState(0);
-
-  function set(field) {
-    return e => {
-      setForm(f => ({ ...f, [field]: e.target.value }));
-      setErrors(err => ({ ...err, [field]: '' }));
-    };
-  }
 
   function validateStep0() {
     const e = {};
