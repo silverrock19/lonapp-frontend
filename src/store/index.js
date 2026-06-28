@@ -1,6 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+const storage = {
+  getItem: (key) => Promise.resolve(window.localStorage.getItem(key)),
+  setItem: (key, value) => Promise.resolve(window.localStorage.setItem(key, value)),
+  removeItem: (key) => Promise.resolve(window.localStorage.removeItem(key)),
+};
 import { combineReducers } from '@reduxjs/toolkit';
 
 import authReducer from './slices/authSlice.js';

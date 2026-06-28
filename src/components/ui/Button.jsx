@@ -5,6 +5,7 @@ const base = 'inline-flex items-center justify-center gap-2 font-sans font-semib
 
 const variants = {
   primary:   'bg-primary-500 text-white hover:bg-primary-600 focus-visible:ring-2 focus-visible:ring-primary-100',
+  accent:    'bg-accent-500 text-white hover:bg-accent-600 focus-visible:ring-2 focus-visible:ring-accent-100',
   secondary: 'bg-primary-50 text-primary-700 hover:bg-primary-100',
   outline:   'border border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50',
   ghost:     'bg-transparent text-neutral-600 hover:bg-neutral-100',
