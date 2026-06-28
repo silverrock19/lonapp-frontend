@@ -1,0 +1,323 @@
+import { useState } from 'react';
+import { Home, Building2, MapPin, Plus, Pencil, Trash2, X, Check, ChevronLeft } from 'lucide-react';
+
+// ─── Mock data ────────────────────────────────────────────────────────────────
+
+const initAddresses = [
+  {
+    id: 1, label: 'Home', type: 'home',
+    street: '14 Cantonments Road', suburb: 'Cantonments', city: 'Accra',
+    gps: 'GA-045-3721', isDefault: true,
+  },
+  {
+    id: 2, label: 'Office', type: 'office',
+    street: 'Airport City Mall, 2nd Floor', suburb: 'Airport Residential', city: 'Accra',
+    gps: 'GA-184-7623', isDefault: false,
+  },
+  {
+    id: 3, label: "Mum's place", type: 'other',
+    street: '5 Adenta Highway', suburb: 'Adenta', city: 'Accra',
+    gps: '', isDefault: false,
+  },
+];
+
+const TYPE_META = {
+  home:   { label: 'Home',   Icon: Home,      bg: '#EAF2FC', color: '#0C5FC5' },
+  office: { label: 'Office', Icon: Building2,  bg: '#F3F0FF', color: '#7C3AED' },
+  other:  { label: 'Other',  Icon: MapPin,     bg: '#F3F4F6', color: '#374151' },
+};
+
+const emptyForm = { label: '', type: 'home', street: '', suburb: '', city: 'Accra', gps: '' };
+
+// ─── Input helpers ────────────────────────────────────────────────────────────
+
+const fieldCls = err =>
+  `w-full rounded-xl border px-4 py-3 text-[15px] text-neutral-900 outline-none focus:ring-2 transition-all ${
+    err ? 'border-red-400 focus:ring-red-100' : 'border-neutral-200 focus:border-blue-400 focus:ring-blue-100'
+  }`;
+
+// ─── Address card ─────────────────────────────────────────────────────────────
+
+function AddressCard({ address, onSetDefault, onEdit, onDelete }) {
+  const meta = TYPE_META[address.type] || TYPE_META.other;
+  const Icon = meta.Icon;
+
+  return (
+    <div className={`relative rounded-2xl border bg-white p-4 ${address.isDefault ? 'border-blue-300' : 'border-neutral-200'}`}>
+      {address.isDefault && (
+        <span className="absolute right-3 top-3 rounded-full px-2 py-0.5 text-[11px] font-semibold"
+          style={{ background: '#EAF2FC', color: '#0C5FC5' }}>
+          Default
+        </span>
+      )}
+      <div className="flex items-start gap-3">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl"
+          style={{ background: meta.bg }}>
+          <Icon className="h-5 w-5" style={{ color: meta.color }} />
+        </div>
+        <div className="flex-1 min-w-0 pr-14">
+          <p className="font-semibold text-[15px] text-neutral-900">{address.label}</p>
+          <p className="mt-0.5 text-[13px] text-neutral-500 leading-snug">
+            {address.street}{address.suburb ? `, ${address.suburb}` : ''}{', '}{address.city}
+          </p>
+          {address.gps && (
+            <p className="mt-1 flex items-center gap-1 text-[12px] text-neutral-400">
+              <MapPin className="h-3 w-3" />{address.gps}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-3 flex items-center gap-2">
+        {!address.isDefault && (
+          <button onClick={() => onSetDefault(address.id)}
+            className="flex-1 rounded-xl border border-neutral-200 py-2 text-[13px] font-medium text-neutral-600 active:bg-neutral-50">
+            Set as default
+          </button>
+        )}
+        <button onClick={() => onEdit(address)}
+          className="flex h-9 w-9 items-center justify-center rounded-xl border border-neutral-200 text-neutral-500 active:bg-neutral-50">
+          <Pencil className="h-4 w-4" />
+        </button>
+        <button onClick={() => onDelete(address.id)}
+          className="flex h-9 w-9 items-center justify-center rounded-xl border border-neutral-200 text-red-400 active:bg-red-50">
+          <Trash2 className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Address form sheet ───────────────────────────────────────────────────────
+
+function AddressSheet({ initial, onSave, onClose }) {
+  const [form, setForm] = useState(initial || emptyForm);
+  const [errors, setErrors] = useState({});
+
+  function set(k) { return v => { setForm(f => ({ ...f, [k]: v })); setErrors(e => ({ ...e, [k]: '' })); } }
+
+  function validate() {
+    const e = {};
+    if (!form.label.trim())  e.label  = 'Required';
+    if (!form.street.trim()) e.street = 'Required';
+    if (!form.city.trim())   e.city   = 'Required';
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col bg-white">
+      {/* Header */}
+      <div className="flex items-center gap-3 border-b border-neutral-100 px-4 py-3.5">
+        <button onClick={onClose} className="flex h-9 w-9 items-center justify-center rounded-xl bg-neutral-100">
+          <X className="h-5 w-5 text-neutral-600" />
+        </button>
+        <h2 className="flex-1 text-[17px] font-semibold text-neutral-900">
+          {initial?.id ? 'Edit address' : 'New address'}
+        </h2>
+        <button onClick={() => { if (validate()) onSave(form); }}
+          className="rounded-xl px-4 py-2 text-[14px] font-semibold text-white"
+          style={{ background: '#0C5FC5' }}>
+          Save
+        </button>
+      </div>
+
+      {/* Body */}
+      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-4">
+        {/* Label */}
+        <div>
+          <label className="mb-1.5 block text-[13px] font-semibold text-neutral-700">Label *</label>
+          <input className={fieldCls(errors.label)} placeholder="e.g. Home, Mum's place, Work"
+            value={form.label} onChange={e => set('label')(e.target.value)} />
+          {errors.label && <p className="mt-1 text-[12px] text-red-500">{errors.label}</p>}
+        </div>
+
+        {/* Type */}
+        <div>
+          <label className="mb-1.5 block text-[13px] font-semibold text-neutral-700">Type</label>
+          <div className="flex gap-2">
+            {Object.entries(TYPE_META).map(([key, meta]) => {
+              const TIcon = meta.Icon;
+              return (
+                <button key={key} type="button"
+                  onClick={() => set('type')(key)}
+                  className={`flex flex-1 flex-col items-center gap-1 rounded-xl border py-3 transition-all ${
+                    form.type === key ? 'ring-2' : 'border-neutral-200'
+                  }`}
+                  style={form.type === key ? { borderColor: meta.color, boxShadow: `0 0 0 2px ${meta.color}` } : {}}>
+                  <TIcon className="h-5 w-5" style={{ color: form.type === key ? meta.color : '#9CA3AF' }} />
+                  <span className="text-[12px] font-medium" style={{ color: form.type === key ? meta.color : '#6B7280' }}>
+                    {meta.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Street */}
+        <div>
+          <label className="mb-1.5 block text-[13px] font-semibold text-neutral-700">Street address *</label>
+          <input className={fieldCls(errors.street)} placeholder="e.g. 14 Liberation Road"
+            value={form.street} onChange={e => set('street')(e.target.value)} />
+          {errors.street && <p className="mt-1 text-[12px] text-red-500">{errors.street}</p>}
+        </div>
+
+        {/* Suburb + City */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="mb-1.5 block text-[13px] font-semibold text-neutral-700">Suburb / Area</label>
+            <input className={fieldCls(false)} placeholder="e.g. Osu"
+              value={form.suburb} onChange={e => set('suburb')(e.target.value)} />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-[13px] font-semibold text-neutral-700">City *</label>
+            <input className={fieldCls(errors.city)} placeholder="e.g. Accra"
+              value={form.city} onChange={e => set('city')(e.target.value)} />
+            {errors.city && <p className="mt-1 text-[12px] text-red-500">{errors.city}</p>}
+          </div>
+        </div>
+
+        {/* GPS */}
+        <div>
+          <label className="mb-1 block text-[13px] font-semibold text-neutral-700">
+            GPS / Digital address <span className="font-normal text-neutral-400">(optional)</span>
+          </label>
+          <input className={fieldCls(false)} placeholder="e.g. GA-045-3721"
+            value={form.gps} onChange={e => set('gps')(e.target.value)} />
+          <p className="mt-1 text-[12px] text-neutral-400">
+            GhanaPostGPS code or decimal coordinates (lat, lng)
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Delete confirmation ──────────────────────────────────────────────────────
+
+function DeleteModal({ address, onConfirm, onCancel }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center p-0" style={{ background: 'rgba(0,0,0,0.4)' }}>
+      <div className="w-full rounded-t-2xl bg-white p-5 pb-8 shadow-2xl">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full" style={{ background: '#FDECEA' }}>
+          <Trash2 className="h-5 w-5 text-red-500" />
+        </div>
+        <h3 className="text-[17px] font-bold text-neutral-900">Remove address?</h3>
+        <p className="mt-1.5 text-[14px] text-neutral-500">
+          <strong className="text-neutral-700">{address?.label}</strong> will be permanently removed from your saved addresses.
+        </p>
+        <div className="mt-5 flex gap-3">
+          <button onClick={onCancel}
+            className="flex-1 rounded-xl border border-neutral-200 py-3.5 text-[15px] font-semibold text-neutral-700">
+            Cancel
+          </button>
+          <button onClick={onConfirm}
+            className="flex-1 rounded-xl py-3.5 text-[15px] font-semibold text-white"
+            style={{ background: '#D92D20' }}>
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main page ────────────────────────────────────────────────────────────────
+
+export default function AddressesPage() {
+  const [addresses, setAddresses] = useState(initAddresses);
+  const [sheet, setSheet]         = useState(null);   // null | { mode: 'add' | 'edit', address?: obj }
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  function setDefault(id) {
+    setAddresses(prev => prev.map(a => ({ ...a, isDefault: a.id === id })));
+  }
+
+  function saveAddress(form) {
+    if (form.id) {
+      setAddresses(prev => prev.map(a => a.id === form.id ? { ...a, ...form } : a));
+    } else {
+      const newAddr = { ...form, id: Date.now(), isDefault: addresses.length === 0 };
+      setAddresses(prev => [...prev, newAddr]);
+    }
+    setSheet(null);
+  }
+
+  function deleteAddress(id) {
+    setAddresses(prev => {
+      const next = prev.filter(a => a.id !== id);
+      if (next.length > 0 && !next.some(a => a.isDefault)) {
+        next[0].isDefault = true;
+      }
+      return next;
+    });
+    setDeleteTarget(null);
+  }
+
+  return (
+    <div className="min-h-screen" style={{ background: '#F4F6FA', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+      {/* Top header */}
+      <div className="sticky top-0 z-10 border-b border-neutral-100 bg-white px-4 py-3.5">
+        <div className="flex items-center gap-3">
+          <button className="flex h-9 w-9 items-center justify-center rounded-xl bg-neutral-100">
+            <ChevronLeft className="h-5 w-5 text-neutral-600" />
+          </button>
+          <h1 className="flex-1 text-[17px] font-bold text-neutral-900">My addresses</h1>
+          <span className="text-[13px] text-neutral-400">{addresses.length} saved</span>
+        </div>
+      </div>
+
+      {/* Address list */}
+      <div className="px-4 py-4 space-y-3">
+        {addresses.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-2xl" style={{ background: '#EAF2FC' }}>
+              <MapPin className="h-8 w-8 text-blue-500" />
+            </div>
+            <p className="text-[16px] font-semibold text-neutral-800">No addresses yet</p>
+            <p className="mt-1 text-[14px] text-neutral-500">Add a delivery address to speed up your bookings.</p>
+          </div>
+        ) : (
+          addresses.map(a => (
+            <AddressCard key={a.id} address={a}
+              onSetDefault={setDefault}
+              onEdit={addr => setSheet({ mode: 'edit', address: addr })}
+              onDelete={id => setDeleteTarget(addresses.find(a => a.id === id))}
+            />
+          ))
+        )}
+
+        {/* Add address button */}
+        <button onClick={() => setSheet({ mode: 'add' })}
+          className="flex w-full items-center gap-3 rounded-2xl border-2 border-dashed border-neutral-200 bg-white px-4 py-4 text-left transition-colors active:bg-neutral-50">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: '#EAF2FC' }}>
+            <Plus className="h-5 w-5 text-blue-500" />
+          </div>
+          <div>
+            <p className="text-[14px] font-semibold text-neutral-800">Add new address</p>
+            <p className="text-[12px] text-neutral-500">Home, office, or any delivery location</p>
+          </div>
+        </button>
+      </div>
+
+      {/* Add / Edit sheet */}
+      {sheet && (
+        <AddressSheet
+          initial={sheet.mode === 'edit' ? sheet.address : null}
+          onSave={saveAddress}
+          onClose={() => setSheet(null)}
+        />
+      )}
+
+      {/* Delete confirmation */}
+      {deleteTarget && (
+        <DeleteModal
+          address={deleteTarget}
+          onConfirm={() => deleteAddress(deleteTarget.id)}
+          onCancel={() => setDeleteTarget(null)}
+        />
+      )}
+    </div>
+  );
+}

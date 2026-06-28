@@ -2,13 +2,14 @@ import { useState } from 'react';
 import {
   Plus, MapPin, Phone, Building2, Pencil, Trash2, CreditCard,
   AlertTriangle, CheckCircle2, Lock, X, ChevronDown,
+  Upload, CalendarDays, FileText,
 } from 'lucide-react';
 import { Input } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { Alert } from '../../components/ui/Alert.jsx';
 import { businessProfile } from '../../data/mock.js';
 
-const TABS = ['Company', 'Outlets', 'Services', 'Payments'];
+const TABS = ['Company', 'Outlets', 'Services', 'Payments', 'Documents', 'Holiday Hours'];
 const DAYS  = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 // Fields that require re-approval when changed
@@ -513,6 +514,330 @@ function PaymentsTab() {
   );
 }
 
+// ─── Documents tab (US-0022) ─────────────────────────────────────────────────
+
+const DOC_STATUS = {
+  active:   { label: 'Active',        bg: '#E6F6EE', color: '#13753F' },
+  expiring: { label: 'Expiring soon', bg: '#FFF4E0', color: '#945800' },
+  expired:  { label: 'Expired',       bg: '#FDECEA', color: '#A31C12' },
+};
+
+const initDocs = [
+  { id: 1, name: 'Business Registration Certificate', ref: 'BRC-2021-00345',  expiryDate: '2027-12-31', fileName: 'BRC_Sparkle_2021.pdf',    status: 'active'   },
+  { id: 2, name: 'Tax Identification Certificate',    ref: 'TIN-GH-0023456',  expiryDate: '2026-08-05', fileName: 'TIN_Sparkle.pdf',           status: 'expiring' },
+  { id: 3, name: 'Food & Safety Hygiene Permit',      ref: 'FSH-ACC-2022-089', expiryDate: '2026-04-01', fileName: 'FSH_Sparkle.pdf',           status: 'expired'  },
+  { id: 4, name: 'Environmental Compliance Cert.',    ref: 'ECC-2023-0112',   expiryDate: '2028-03-15', fileName: 'ECC_Sparkle.pdf',            status: 'active'   },
+  { id: 5, name: "Employer's Liability Insurance",    ref: 'INS-GH-4456',     expiryDate: '2027-01-31', fileName: 'Insurance_Sparkle.pdf',      status: 'active'   },
+];
+
+function fmt(d) {
+  return d ? new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+}
+
+function DocumentsTab() {
+  const [docs, setDocs]             = useState(initDocs);
+  const [uploadModal, setUploadModal] = useState(null);
+  const [expiryInput, setExpiryInput] = useState('');
+  const [dragging, setDragging]     = useState(false);
+  const [uploaded, setUploaded]     = useState(false);
+
+  function handleUpload() {
+    setDocs(prev => prev.map(d =>
+      d.id === uploadModal.id ? { ...d, status: 'active', expiryDate: expiryInput || d.expiryDate, fileName: 'updated_document.pdf' } : d
+    ));
+    setUploadModal(null);
+    setExpiryInput('');
+    setUploaded(true);
+    setTimeout(() => setUploaded(false), 3500);
+  }
+
+  const counts = {
+    active:   docs.filter(d => d.status === 'active').length,
+    expiring: docs.filter(d => d.status === 'expiring').length,
+    expired:  docs.filter(d => d.status === 'expired').length,
+  };
+
+  return (
+    <div className="space-y-6">
+      {uploaded && <Alert type="success" title="Document updated">The replacement has been uploaded and is pending LonApp verification.</Alert>}
+
+      <div className="grid grid-cols-3 gap-4">
+        {[
+          { key: 'active',   label: 'Active' },
+          { key: 'expiring', label: 'Expiring soon' },
+          { key: 'expired',  label: 'Expired' },
+        ].map(c => (
+          <div key={c.key} className="flex items-center justify-between rounded-lg border border-neutral-200 bg-white px-5 py-4">
+            <span className="text-small font-medium text-neutral-700">{c.label}</span>
+            <span className="flex h-7 w-7 items-center justify-center rounded-full text-small font-bold"
+              style={{ background: DOC_STATUS[c.key].bg, color: DOC_STATUS[c.key].color }}>
+              {counts[c.key]}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <SectionCard title="Compliance documents"
+        description="Keep documents current — expired permits may affect your account standing.">
+        <div className="overflow-hidden rounded-lg border border-neutral-200">
+          <table className="w-full border-collapse text-small">
+            <thead>
+              <tr className="bg-neutral-50">
+                {['Document', 'Reference', 'Expiry date', 'Status', ''].map(h => (
+                  <th key={h} className="px-4 py-3 text-left text-caption font-semibold uppercase tracking-wide text-neutral-400">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {docs.map((doc, i) => {
+                const st = DOC_STATUS[doc.status];
+                return (
+                  <tr key={doc.id} className={i < docs.length - 1 ? 'border-b border-neutral-100' : ''}>
+                    <td className="px-4 py-3.5">
+                      <p className="font-medium text-neutral-900">{doc.name}</p>
+                      <p className="text-caption text-neutral-400">{doc.fileName}</p>
+                    </td>
+                    <td className="px-4 py-3.5 font-mono text-caption text-neutral-600">{doc.ref}</td>
+                    <td className="px-4 py-3.5 text-neutral-700">{fmt(doc.expiryDate)}</td>
+                    <td className="px-4 py-3.5">
+                      <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold"
+                        style={{ background: st.bg, color: st.color }}>
+                        <span className="h-1.5 w-1.5 rounded-full" style={{ background: st.color }} />
+                        {st.label}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <button className="text-caption font-medium text-primary-600 hover:underline"
+                        onClick={() => { setExpiryInput(''); setUploadModal(doc); }}>
+                        Replace
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </SectionCard>
+
+      {uploadModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.4)' }}>
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
+            <div className="mb-4 flex items-start justify-between">
+              <div>
+                <h3 className="text-h4 font-bold text-neutral-900">Replace document</h3>
+                <p className="mt-0.5 text-small text-neutral-500">{uploadModal.name}</p>
+              </div>
+              <button onClick={() => setUploadModal(null)} className="rounded p-1 hover:bg-neutral-100">
+                <X className="h-4 w-4 text-neutral-400" />
+              </button>
+            </div>
+            <div
+              onDragOver={e => { e.preventDefault(); setDragging(true); }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={e => { e.preventDefault(); setDragging(false); }}
+              className={`flex flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-10 transition-colors ${
+                dragging ? 'border-primary-400 bg-primary-50' : 'border-neutral-200 bg-neutral-50 hover:border-neutral-300'
+              }`}
+            >
+              <Upload className="mb-3 h-7 w-7 text-neutral-400" />
+              <p className="text-small font-medium text-neutral-700">
+                Drag and drop, or{' '}
+                <span className="cursor-pointer text-primary-600 hover:underline">browse</span>
+              </p>
+              <p className="mt-1 text-caption text-neutral-400">PDF, JPG, PNG · max 10 MB</p>
+            </div>
+            <div className="mt-4">
+              <label className="mb-1.5 block text-small font-medium text-neutral-700">
+                New expiry date <span className="text-neutral-400">(optional)</span>
+              </label>
+              <input type="date" value={expiryInput} onChange={e => setExpiryInput(e.target.value)}
+                className="w-full rounded-md border border-neutral-200 px-3 py-2 text-small text-neutral-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100" />
+            </div>
+            <div className="mt-5 flex justify-end gap-3">
+              <Button variant="outline" onClick={() => setUploadModal(null)}>Cancel</Button>
+              <Button onClick={handleUpload}><Upload className="h-3.5 w-3.5" /> Upload document</Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Holiday Hours tab (US-0029) ──────────────────────────────────────────────
+
+const OUTLETS_LIST = [
+  { id: 0, name: 'All outlets'     },
+  { id: 1, name: 'HQ — Osu'       },
+  { id: 2, name: 'Spintex Outlet'  },
+  { id: 3, name: 'Tema Factory'    },
+];
+
+const initSpecialDates = [
+  { id: 1, date: '2026-12-25', label: 'Christmas Day',      type: 'closed', from: '', to: '', outletId: 0 },
+  { id: 2, date: '2027-01-01', label: "New Year's Day",     type: 'closed', from: '', to: '', outletId: 0 },
+  { id: 3, date: '2026-07-01', label: 'Ghana Republic Day', type: 'closed', from: '', to: '', outletId: 0 },
+  { id: 4, date: '2026-08-15', label: 'Staff training day', type: 'custom', from: '10:00', to: '14:00', outletId: 1 },
+];
+
+const inputCls = 'w-full rounded-md border border-neutral-200 px-3 py-2 text-small text-neutral-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100';
+
+function HolidayHoursTab() {
+  const [dates, setDates]             = useState(initSpecialDates);
+  const [showForm, setShowForm]       = useState(false);
+  const [deleteId, setDeleteId]       = useState(null);
+  const [form, setForm]               = useState({ date: '', label: '', type: 'closed', from: '09:00', to: '17:00', outletId: 0 });
+
+  function addDate() {
+    if (!form.date || !form.label) return;
+    setDates(p => [...p, { ...form, id: Date.now() }]);
+    setForm({ date: '', label: '', type: 'closed', from: '09:00', to: '17:00', outletId: 0 });
+    setShowForm(false);
+  }
+
+  const sorted = [...dates].sort((a, b) => a.date.localeCompare(b.date));
+
+  return (
+    <div className="space-y-6">
+      <SectionCard
+        title="Special dates & holiday hours"
+        description="Override normal operating hours for specific dates — affects customer booking availability."
+        action={
+          <Button size="sm" onClick={() => setShowForm(true)}>
+            <Plus className="h-3.5 w-3.5" /> Add special date
+          </Button>
+        }
+      >
+        {sorted.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-10 text-center">
+            <CalendarDays className="mb-2 h-7 w-7 text-neutral-300" />
+            <p className="text-small text-neutral-500">No special dates added yet.</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {sorted.map(sd => {
+              const outlet = OUTLETS_LIST.find(o => o.id === sd.outletId);
+              const d      = new Date(sd.date + 'T00:00:00');
+              return (
+                <div key={sd.id} className="flex items-center justify-between rounded-lg border border-neutral-200 px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 flex-shrink-0 flex-col items-center justify-center rounded-lg bg-primary-50">
+                      <span className="text-[10px] font-bold uppercase text-primary-400">
+                        {d.toLocaleDateString('en-GB', { month: 'short' })}
+                      </span>
+                      <span className="text-small font-bold text-primary-700">{d.getDate()}</span>
+                    </div>
+                    <div>
+                      <p className="text-small font-semibold text-neutral-900">{sd.label}</p>
+                      <p className="text-caption text-neutral-500">
+                        {d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' })}
+                        {' · '}{outlet?.name}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {sd.type === 'closed'
+                      ? <span className="rounded-full bg-neutral-100 px-2.5 py-1 text-[11px] font-semibold text-neutral-600">Closed all day</span>
+                      : <span className="rounded-full bg-primary-50 px-2.5 py-1 text-[11px] font-semibold text-primary-700">{sd.from} – {sd.to}</span>
+                    }
+                    <button onClick={() => setDeleteId(sd.id)}
+                      className="rounded p-1 text-neutral-400 hover:bg-red-50 hover:text-error transition-colors">
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </SectionCard>
+
+      {showForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.4)' }}>
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
+            <div className="mb-5 flex items-start justify-between">
+              <h3 className="text-h4 font-bold text-neutral-900">Add special date</h3>
+              <button onClick={() => setShowForm(false)} className="rounded p-1 hover:bg-neutral-100">
+                <X className="h-4 w-4 text-neutral-400" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="mb-1.5 block text-small font-medium text-neutral-700">Date *</label>
+                <input type="date" className={inputCls} value={form.date}
+                  onChange={e => setForm(f => ({ ...f, date: e.target.value }))} />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-small font-medium text-neutral-700">Label / reason *</label>
+                <input className={inputCls} placeholder="e.g. Public holiday, Staff training"
+                  value={form.label} onChange={e => setForm(f => ({ ...f, label: e.target.value }))} />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-small font-medium text-neutral-700">Applies to</label>
+                <select className={inputCls} value={form.outletId}
+                  onChange={e => setForm(f => ({ ...f, outletId: Number(e.target.value) }))}>
+                  {OUTLETS_LIST.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="mb-1.5 block text-small font-medium text-neutral-700">Hours</label>
+                <div className="flex gap-3">
+                  {[{ label: 'Closed all day', value: 'closed' }, { label: 'Custom hours', value: 'custom' }].map(opt => (
+                    <label key={opt.value}
+                      className={`flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-small font-medium transition-all ${
+                        form.type === opt.value ? 'border-primary-400 bg-primary-50 text-primary-700' : 'border-neutral-200 text-neutral-600 hover:border-neutral-300'
+                      }`}>
+                      <input type="radio" name="hour_type" value={opt.value} checked={form.type === opt.value}
+                        onChange={() => setForm(f => ({ ...f, type: opt.value }))} className="sr-only" />
+                      {opt.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {form.type === 'custom' && (
+                <div className="flex items-end gap-3">
+                  <div className="flex-1">
+                    <label className="mb-1 block text-small text-neutral-600">Opens</label>
+                    <input type="time" className={inputCls} value={form.from}
+                      onChange={e => setForm(f => ({ ...f, from: e.target.value }))} />
+                  </div>
+                  <span className="mb-2.5 text-neutral-400">→</span>
+                  <div className="flex-1">
+                    <label className="mb-1 block text-small text-neutral-600">Closes</label>
+                    <input type="time" className={inputCls} value={form.to}
+                      onChange={e => setForm(f => ({ ...f, to: e.target.value }))} />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <Button variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
+              <Button onClick={addDate} disabled={!form.date || !form.label}>Add date</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.4)' }}>
+          <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-2xl">
+            <h3 className="text-h4 font-bold text-neutral-900">Remove special date?</h3>
+            <p className="mt-2 text-small text-neutral-600">This date will revert to its normal operating hours.</p>
+            <div className="mt-5 flex justify-end gap-3">
+              <Button variant="outline" onClick={() => setDeleteId(null)}>Cancel</Button>
+              <Button onClick={() => { setDates(p => p.filter(d => d.id !== deleteId)); setDeleteId(null); }}
+                style={{ background: '#D92D20', color: '#fff', borderColor: '#D92D20' }}>
+                Remove
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function BusinessProfilePage() {
@@ -544,10 +869,12 @@ export default function BusinessProfilePage() {
         ))}
       </div>
 
-      {activeTab === 'Company'  && <CompanyTab />}
-      {activeTab === 'Outlets'  && <OutletsTab />}
-      {activeTab === 'Services' && <ServicesTab />}
-      {activeTab === 'Payments' && <PaymentsTab />}
+      {activeTab === 'Company'       && <CompanyTab />}
+      {activeTab === 'Outlets'       && <OutletsTab />}
+      {activeTab === 'Services'      && <ServicesTab />}
+      {activeTab === 'Payments'      && <PaymentsTab />}
+      {activeTab === 'Documents'     && <DocumentsTab />}
+      {activeTab === 'Holiday Hours' && <HolidayHoursTab />}
     </div>
   );
 }

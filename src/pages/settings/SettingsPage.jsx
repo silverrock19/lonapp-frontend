@@ -3,7 +3,7 @@ import {
   User, Building2, Bell, Lock, Monitor, ClipboardList,
   Eye, EyeOff, Upload, AlertTriangle, Info, Check, X,
   Smartphone, Globe, LogOut, Trash2, Search, ChevronDown,
-  Download, ShieldAlert,
+  Download, ShieldAlert, PauseCircle, XCircle,
 } from 'lucide-react';
 import { Input } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
@@ -239,6 +239,204 @@ function BusinessTab() {
         <Button variant="outline" onClick={() => { setForm({ ...init, hours: JSON.parse(JSON.stringify(init.hours)), socialLinks: { ...init.socialLinks } }); setSaved(false); }}>Discard</Button>
         <Button onClick={() => setSaved(true)}>Save changes</Button>
       </div>
+
+      {/* ── Danger zone (US-0014, US-0015) ── */}
+      <DangerZone />
+    </div>
+  );
+}
+
+// ─── Danger zone (US-0014 pause · US-0015 close) ────────────────────────────
+
+const PAUSE_REASONS = [
+  'Taking a break / vacation',
+  'Staff shortage',
+  'Equipment maintenance',
+  'Moving to a new location',
+  'Seasonal closure',
+  'Other',
+];
+
+function DangerZone() {
+  const BUSINESS_NAME = 'Sparkle Laundry';
+
+  const [isPaused, setIsPaused]       = useState(false);
+  const [pauseModal, setPauseModal]   = useState(false);
+  const [pauseReason, setPauseReason] = useState('');
+  const [closeModal, setCloseModal]   = useState(false);
+  const [closeStep, setCloseStep]     = useState(1);
+  const [confirmText, setConfirmText] = useState('');
+  const [isClosed, setIsClosed]       = useState(false);
+
+  function confirmClose() {
+    if (confirmText !== BUSINESS_NAME) return;
+    setIsClosed(true);
+    setCloseModal(false);
+    setConfirmText('');
+  }
+
+  return (
+    <div className="rounded-lg border bg-white" style={{ borderColor: '#FDECEA' }}>
+      <div className="flex items-start gap-2.5 border-b border-neutral-100 px-6 py-4">
+        <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-error" />
+        <div>
+          <h3 className="text-h4 font-semibold text-neutral-900">Danger zone</h3>
+          <p className="mt-0.5 text-small text-neutral-500">These actions affect your business's availability to customers.</p>
+        </div>
+      </div>
+
+      <div className="divide-y divide-neutral-100">
+        {/* US-0014 – Pause */}
+        <div className="flex items-start justify-between px-6 py-5">
+          <div className="flex items-start gap-3">
+            <PauseCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-warning-text" />
+            <div>
+              <p className="text-small font-semibold text-neutral-900">
+                {isPaused ? 'Business is currently paused' : 'Temporarily pause your business'}
+              </p>
+              <p className="mt-0.5 text-small text-neutral-500">
+                {isPaused
+                  ? 'Customers cannot find or book your business. Existing orders continue normally.'
+                  : 'Your business becomes invisible to new customers. Existing orders are not affected.'}
+              </p>
+            </div>
+          </div>
+          <div className="ml-6 flex-shrink-0">
+            {isPaused ? (
+              <Button onClick={() => setIsPaused(false)}>▶ Reactivate</Button>
+            ) : (
+              <Button variant="outline" onClick={() => setPauseModal(true)}
+                style={{ borderColor: '#C77700', color: '#945800' }}>
+                ⏸ Pause business
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* US-0015 – Permanent closure */}
+        {!isClosed ? (
+          <div className="flex items-start justify-between px-6 py-5">
+            <div className="flex items-start gap-3">
+              <XCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-error" />
+              <div>
+                <p className="text-small font-semibold text-neutral-900">Permanently close your business</p>
+                <p className="mt-0.5 text-small text-neutral-500">
+                  This is irreversible. All data will be scheduled for deletion within 30 days.
+                </p>
+              </div>
+            </div>
+            <div className="ml-6 flex-shrink-0">
+              <Button onClick={() => { setCloseStep(1); setConfirmText(''); setCloseModal(true); }}
+                style={{ background: '#D92D20', color: '#fff', borderColor: '#D92D20' }}>
+                Close account
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3 px-6 py-5">
+            <Check className="h-4 w-4 text-neutral-400" />
+            <p className="text-small text-neutral-500">Your closure request has been submitted. You'll receive a confirmation email within 24 hours.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Pause modal */}
+      {pauseModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.4)' }}>
+          <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-2xl">
+            <h3 className="text-h4 font-bold text-neutral-900">Pause your business?</h3>
+            <p className="mt-1.5 mb-4 text-small text-neutral-600">
+              Your business will be hidden from customers immediately. You can reactivate at any time.
+            </p>
+            <label className="mb-1.5 block text-small font-medium text-neutral-700">Reason <span className="text-error">*</span></label>
+            <select value={pauseReason} onChange={e => setPauseReason(e.target.value)}
+              className="w-full rounded-md border border-neutral-200 px-3 py-2 text-small text-neutral-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100">
+              <option value="">— select a reason —</option>
+              {PAUSE_REASONS.map(r => <option key={r}>{r}</option>)}
+            </select>
+            <div className="mt-5 flex justify-end gap-3">
+              <Button variant="outline" onClick={() => setPauseModal(false)}>Cancel</Button>
+              <Button disabled={!pauseReason}
+                style={{ background: '#C77700', color: '#fff', borderColor: '#C77700' }}
+                onClick={() => { setIsPaused(true); setPauseModal(false); setPauseReason(''); }}>
+                Pause business
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Close account modal — 2 steps */}
+      {closeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.4)' }}>
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
+            {closeStep === 1 ? (
+              <>
+                <div className="mb-4 flex items-start gap-3">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full" style={{ background: '#FDECEA' }}>
+                    <Download className="h-5 w-5 text-error" />
+                  </div>
+                  <div>
+                    <h3 className="text-h4 font-bold text-neutral-900">Export your data first?</h3>
+                    <p className="mt-1 text-small text-neutral-600">
+                      Before closing your account, you can download a copy of all your business data — orders, customers, invoices, and staff records.
+                    </p>
+                  </div>
+                </div>
+                <div className="mb-5 rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3">
+                  <p className="text-small font-medium text-neutral-700">Data export includes:</p>
+                  <ul className="mt-1.5 space-y-0.5 text-small text-neutral-500">
+                    {['All order history', 'Customer records', 'Payment & invoice history', 'Staff records & activity logs'].map(i => (
+                      <li key={i} className="flex items-center gap-1.5"><Check className="h-3 w-3 text-success" />{i}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <Button variant="outline" onClick={() => setCloseModal(false)}>Cancel</Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline"><Download className="h-3.5 w-3.5" /> Export data</Button>
+                    <Button onClick={() => setCloseStep(2)}
+                      style={{ background: '#D92D20', color: '#fff', borderColor: '#D92D20' }}>
+                      Skip &amp; continue
+                    </Button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mb-1 flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5 text-error" />
+                  <h3 className="text-h4 font-bold text-neutral-900">This cannot be undone</h3>
+                </div>
+                <p className="mb-4 text-small text-neutral-600">
+                  Permanently closing your account will remove all business data, cancel active subscriptions, and prevent customers from placing new orders.
+                </p>
+                <div className="mb-4 rounded-lg border border-error/30 bg-error/5 px-4 py-3 text-small text-error">
+                  All data will be permanently deleted within 30 days. This action cannot be reversed.
+                </div>
+                <label className="mb-1.5 block text-small font-medium text-neutral-700">
+                  Type <strong>{BUSINESS_NAME}</strong> to confirm
+                </label>
+                <input
+                  className="w-full rounded-md border border-neutral-200 px-3 py-2 text-small text-neutral-900 outline-none focus:border-error focus:ring-2 focus:ring-error/20"
+                  placeholder={BUSINESS_NAME}
+                  value={confirmText}
+                  onChange={e => setConfirmText(e.target.value)}
+                />
+                <div className="mt-5 flex justify-end gap-3">
+                  <Button variant="outline" onClick={() => setCloseModal(false)}>Cancel</Button>
+                  <Button
+                    disabled={confirmText !== BUSINESS_NAME}
+                    onClick={confirmClose}
+                    style={{ background: '#D92D20', color: '#fff', borderColor: '#D92D20', opacity: confirmText !== BUSINESS_NAME ? 0.4 : 1 }}>
+                    Permanently close account
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

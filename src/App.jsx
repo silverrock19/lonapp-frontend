@@ -20,6 +20,7 @@ import SettingsPage from './pages/settings/SettingsPage.jsx';
 import StaffPage from './pages/staff/StaffPage.jsx';
 import BusinessWizardPage from './pages/register/BusinessWizardPage.jsx';
 import BusinessApprovalPage from './pages/admin/BusinessApprovalPage.jsx';
+import AddressesPage from './pages/customer/AddressesPage.jsx';
 
 function ComingSoon({ title }) {
   return (
@@ -67,11 +68,13 @@ export default function App() {
         </Route>
 
         {/* ── Customer app (mobile-first, teal theme) ── */}
-        <Route path="/app/*" element={
+        <Route path="/app" element={
           <div data-theme="customer">
             <CustomerLayout />
           </div>
-        } />
+        }>
+          <Route path="addresses" element={<AddressesPage />} />
+        </Route>
 
         {/* ── Platform admin ── */}
         <Route element={<ProtectedRoute requiredRole="super_admin" />}>
