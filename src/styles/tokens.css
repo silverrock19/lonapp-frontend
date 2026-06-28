@@ -1,6 +1,6 @@
 /* ============================================================
    LonApp Design Tokens · v1.1
-   Primary #0C5FC5 · Accent (teal) #0E9AA7 · Manrope
+   Primary #0C5FC5 · Accent (teal) #0E9AA7 · SF Pro / System UI
    Import once at app root (src/main.jsx)
    ============================================================ */
 :root {
@@ -70,7 +70,7 @@
   --chart-axis: #9AA2B1;
 
   /* ---- Typography ---- */
-  --font-sans: 'Manrope', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
 
   /* ---- Spacing (4px base) ---- */
   --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;

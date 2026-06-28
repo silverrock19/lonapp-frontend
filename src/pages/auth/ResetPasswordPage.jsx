@@ -4,7 +4,6 @@ import { Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 import { Input } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
 import { Brandmark } from '../../components/ui/Brandmark.jsx';
-import { AuthCard } from '../../components/ui/AuthCard.jsx';
 
 function passwordStrength(pw) {
   if (!pw) return { score: 0, label: '', color: '' };
@@ -64,9 +63,8 @@ export default function ResetPasswordPage() {
 
   if (done) {
     return (
-      <AuthCard>
-      <div className="text-center space-y-5">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success-bg">
+      <div className="text-center w-full space-y-5">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm">
           <CheckCircle2 className="h-7 w-7 text-success" />
         </div>
         <div>
@@ -74,19 +72,17 @@ export default function ResetPasswordPage() {
           <p className="mt-2 text-body text-neutral-500">Your password has been changed successfully.</p>
         </div>
         <Button pill className="w-full justify-center" size="lg" onClick={() => navigate('/login')}>
-          Sign in
+          Sign In
         </Button>
       </div>
-      </AuthCard>
     );
   }
 
   return (
-    <AuthCard>
-    <div className="text-center">
+    <div className="text-center w-full">
       <Brandmark />
       <h1 className="text-h2 font-bold text-neutral-900">Set a new password</h1>
-      <p className="mt-2 mb-7 text-body text-neutral-500">Must be at least 8 characters.</p>
+      <p className="mt-2 mb-8 text-body text-neutral-500">Must be at least 8 characters.</p>
 
       <form onSubmit={handleSubmit} noValidate className="text-left space-y-5">
         <div className="space-y-1">
@@ -105,7 +101,7 @@ export default function ResetPasswordPage() {
               type="button"
               onClick={() => setShow(s => ({ ...s, password: !s.password }))}
               aria-label={show.password ? 'Hide password' : 'Show password'}
-              className="absolute right-3 top-8 text-neutral-400 hover:text-neutral-600 transition-colors"
+              className="absolute right-3 top-9 text-neutral-400 hover:text-neutral-600 transition-colors"
             >
               {show.password ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -143,7 +139,7 @@ export default function ResetPasswordPage() {
             type="button"
             onClick={() => setShow(s => ({ ...s, confirm: !s.confirm }))}
             aria-label={show.confirm ? 'Hide password' : 'Show password'}
-            className="absolute right-3 top-8 text-neutral-400 hover:text-neutral-600 transition-colors"
+            className="absolute right-3 top-9 text-neutral-400 hover:text-neutral-600 transition-colors"
           >
             {show.confirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
@@ -159,6 +155,5 @@ export default function ResetPasswordPage() {
         <Link to="/login" className="font-bold text-primary-600 hover:underline">Sign in</Link>
       </p>
     </div>
-    </AuthCard>
   );
 }

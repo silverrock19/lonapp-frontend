@@ -1,7 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '../../components/ui/Button.jsx';
 import { Brandmark } from '../../components/ui/Brandmark.jsx';
-import { AuthCard } from '../../components/ui/AuthCard.jsx';
 
 function GoogleIcon() {
   return (
@@ -17,50 +15,36 @@ function GoogleIcon() {
 export default function RetailOnboardingPage() {
   const navigate = useNavigate();
 
-  async function handleSocial(provider) {
-    // TODO: dispatch(socialLogin(provider))
-    navigate('/customer/register');
-  }
-
   return (
-    <AuthCard>
-    <div className="text-center">
+    <div className="text-center w-full">
       <Brandmark />
       <h1 className="text-h2 font-bold text-neutral-900 tracking-tight">Create your LonApp account</h1>
-      <p className="mt-2 mb-7 text-body text-neutral-500">Book laundry pickups and track every order.</p>
+      <p className="mt-2 mb-8 text-body text-neutral-500">Book laundry pickups and track every order.</p>
 
       <div className="flex flex-col gap-3">
-        <Button
+        <button
           type="button"
-          pill
-          className="w-full justify-center gap-2.5"
-          size="lg"
-          onClick={() => handleSocial('google')}
+          className="flex h-11 w-full items-center justify-center gap-2.5 rounded-md border border-neutral-200 bg-white px-4 text-small font-semibold text-neutral-700 shadow-sm hover:bg-neutral-50 transition-colors"
+          onClick={() => {/* TODO: socialLogin('google') */}}
         >
           <GoogleIcon /> Continue with Google
-        </Button>
+        </button>
 
-        <Button
+        <button
           type="button"
-          variant="outline"
-          pill
-          className="w-full justify-center"
-          size="lg"
+          className="flex h-11 w-full items-center justify-center gap-2.5 rounded-md border border-neutral-200 bg-white px-4 text-small font-semibold text-neutral-700 shadow-sm hover:bg-neutral-50 transition-colors"
           onClick={() => navigate('/customer/register')}
         >
           Continue with email
-        </Button>
+        </button>
 
-        <Button
+        <button
           type="button"
-          variant="outline"
-          pill
-          className="w-full justify-center"
-          size="lg"
+          className="flex h-11 w-full items-center justify-center gap-2.5 rounded-md border border-neutral-200 bg-white px-4 text-small font-semibold text-neutral-700 shadow-sm hover:bg-neutral-50 transition-colors"
           onClick={() => navigate('/customer/register')}
         >
           Continue with phone number
-        </Button>
+        </button>
       </div>
 
       <p className="mt-6 text-caption text-neutral-400 leading-relaxed">
@@ -72,11 +56,10 @@ export default function RetailOnboardingPage() {
 
       <p className="mt-5 text-small text-neutral-500">
         Already have an account?{' '}
-        <Link to="/customer/login" className="font-bold text-accent-600 hover:underline">
-          Log in
+        <Link to="/customer/login" className="font-bold text-primary-600 hover:underline">
+          Sign in
         </Link>
       </p>
     </div>
-    </AuthCard>
   );
 }

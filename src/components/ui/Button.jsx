@@ -6,22 +6,24 @@ const base = 'inline-flex items-center justify-center gap-2 font-sans font-semib
 const variants = {
   primary:   'bg-primary-500 text-white hover:bg-primary-600 focus-visible:ring-2 focus-visible:ring-primary-100',
   accent:    'bg-accent-500 text-white hover:bg-accent-600 focus-visible:ring-2 focus-visible:ring-accent-100',
+  neutral:   'bg-[#6B7280] text-white hover:bg-[#4B5563] focus-visible:ring-2 focus-visible:ring-neutral-200',
   secondary: 'bg-primary-50 text-primary-700 hover:bg-primary-100',
-  outline:   'border border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-50',
+  outline:   'border border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50',
   ghost:     'bg-transparent text-neutral-600 hover:bg-neutral-100',
   danger:    'bg-error text-white hover:bg-error-text',
 };
 
 const sizes = {
-  sm:      'h-8 px-3 text-small',
-  default: 'h-10 px-4 text-body',
-  lg:      'h-12 px-6 text-body-lg',
+  sm:      'h-10 px-3 text-small',
+  default: 'h-12 px-4 text-body',
+  lg:      'h-11 px-6 text-body-lg',
 };
 
 export function Button({ variant = 'primary', size = 'default', loading = false, pill = false, children, className, ...props }) {
   return (
     <button
-      className={cn(base, variants[variant], sizes[size], pill ? 'rounded-[12px]' : 'rounded-md', className)}
+      className={cn(base, variants[variant], sizes[size], className)}
+      style={{ borderRadius: 8, ...props.style }}
       disabled={props.disabled || loading}
       {...props}
     >

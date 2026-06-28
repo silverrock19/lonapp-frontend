@@ -1,55 +1,55 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, ClipboardList, Store, Users, Tag, Wallet,
-  Building2, Settings, Bell, Search, LogOut,
+  LayoutDashboard, Building2, Users, BarChart2, ShieldCheck,
+  Settings, Bell, Search, LogOut, Clock,
 } from 'lucide-react';
 import { cn } from '../../utils/classNames.js';
 import { useAuth } from '../../context/AuthContext.jsx';
+import { mockBusinesses } from '../../data/mockAdminData.js';
+
+const pendingCount = mockBusinesses.filter(b => b.status === 'pending' || b.status === 'resubmission').length;
+const clarifyCount = mockBusinesses.filter(b => b.status === 'awaiting_clarification').length;
 
 const navGroups = [
   {
-    label: 'Operations',
+    label: 'Review',
     items: [
-      { to: '/',         icon: LayoutDashboard, label: 'Dashboard',          end: true },
-      { to: '/orders',   icon: ClipboardList,   label: 'Orders'                       },
-      { to: '/outlets',  icon: Store,           label: 'Outlets & Factories'           },
+      { to: '/admin/businesses',    icon: Building2,      label: 'Business Approvals', badge: pendingCount },
+      { to: '/admin/clarifications',icon: Clock,          label: 'Clarifications',     badge: clarifyCount },
     ],
   },
   {
-    label: 'Management',
+    label: 'Platform',
     items: [
-      { to: '/staff',    icon: Users,     label: 'Staff & Roles'      },
-      { to: '/services', icon: Tag,       label: 'Services & Pricing' },
-      { to: '/payments', icon: Wallet,    label: 'Payments'           },
+      { to: '/admin',               icon: LayoutDashboard,label: 'Overview',           end: true },
+      { to: '/admin/users',         icon: Users,          label: 'Users & Accounts'              },
+      { to: '/admin/analytics',     icon: BarChart2,      label: 'Analytics'                     },
+      { to: '/admin/audit',         icon: ShieldCheck,    label: 'Audit Log'                     },
     ],
   },
   {
-    label: 'Account',
+    label: 'System',
     items: [
-      { to: '/business', icon: Building2, label: 'Business Profile' },
-      { to: '/settings', icon: Settings,  label: 'Settings'         },
+      { to: '/admin/settings', icon: Settings, label: 'Settings' },
     ],
   },
 ];
 
 function initials(name) {
-  if (!name) return 'U';
+  if (!name) return 'A';
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
-export default function AppShell() {
+export default function AdminShell() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  function handleLogout() {
-    logout();
-    navigate('/login');
-  }
+  function handleLogout() { logout(); navigate('/login'); }
 
   return (
     <div className="flex h-screen overflow-hidden bg-neutral-50">
 
-      {/* ── Sidebar ──────────────────────────────────────── */}
+      {/* ── Sidebar ─ identical light style to AppShell ───── */}
       <aside className="flex w-56 flex-col border-r border-neutral-100 bg-white">
 
         {/* Logo */}
@@ -58,26 +58,22 @@ export default function AppShell() {
         </div>
 
         {/* Nav */}
-        <nav className="flex flex-1 flex-col overflow-y-auto px-2 pb-2 pt-3" aria-label="Main navigation">
+        <nav className="flex flex-1 flex-col overflow-y-auto px-2 pb-2 pt-3" aria-label="Admin navigation">
           {navGroups.map(group => (
             <div key={group.label} className="mb-1">
               <p className="mb-1 px-3 text-[10px] font-semibold uppercase tracking-widest text-neutral-400">
                 {group.label}
               </p>
               <div className="flex flex-col gap-0.5">
-                {group.items.map(({ to, icon: Icon, label, end }) => (
+                {group.items.map(({ to, icon: Icon, label, end, badge }) => (
                   <NavLink
-                    key={to}
-                    to={to}
-                    end={end}
-                    className={({ isActive }) =>
-                      cn(
-                        'flex min-h-[40px] items-center gap-2.5 rounded-md px-3 text-small font-medium transition-colors',
-                        isActive
-                          ? 'bg-neutral-100 text-neutral-900'
-                          : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900',
-                      )
-                    }
+                    key={to} to={to} end={end}
+                    className={({ isActive }) => cn(
+                      'flex min-h-[40px] items-center gap-2.5 rounded-md px-3 text-small font-medium transition-colors',
+                      isActive
+                        ? 'bg-neutral-100 text-neutral-900'
+                        : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900',
+                    )}
                   >
                     {({ isActive }) => (
                       <>
@@ -85,7 +81,12 @@ export default function AppShell() {
                           className={cn('h-4 w-4 flex-shrink-0', isActive ? 'text-primary-500' : 'text-neutral-400')}
                           aria-hidden="true"
                         />
-                        {label}
+                        <span className="flex-1">{label}</span>
+                        {badge > 0 && (
+                          <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-error px-1 text-[10px] font-bold text-white">
+                            {badge}
+                          </span>
+                        )}
                       </>
                     )}
                   </NavLink>
@@ -95,15 +96,15 @@ export default function AppShell() {
           ))}
         </nav>
 
-        {/* Footer */}
+        {/* Footer — same as AppShell */}
         <div className="shrink-0 border-t border-neutral-100 p-3">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary-100 text-caption font-semibold text-primary-700">
               {initials(user?.name)}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-small font-medium text-neutral-800">{user?.name ?? 'User'}</p>
-              <p className="truncate text-caption text-neutral-400">{user?.role ?? 'Staff'}</p>
+              <p className="truncate text-small font-medium text-neutral-800">{user?.name ?? 'Admin'}</p>
+              <p className="truncate text-caption text-neutral-400">Platform Admin</p>
             </div>
             <button
               onClick={handleLogout}
@@ -116,7 +117,7 @@ export default function AppShell() {
         </div>
       </aside>
 
-      {/* ── Main area ────────────────────────────────────── */}
+      {/* ── Main area — same as AppShell ─────────────────── */}
       <div className="flex flex-1 flex-col overflow-hidden">
 
         {/* Topbar */}
