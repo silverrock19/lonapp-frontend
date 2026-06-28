@@ -2,9 +2,25 @@ import { useState } from 'react';
 import { Button } from '../../../components/ui/Button.jsx';
 import { Plus, Trash2, CreditCard, Smartphone, Banknote } from 'lucide-react';
 
-const BANKS = ['GCB Bank', 'Ecobank Ghana', 'Fidelity Bank', 'Stanbic Bank', 'Absa Ghana', 'Standard Chartered', 'Agricultural Development Bank', 'Consolidated Bank Ghana'];
-const MOMO_PROVIDERS = ['MTN Mobile Money', 'Vodafone Cash', 'AirtelTigo Money'];
-const ACCOUNT_TYPES  = ['Current', 'Savings'];
+const BANKS_BY_COUNTRY = {
+  Ghana:        ['GCB Bank', 'Ecobank Ghana', 'Fidelity Bank', 'Stanbic Bank', 'Absa Ghana', 'Standard Chartered', 'Agricultural Development Bank', 'Consolidated Bank Ghana'],
+  Nigeria:      ['Access Bank', 'Zenith Bank', 'GTBank', 'First Bank', 'UBA', 'Polaris Bank', 'Sterling Bank', 'FCMB'],
+  Kenya:        ['Kenya Commercial Bank', 'Equity Bank', 'Co-operative Bank', 'Absa Kenya', 'Standard Chartered Kenya', 'NCBA', 'DTB'],
+  'South Africa': ['Standard Bank', 'ABSA', 'FNB', 'Nedbank', 'Capitec', 'Investec'],
+  Rwanda:       ['Bank of Kigali', 'Equity Bank Rwanda', 'KCB Rwanda', 'Cogebanque', 'I&M Bank Rwanda'],
+  Uganda:       ['Stanbic Uganda', 'DFCU Bank', 'Centenary Bank', 'Equity Bank Uganda', 'KCB Uganda'],
+};
+const MOMO_BY_COUNTRY = {
+  Ghana:        ['MTN Mobile Money', 'Vodafone Cash', 'AirtelTigo Money'],
+  Nigeria:      ['OPay', 'PalmPay', 'Kuda', 'MTN MoMo Nigeria'],
+  Kenya:        ['M-Pesa', 'Airtel Money Kenya', 'Telkom T-Kash'],
+  'South Africa': ['MTN MoMo SA', 'Standard Bank Instant Money'],
+  Rwanda:       ['MTN MoMo Rwanda', 'Airtel Money Rwanda'],
+  Uganda:       ['MTN MoMo Uganda', 'Airtel Money Uganda'],
+};
+const DEFAULT_BANKS = ['GCB Bank', 'Ecobank Ghana', 'Fidelity Bank', 'Stanbic Bank'];
+const DEFAULT_MOMO  = ['MTN Mobile Money', 'Vodafone Cash', 'AirtelTigo Money'];
+const ACCOUNT_TYPES = ['Current', 'Savings'];
 
 const inputCls = (err) =>
   `w-full rounded-md border px-3 py-2.5 text-small text-neutral-900 outline-none focus:ring-2 transition-all ${
@@ -35,7 +51,7 @@ function validateMomo(m) {
   return e;
 }
 
-function BankForm({ method, errors, onChange }) {
+function BankForm({ method, errors, onChange, banks }) {
   const e = errors || {};
   return (
     <div className="space-y-3.5">
@@ -45,7 +61,7 @@ function BankForm({ method, errors, onChange }) {
           <select className={`${selectCls} ${e.bankName ? 'border-error' : ''}`}
             value={method.bankName} onChange={ev => onChange({ ...method, bankName: ev.target.value })}>
             <option value="">Select bank…</option>
-            {BANKS.map(b => <option key={b}>{b}</option>)}
+            {banks.map(b => <option key={b}>{b}</option>)}
           </select>
           {e.bankName && <p className="mt-0.5 text-caption text-error">{e.bankName}</p>}
         </div>
@@ -78,7 +94,7 @@ function BankForm({ method, errors, onChange }) {
   );
 }
 
-function MomoForm({ method, errors, onChange }) {
+function MomoForm({ method, errors, onChange, momoProviders }) {
   const e = errors || {};
   return (
     <div className="space-y-3.5">
@@ -88,7 +104,7 @@ function MomoForm({ method, errors, onChange }) {
           <select className={`${selectCls} ${e.provider ? 'border-error' : ''}`}
             value={method.provider} onChange={ev => onChange({ ...method, provider: ev.target.value })}>
             <option value="">Select provider…</option>
-            {MOMO_PROVIDERS.map(p => <option key={p}>{p}</option>)}
+            {momoProviders.map(p => <option key={p}>{p}</option>)}
           </select>
           {e.provider && <p className="mt-0.5 text-caption text-error">{e.provider}</p>}
         </div>
@@ -114,7 +130,7 @@ function MomoForm({ method, errors, onChange }) {
   );
 }
 
-function MethodCard({ method, index, errors, onChange, onRemove }) {
+function MethodCard({ method, index, errors, onChange, onRemove, banks, momoProviders }) {
   const icon = method.type === 'bank' ? CreditCard : Smartphone;
   const Icon = icon;
   return (
@@ -133,15 +149,17 @@ function MethodCard({ method, index, errors, onChange, onRemove }) {
       </div>
       <div className="p-4">
         {method.type === 'bank'
-          ? <BankForm method={method} errors={errors} onChange={onChange} />
-          : <MomoForm method={method} errors={errors} onChange={onChange} />
+          ? <BankForm method={method} errors={errors} onChange={onChange} banks={banks} />
+          : <MomoForm method={method} errors={errors} onChange={onChange} momoProviders={momoProviders} />
         }
       </div>
     </div>
   );
 }
 
-export default function Step4Payment({ data, onNext, onBack, onSaveDraft }) {
+export default function Step4Payment({ data, country, onNext, onBack, onSaveDraft }) {
+  const banks = BANKS_BY_COUNTRY[country] || DEFAULT_BANKS;
+  const momoProviders = MOMO_BY_COUNTRY[country] || DEFAULT_MOMO;
   const [methods, setMethods]       = useState(data.methods   || []);
   const [cashEnabled, setCash]      = useState(data.cashEnabled || false);
   const [methodErrors, setMethodErrors] = useState([]);
@@ -183,7 +201,8 @@ export default function Step4Payment({ data, onNext, onBack, onSaveDraft }) {
       <div className="space-y-3 mb-5">
         {methods.map((m, i) => (
           <MethodCard key={m.id} method={m} index={i} errors={methodErrors[i]}
-            onChange={val => update(i, val)} onRemove={() => remove(i)} />
+            onChange={val => update(i, val)} onRemove={() => remove(i)}
+            banks={banks} momoProviders={momoProviders} />
         ))}
       </div>
 

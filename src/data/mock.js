@@ -141,6 +141,8 @@ export const adminProfile = {
       facebook:  'facebook.com/sparklelaundry',
       instagram: 'instagram.com/sparklegh',
       twitter:   '',
+      tiktok:    '',
+      whatsapp:  '+233241234567',
     },
     hours: {
       Mon: { open: '08:00', close: '18:00', enabled: true  },

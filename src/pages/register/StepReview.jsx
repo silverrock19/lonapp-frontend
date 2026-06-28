@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui/Button.jsx';
 import { CheckCircle2, Building2, Store, Factory, CreditCard, Smartphone, Banknote, User } from 'lucide-react';
 
@@ -25,6 +26,7 @@ function Section({ title, icon: Icon, children, color = 'text-primary-500' }) {
 }
 
 export default function StepReview({ data, onBack, onEdit }) {
+  const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
   const { company, outlets: outletData, services, payment, admin } = data;
 
@@ -48,7 +50,7 @@ export default function StepReview({ data, onBack, onEdit }) {
           </ol>
         </div>
         <div className="mt-7">
-          <Button onClick={() => window.location.href = '/login'}>Go to Login →</Button>
+          <Button onClick={() => navigate('/login')}>Go to Login →</Button>
         </div>
       </div>
     );
@@ -78,7 +80,7 @@ export default function StepReview({ data, onBack, onEdit }) {
           <Row label="GPS"             value={company?.gps} />
           <Row label="Business type"   value={company?.registrationType} />
           <Row label="Reg. number"     value={company?.registrationNumber} />
-          <Row label="Reg. document"   value={company?.registrationDoc} />
+          <Row label="Reg. document"   value={company?.registrationDoc?.name ?? company?.registrationDoc} />
         </Section>
 
         {/* Outlets */}
@@ -158,7 +160,7 @@ export default function StepReview({ data, onBack, onEdit }) {
             <Row label="Phone"  value={admin.profile.phone} />
             <Row label="Role"   value={admin.profile.role} />
             <Row label="ID type" value={admin.profile.idType} />
-            <Row label="ID doc"  value={admin.profile.idDoc} />
+            <Row label="ID doc"  value={admin.profile.idDoc?.name ?? admin.profile.idDoc} />
           </Section>
         )}
       </div>

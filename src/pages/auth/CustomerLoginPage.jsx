@@ -33,6 +33,7 @@ export default function CustomerLoginPage() {
   const [showPass, setShowPass] = useState(false);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
+  const [socialToast, setSocialToast] = useState('');
   const [loading, setLoading] = useState(false);
 
   function set(field) {
@@ -44,9 +45,20 @@ export default function CustomerLoginPage() {
     };
   }
 
+  function showSocialToast() {
+    setSocialToast('Social login is coming soon.');
+    setTimeout(() => setSocialToast(''), 3000);
+  }
+
   function validate() {
     const e = {};
-    if (!form.identifier) e.identifier = `${mode === 'phone' ? 'Phone number' : 'Email address'} is required`;
+    if (!form.identifier) {
+      e.identifier = `${mode === 'phone' ? 'Phone number' : 'Email address'} is required`;
+    } else if (mode === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.identifier)) {
+      e.identifier = 'Enter a valid email address';
+    } else if (mode === 'phone' && !/^\+?[\d\s\-().]{7,}$/.test(form.identifier)) {
+      e.identifier = 'Enter a valid phone number';
+    }
     if (!form.password) e.password = 'Password is required';
     return e;
   }
@@ -73,18 +85,23 @@ export default function CustomerLoginPage() {
       <p className="mt-2 mb-8 text-body text-neutral-500">Sign in to your account.</p>
 
       {/* Social login */}
+      {socialToast && (
+        <div className="mb-4 rounded-md border border-neutral-200 bg-neutral-50 px-4 py-2.5 text-small text-neutral-600">
+          {socialToast}
+        </div>
+      )}
       <div className="flex flex-col gap-3 mb-6">
         <button
           type="button"
           className="flex h-11 w-full items-center justify-center gap-2.5 rounded-md border border-neutral-200 bg-white px-4 text-small font-semibold text-neutral-700 shadow-sm hover:bg-neutral-50 transition-colors"
-          onClick={() => {/* TODO: socialLogin('google') */}}
+          onClick={showSocialToast}
         >
           <GoogleIcon /> Continue with Google
         </button>
         <button
           type="button"
           className="flex h-11 w-full items-center justify-center gap-2.5 rounded-md border border-neutral-200 bg-white px-4 text-small font-semibold text-neutral-700 shadow-sm hover:bg-neutral-50 transition-colors"
-          onClick={() => {/* TODO: socialLogin('facebook') */}}
+          onClick={showSocialToast}
         >
           <FacebookIcon /> Continue with Facebook
         </button>

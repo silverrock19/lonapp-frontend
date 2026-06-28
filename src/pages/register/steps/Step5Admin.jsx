@@ -113,9 +113,9 @@ function ProfileForm({ data, onNext, onBack, onSaveDraft }) {
                 errors.idDoc ? 'border-error bg-white' : 'border-neutral-200 bg-white hover:border-primary-300 hover:bg-primary-50'
               }`}>
                 <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="sr-only"
-                  onChange={e => e.target.files[0] && set('idDoc', e.target.files[0].name)} />
+                  onChange={e => { if (e.target.files[0]) set('idDoc', { name: e.target.files[0].name, file: e.target.files[0] }); }} />
                 <span className={f.idDoc ? 'text-neutral-800' : 'text-neutral-400'}>
-                  {f.idDoc || 'Upload PDF or JPG'}
+                  {f.idDoc?.name ?? f.idDoc ?? 'Upload PDF or JPG'}
                 </span>
               </label>
               {errors.idDoc && <p className="mt-0.5 text-caption text-error">{errors.idDoc}</p>}

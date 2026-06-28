@@ -20,7 +20,7 @@ function GoogleIcon() {
 export default function CustomerRegisterPage() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState({ firstName: '', email: '', password: '' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '', terms: false, privacy: false });
   const [showPass, setShowPass] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -38,10 +38,25 @@ export default function CustomerRegisterPage() {
   function validateStep0() {
     const e = {};
     if (!form.firstName.trim()) e.firstName = 'First name is required';
-    if (!form.email) e.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email address';
-    if (!form.password) e.password = 'Password is required';
-    else if (form.password.length < 8) e.password = 'Must be at least 8 characters';
+    if (!form.lastName.trim())  e.lastName  = 'Last name is required';
+    if (!form.email) {
+      e.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      e.email = 'Enter a valid email address';
+    }
+    if (!form.password) {
+      e.password = 'Password is required';
+    } else {
+      const rules = [
+        form.password.length >= 8,
+        /[A-Z]/.test(form.password),
+        /\d/.test(form.password),
+        /[!@#$%^&*(),.?":{}|<>]/.test(form.password),
+      ];
+      if (!rules.every(Boolean)) e.password = 'Password does not meet all requirements';
+    }
+    if (!form.terms)   e.terms   = 'You must agree to the Terms of Service';
+    if (!form.privacy) e.privacy = 'You must acknowledge the Privacy Policy';
     return e;
   }
 
@@ -160,19 +175,30 @@ export default function CustomerRegisterPage() {
       </div>
 
       <form onSubmit={handleStep0} noValidate className="text-left space-y-5">
-        <Input
-          label="First name"
-          required
-          placeholder="Adwoa"
-          value={form.firstName}
-          onChange={set('firstName')}
-          error={errors.firstName}
-          autoComplete="given-name"
-        />
+        <div className="grid grid-cols-2 gap-3">
+          <Input
+            label="First name"
+            required
+            placeholder="Adwoa"
+            value={form.firstName}
+            onChange={set('firstName')}
+            error={errors.firstName}
+            autoComplete="given-name"
+          />
+          <Input
+            label="Last name"
+            required
+            placeholder="Mensah"
+            value={form.lastName}
+            onChange={set('lastName')}
+            error={errors.lastName}
+            autoComplete="family-name"
+          />
+        </div>
 
         <Input
-          label="Email or phone"
-          type="text"
+          label="Email address"
+          type="email"
           required
           placeholder="adwoa@email.com"
           value={form.email}
@@ -200,20 +226,33 @@ export default function CustomerRegisterPage() {
           >
             {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
-          <p className="mt-1 text-caption text-neutral-400">Min 8 chars · 1 uppercase · 1 number · 1 special</p>
+          <p className="mt-1 text-caption text-neutral-400">8+ chars · 1 uppercase · 1 number · 1 special character</p>
+        </div>
+
+        <div className="space-y-2.5 pt-1">
+          {[
+            { key: 'terms',   label: 'I agree to the Terms of Service',  error: errors.terms },
+            { key: 'privacy', label: 'I have read the Privacy Policy',    error: errors.privacy },
+          ].map(({ key, label, error }) => (
+            <div key={key}>
+              <label className="flex cursor-pointer items-start gap-3">
+                <input
+                  type="checkbox"
+                  className="mt-0.5 h-4 w-4 flex-shrink-0 rounded accent-primary-500"
+                  checked={form[key]}
+                  onChange={e => { setForm(f => ({ ...f, [key]: e.target.checked })); setErrors(err => ({ ...err, [key]: '' })); }}
+                />
+                <span className="text-small text-neutral-700">{label}</span>
+              </label>
+              {error && <p className="mt-0.5 ml-7 text-caption text-error">{error}</p>}
+            </div>
+          ))}
         </div>
 
         <Button type="submit" pill className="w-full justify-center mt-2" size="lg" loading={loading}>
           Create account
         </Button>
       </form>
-
-      <p className="mt-5 text-caption text-neutral-400 leading-relaxed">
-        By signing up, you agree to our{' '}
-        <a href="#" className="font-semibold text-neutral-600 hover:underline">Terms of Service</a>
-        {' '}and{' '}
-        <a href="#" className="font-semibold text-neutral-600 hover:underline">Privacy Policy</a>.
-      </p>
 
       <p className="mt-4 text-small text-neutral-500">
         Already have an account?{' '}

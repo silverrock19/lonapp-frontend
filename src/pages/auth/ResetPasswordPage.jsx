@@ -39,8 +39,11 @@ export default function ResetPasswordPage() {
 
   function validate() {
     const e = {};
-    if (!form.password) e.password = 'Password is required';
-    else if (form.password.length < 8) e.password = 'Must be at least 8 characters';
+    if (!form.password) {
+      e.password = 'Password is required';
+    } else if (strength.score < 4) {
+      e.password = 'Password is too weak — use 8+ characters, 1 uppercase, 1 number, and 1 special character';
+    }
     if (!form.confirm) e.confirm = 'Please confirm your password';
     else if (form.confirm !== form.password) e.confirm = 'Passwords do not match';
     return e;
@@ -82,7 +85,7 @@ export default function ResetPasswordPage() {
     <div className="text-center w-full">
       <Brandmark />
       <h1 className="text-h2 font-bold text-neutral-900">Set a new password</h1>
-      <p className="mt-2 mb-8 text-body text-neutral-500">Must be at least 8 characters.</p>
+      <p className="mt-2 mb-8 text-body text-neutral-500">Must be 8+ characters with uppercase, number, and special character.</p>
 
       <form onSubmit={handleSubmit} noValidate className="text-left space-y-5">
         <div className="space-y-1">
