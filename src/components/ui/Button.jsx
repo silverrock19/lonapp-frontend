@@ -13,15 +13,15 @@ const variants = {
 };
 
 const sizes = {
-  sm:      'h-8 px-3 text-small rounded-md',
-  default: 'h-10 px-4 text-body rounded-md',
-  lg:      'h-12 px-6 text-body-lg rounded-md',
+  sm:      'h-8 px-3 text-small',
+  default: 'h-10 px-4 text-body',
+  lg:      'h-12 px-6 text-body-lg',
 };
 
-export function Button({ variant = 'primary', size = 'default', loading = false, children, className, ...props }) {
+export function Button({ variant = 'primary', size = 'default', loading = false, pill = false, children, className, ...props }) {
   return (
     <button
-      className={cn(base, variants[variant], sizes[size], className)}
+      className={cn(base, variants[variant], sizes[size], pill ? 'rounded-full' : 'rounded-md', className)}
       disabled={props.disabled || loading}
       {...props}
     >

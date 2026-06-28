@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 import { Input } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
+import { Brandmark } from '../../components/ui/Brandmark.jsx';
 
 function passwordStrength(pw) {
   if (!pw) return { score: 0, label: '', color: '' };
@@ -62,7 +63,7 @@ export default function ResetPasswordPage() {
 
   if (done) {
     return (
-      <div className="space-y-6 text-center">
+      <div className="text-center space-y-5">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success-bg">
           <CheckCircle2 className="h-7 w-7 text-success" />
         </div>
@@ -70,7 +71,7 @@ export default function ResetPasswordPage() {
           <h1 className="text-h2 font-bold text-neutral-900">Password updated</h1>
           <p className="mt-2 text-body text-neutral-500">Your password has been changed successfully.</p>
         </div>
-        <Button className="w-full" size="lg" onClick={() => navigate('/login')}>
+        <Button pill className="w-full justify-center" size="lg" onClick={() => navigate('/login')}>
           Sign in
         </Button>
       </div>
@@ -78,80 +79,81 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5">
-      <div className="text-center">
-        <h1 className="text-h2 font-bold text-neutral-900">Set a new password</h1>
-        <p className="mt-1 text-body text-neutral-500">Must be at least 8 characters.</p>
-      </div>
+    <div className="text-center">
+      <Brandmark />
+      <h1 className="text-h2 font-bold text-neutral-900">Set a new password</h1>
+      <p className="mt-2 mb-7 text-body text-neutral-500">Must be at least 8 characters.</p>
 
-      <div className="space-y-1">
+      <form onSubmit={handleSubmit} noValidate className="text-left space-y-5">
+        <div className="space-y-1">
+          <div className="relative">
+            <Input
+              label="New password"
+              type={show.password ? 'text' : 'password'}
+              required
+              placeholder="••••••••"
+              value={form.password}
+              onChange={set('password')}
+              error={errors.password}
+              autoComplete="new-password"
+            />
+            <button
+              type="button"
+              onClick={() => setShow(s => ({ ...s, password: !s.password }))}
+              aria-label={show.password ? 'Hide password' : 'Show password'}
+              className="absolute right-3 top-8 text-neutral-400 hover:text-neutral-600 transition-colors"
+            >
+              {show.password ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+
+          {form.password && (
+            <div className="space-y-1 pt-1">
+              <div className="flex gap-1">
+                {[1, 2, 3, 4].map(n => (
+                  <div
+                    key={n}
+                    className={`h-1 flex-1 rounded-full transition-all ${strength.score >= n ? strength.color : 'bg-neutral-200'}`}
+                  />
+                ))}
+              </div>
+              <p className="text-caption text-neutral-500">
+                Strength: <span className="font-medium text-neutral-700">{strength.label}</span>
+              </p>
+            </div>
+          )}
+        </div>
+
         <div className="relative">
           <Input
-            label="New password"
-            type={show.password ? 'text' : 'password'}
+            label="Confirm password"
+            type={show.confirm ? 'text' : 'password'}
             required
             placeholder="••••••••"
-            value={form.password}
-            onChange={set('password')}
-            error={errors.password}
+            value={form.confirm}
+            onChange={set('confirm')}
+            error={errors.confirm}
             autoComplete="new-password"
           />
           <button
             type="button"
-            onClick={() => setShow(s => ({ ...s, password: !s.password }))}
-            aria-label={show.password ? 'Hide password' : 'Show password'}
+            onClick={() => setShow(s => ({ ...s, confirm: !s.confirm }))}
+            aria-label={show.confirm ? 'Hide password' : 'Show password'}
             className="absolute right-3 top-8 text-neutral-400 hover:text-neutral-600 transition-colors"
           >
-            {show.password ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {show.confirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
         </div>
 
-        {form.password && (
-          <div className="space-y-1 pt-1">
-            <div className="flex gap-1">
-              {[1, 2, 3, 4].map(n => (
-                <div
-                  key={n}
-                  className={`h-1 flex-1 rounded-full transition-all ${strength.score >= n ? strength.color : 'bg-neutral-200'}`}
-                />
-              ))}
-            </div>
-            <p className="text-caption text-neutral-500">
-              Strength: <span className="font-medium text-neutral-700">{strength.label}</span>
-            </p>
-          </div>
-        )}
-      </div>
+        <Button type="submit" pill className="w-full justify-center" size="lg" loading={loading}>
+          Reset password
+        </Button>
+      </form>
 
-      <div className="relative">
-        <Input
-          label="Confirm password"
-          type={show.confirm ? 'text' : 'password'}
-          required
-          placeholder="••••••••"
-          value={form.confirm}
-          onChange={set('confirm')}
-          error={errors.confirm}
-          autoComplete="new-password"
-        />
-        <button
-          type="button"
-          onClick={() => setShow(s => ({ ...s, confirm: !s.confirm }))}
-          aria-label={show.confirm ? 'Hide password' : 'Show password'}
-          className="absolute right-3 top-8 text-neutral-400 hover:text-neutral-600 transition-colors"
-        >
-          {show.confirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-        </button>
-      </div>
-
-      <Button type="submit" className="w-full" size="lg" loading={loading}>
-        Reset password
-      </Button>
-
-      <p className="text-center text-small text-neutral-500">
+      <p className="mt-5 text-small text-neutral-500">
         Remember it?{' '}
-        <Link to="/login" className="font-medium text-primary-600 hover:underline">Sign in</Link>
+        <Link to="/login" className="font-bold text-primary-600 hover:underline">Sign in</Link>
       </p>
-    </form>
+    </div>
   );
 }

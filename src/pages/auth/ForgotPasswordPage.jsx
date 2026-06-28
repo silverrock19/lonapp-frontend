@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Mail } from 'lucide-react';
 import { Input } from '../../components/ui/Input.jsx';
 import { Button } from '../../components/ui/Button.jsx';
+import { Brandmark } from '../../components/ui/Brandmark.jsx';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -27,63 +28,62 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <div className="space-y-6 text-center">
+      <div className="text-center space-y-5">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary-50">
           <Mail className="h-7 w-7 text-primary-500" />
         </div>
         <div>
           <h1 className="text-h2 font-bold text-neutral-900">Check your email</h1>
           <p className="mt-2 text-body text-neutral-500">
-            We sent a reset link to <span className="font-medium text-neutral-700">{email}</span>
+            We sent a reset link to{' '}
+            <strong className="text-neutral-700">{email}</strong>
           </p>
           <p className="mt-1 text-small text-neutral-400">Didn't get it? Check your spam folder.</p>
         </div>
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={() => { setSent(false); setEmail(''); }}
-        >
+        <Button variant="outline" pill className="w-full justify-center" size="lg" onClick={() => { setSent(false); setEmail(''); }}>
           Try a different email
         </Button>
-        <Link to="/login" className="flex items-center justify-center gap-1.5 text-small text-neutral-500 hover:text-neutral-700">
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back to sign in
+        <Link
+          to="/login"
+          className="flex items-center justify-center gap-1.5 text-small text-neutral-500 hover:text-neutral-700"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" /> Back to sign in
         </Link>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5">
-      <div className="text-center">
-        <h1 className="text-h2 font-bold text-neutral-900">Forgot your password?</h1>
-        <p className="mt-2 text-body text-neutral-500">
-          Enter your email and we'll send you a reset link.
-        </p>
-      </div>
+    <div className="text-center">
+      <Brandmark />
+      <h1 className="text-h2 font-bold text-neutral-900">Forgot your password?</h1>
+      <p className="mt-2 mb-7 text-body text-neutral-500">
+        Enter your email and we'll send you a reset link.
+      </p>
 
-      <Input
-        label="Email address"
-        type="email"
-        required
-        placeholder="you@company.com"
-        value={email}
-        onChange={e => { setEmail(e.target.value); setError(''); }}
-        error={error}
-        autoComplete="email"
-      />
+      <form onSubmit={handleSubmit} noValidate className="text-left space-y-5">
+        <Input
+          label="Email address"
+          type="email"
+          required
+          placeholder="you@company.com"
+          value={email}
+          onChange={e => { setEmail(e.target.value); setError(''); }}
+          error={error}
+          autoComplete="email"
+        />
 
-      <Button type="submit" className="w-full" size="lg" loading={loading}>
-        Send reset link
-      </Button>
+        <Button type="submit" pill className="w-full justify-center" size="lg" loading={loading}>
+          Send reset link
+        </Button>
+      </form>
 
       <Link
         to="/login"
-        className="flex items-center justify-center gap-1.5 text-small text-neutral-500 hover:text-neutral-700"
+        className="mt-5 flex items-center justify-center gap-1.5 text-small text-neutral-500 hover:text-neutral-700"
       >
-        <ArrowLeft className="h-3.5 w-3.5" />
-        Back to sign in
+        <ArrowLeft className="h-3.5 w-3.5" /> Back to sign in
       </Link>
-    </form>
+    </div>
   );
 }
