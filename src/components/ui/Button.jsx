@@ -11,6 +11,7 @@ const variants = {
   outline:   'border border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50',
   ghost:     'bg-transparent text-neutral-600 hover:bg-neutral-100',
   danger:    'bg-error text-white hover:bg-error-text',
+  warning:   'border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 focus-visible:ring-2 focus-visible:ring-amber-100',
 };
 
 const sizes = {
@@ -23,7 +24,7 @@ const Button = ({ variant = 'primary', size = 'default', loading = false, pill =
   return (
     <button
       className={cn(base, variants[variant], sizes[size], className)}
-      style={{ borderRadius: 8, ...props.style }}
+      style={{ borderRadius: pill ? 9999 : 8, ...props.style }}
       disabled={props.disabled || loading}
       {...props}
     >

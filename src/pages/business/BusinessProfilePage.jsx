@@ -1,14 +1,15 @@
-﻿import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Plus, MapPin, Phone, Building2, Pencil, Trash2, CreditCard,
   AlertTriangle, CheckCircle2, Lock, X, ChevronDown,
-  Upload, CalendarDays, FileText,
+  Upload, CalendarDays, FileText, Crop, ImageOff,
 } from 'lucide-react';
 import Input from '../../components/forms/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
 import Alert from '../../components/ui/Alert.jsx';
 import SectionCard from '../../components/ui/SectionCard.jsx';
 import { businessProfile } from '../../data/mock.js';
+import { useLogo } from '../../context/LogoContext.jsx';
 
 const TABS = ['Company', 'Outlets', 'Services', 'Payments', 'Documents', 'Holiday Hours'];
 const DAYS  = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -63,6 +64,16 @@ function CompanyTab() {
   const { company, meta } = businessProfile;
   const [form, setForm]     = useState({ ...company });
   const [saved, setSaved]   = useState(null); // null | 'saved' | 'reapproval'
+  const { logoUrl, setLogoUrl } = useLogo();
+  const logoFileRef = useRef(null);
+
+  function handleLogoUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => { setLogoUrl(ev.target.result); setSaved(null); };
+    reader.readAsDataURL(file);
+  }
 
   const criticalDirty =
     (form.name !== company.name) ||
@@ -173,16 +184,86 @@ function CompanyTab() {
         )}
       </SectionCard>
 
-      {/* Logo */}
-      <SectionCard title="Business logo" description="Displayed on customer-facing pages and receipts">
-        <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-xl bg-primary-100">
-            <Building2 className="h-7 w-7 text-primary-600" />
+      {/* Logo (US-0028) */}
+      <SectionCard title="Business logo" description="Appears in the sidebar, public profile, and on receipts">
+        <div className="space-y-5">
+          {/* Upload row */}
+          <div className="flex items-center gap-5">
+            {/* Preview circle */}
+            <div
+              className="relative flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 bg-neutral-50"
+              style={{ borderColor: logoUrl ? '#BAD4F5' : '#E5E7EB' }}
+            >
+              {logoUrl ? (
+                <img src={logoUrl} alt="Business logo" className="h-full w-full object-contain p-1" />
+              ) : (
+                <Building2 className="h-10 w-10 text-neutral-300" />
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" size="sm" onClick={() => logoFileRef.current?.click()}>
+                  <Upload className="h-3.5 w-3.5" /> {logoUrl ? 'Replace logo' : 'Upload logo'}
+                </Button>
+                {logoUrl && (
+                  <Button
+                    variant="outline" size="sm"
+                    onClick={() => setLogoUrl(null)}
+                    style={{ borderColor: '#D92D20', color: '#D92D20' }}
+                  >
+                    <ImageOff className="h-3.5 w-3.5" /> Remove
+                  </Button>
+                )}
+              </div>
+              <p className="text-caption text-neutral-400">
+                PNG, JPG or SVG · max 5 MB · recommended 256 × 256 px
+              </p>
+              <input
+                ref={logoFileRef}
+                type="file"
+                accept="image/png,image/jpeg,image/svg+xml"
+                className="hidden"
+                onChange={handleLogoUpload}
+              />
+            </div>
           </div>
-          <div>
-            <Button variant="outline" size="sm">Upload logo</Button>
-            <p className="mt-1.5 text-caption text-neutral-400">PNG, JPG or SVG · max 5 MB · recommended 256×256</p>
-          </div>
+
+          {/* App preview strip (only when logo is set) */}
+          {logoUrl && (
+            <div>
+              <p className="mb-3 text-small font-medium text-neutral-700">How it appears across the app</p>
+              <div className="flex items-end gap-6">
+                {/* Sidebar preview */}
+                <div className="flex flex-col items-center gap-1.5">
+                  <div
+                    className="flex h-10 w-40 items-center gap-2 rounded-md border border-neutral-200 bg-white px-3"
+                  >
+                    <img src={logoUrl} alt="" className="h-6 w-auto max-w-[100px] object-contain" />
+                  </div>
+                  <p className="text-[10px] text-neutral-400">Sidebar</p>
+                </div>
+
+                {/* Profile avatar */}
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl border border-neutral-200 bg-white">
+                    <img src={logoUrl} alt="" className="h-8 w-8 object-contain" />
+                  </div>
+                  <p className="text-[10px] text-neutral-400">Profile</p>
+                </div>
+
+                {/* Receipt header */}
+                <div className="flex flex-col items-center gap-1.5">
+                  <div
+                    className="flex h-10 w-28 items-center justify-center rounded border border-neutral-200 bg-white"
+                  >
+                    <img src={logoUrl} alt="" className="h-7 w-auto max-w-[90px] object-contain" />
+                  </div>
+                  <p className="text-[10px] text-neutral-400">Receipt</p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </SectionCard>
 

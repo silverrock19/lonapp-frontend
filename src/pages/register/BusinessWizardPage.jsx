@@ -107,6 +107,7 @@ const BusinessWizardPage = () => {
           {step === 3 && (
             <Step4Payment
               data={draft.payment}
+              country={draft.company.country}
               onNext={handleNext4}
               onBack={() => setStep(2)}
               onSaveDraft={d => saveDraft('payment', d)}

@@ -1,14 +1,15 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, ClipboardList, Store, Users, Tag, Wallet,
-  Building2, Settings, Bell, Search, LogOut,
+  Building2, Settings, Bell, Search, LogOut, UserCircle2, BookUser,
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { cn } from '../../utils/classNames.js';
+import { useLogo } from '../../context/LogoContext.jsx';
 import { selectUser } from '../../store/slices/authSlice.js';
 import { logout } from '../../store/actions/auth.js';
 
-const navGroups = [
+const ALL_NAV_GROUPS = [
   {
     label: 'Operations',
     items: [
@@ -20,19 +21,37 @@ const navGroups = [
   {
     label: 'Management',
     items: [
-      { to: '/staff',    icon: Users,     label: 'Staff & Roles'      },
-      { to: '/services', icon: Tag,       label: 'Services & Pricing' },
-      { to: '/payments', icon: Wallet,    label: 'Payments'           },
+      { to: '/customers', icon: BookUser,  label: 'Customers'          },
+      { to: '/staff',     icon: Users,     label: 'Staff & Roles'      },
+      { to: '/services',  icon: Tag,       label: 'Services & Pricing' },
+      { to: '/payments',  icon: Wallet,    label: 'Payments'           },
     ],
   },
   {
     label: 'Account',
     items: [
-      { to: '/business', icon: Building2, label: 'Business Profile' },
-      { to: '/settings', icon: Settings,  label: 'Settings'         },
+      { to: '/business', icon: Building2,   label: 'Business Profile' },
+      { to: '/settings', icon: Settings,    label: 'Settings'         },
+      { to: '/profile',  icon: UserCircle2, label: 'My Profile'       },
     ],
   },
 ];
+
+// Paths accessible per role (null = all paths allowed)
+const ROLE_ALLOWED_PATHS = {
+  owner:        null,
+  ops_manager:  null,
+  cashier:      new Set(['/', '/orders', '/customers', '/profile', '/settings']),
+  receptionist: new Set(['/', '/orders', '/customers', '/profile', '/settings']),
+};
+
+function getNavGroups(role) {
+  const allowed = ROLE_ALLOWED_PATHS[role] ?? null;
+  if (!allowed) return ALL_NAV_GROUPS;
+  return ALL_NAV_GROUPS
+    .map(group => ({ ...group, items: group.items.filter(item => allowed.has(item.to)) }))
+    .filter(group => group.items.length > 0);
+}
 
 function initials(name) {
   if (!name) return 'U';
@@ -42,6 +61,8 @@ function initials(name) {
 const AppShell = () => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
+  const { logoUrl } = useLogo();
+  const navGroups = getNavGroups(user?.role);
 
   function handleLogout() {
     logout();
@@ -56,7 +77,11 @@ const AppShell = () => {
 
         {/* Logo */}
         <div className="flex h-14 shrink-0 items-center border-b border-neutral-100 px-4">
-          <img src="/logo.png" alt="LonApp" className="h-8 w-auto object-contain" />
+          {logoUrl ? (
+            <img src={logoUrl} alt="Business logo" className="h-8 w-auto max-w-[120px] object-contain" />
+          ) : (
+            <img src="/logo.png" alt="LonApp" className="h-8 w-auto object-contain" />
+          )}
         </div>
 
         {/* Nav */}
@@ -142,7 +167,8 @@ const AppShell = () => {
               <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-error ring-2 ring-white" aria-hidden="true" />
             </button>
             <button
-              aria-label="Account"
+              aria-label="My profile"
+              onClick={() => navigate('/profile')}
               className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-caption font-semibold text-primary-700 hover:ring-2 hover:ring-primary-200 transition-all"
             >
               {initials(user?.name)}

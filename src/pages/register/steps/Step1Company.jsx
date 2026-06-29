@@ -208,10 +208,10 @@ const Step1Company = ({ data, onNext, onSaveDraft }) => {
                 }`}
               >
                 <input type="file" accept=".pdf,.jpg,.jpeg,.png" className="sr-only"
-                  onChange={e => e.target.files[0] && set('registrationDoc', e.target.files[0].name)} />
+                  onChange={e => { if (e.target.files[0]) set('registrationDoc', { name: e.target.files[0].name, file: e.target.files[0] }); }} />
                 <Paperclip className="h-4 w-4 text-neutral-400 flex-shrink-0" />
                 <span className={f.registrationDoc ? 'text-neutral-800' : 'text-neutral-400'}>
-                  {f.registrationDoc || 'Upload PDF or JPG'}
+                  {f.registrationDoc?.name ?? f.registrationDoc ?? 'Upload PDF or JPG'}
                 </span>
               </label>
               {errors.registrationDoc
@@ -232,9 +232,9 @@ const Step1Company = ({ data, onNext, onSaveDraft }) => {
             className="flex cursor-pointer items-center gap-3 border border-dashed border-neutral-300 px-4 py-3 text-body hover:border-primary-300 hover:bg-primary-50 transition-all"
           >
             <input type="file" accept=".png,.jpg,.jpeg,.svg" className="sr-only"
-              onChange={e => e.target.files[0] && set('logo', e.target.files[0].name)} />
+              onChange={e => { if (e.target.files[0]) set('logo', { name: e.target.files[0].name, file: e.target.files[0] }); }} />
             <Paperclip className="h-4 w-4 text-neutral-400 flex-shrink-0" />
-            <span className="flex-1 text-neutral-400">{f.logo || 'Click to upload your logo'}</span>
+            <span className="flex-1 text-neutral-400">{f.logo?.name ?? f.logo ?? 'Click to upload your logo'}</span>
             <span className="text-caption text-neutral-400">PNG, JPG, SVG · 256×256</span>
           </label>
         </div>

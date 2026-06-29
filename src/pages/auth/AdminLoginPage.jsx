@@ -16,7 +16,13 @@ const AdminLoginPage = () => {
 
   function validate() {
     const e = {};
-    if (!form.identifier) e.identifier = 'Email or phone is required';
+    if (!form.identifier) {
+      e.identifier = 'Email or phone is required';
+    } else {
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.identifier);
+      const isPhone = /^\+?[\d\s\-().]{7,}$/.test(form.identifier);
+      if (!isEmail && !isPhone) e.identifier = 'Enter a valid email address or phone number';
+    }
     if (!form.password) e.password = 'Password is required';
     return e;
   }
