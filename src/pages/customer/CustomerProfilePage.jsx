@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import CustomerSettingsLayout, { SettingsSection } from '../../components/layout/CustomerSettingsLayout.jsx';
 import { MOCK_CUSTOMER } from '../../data/mockCustomer.js';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 
 // ── Mock initial profile ──────────────────────────────────────────────────────
 

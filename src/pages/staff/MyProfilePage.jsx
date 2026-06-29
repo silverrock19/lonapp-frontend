@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Lock, Upload, Check, Camera, ShieldCheck } from 'lucide-react';
 import Button from '../../components/ui/Button.jsx';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 import Alert from '../../components/ui/Alert.jsx';
 import { ROLES, STAFF_STATUS } from '../../data/mockStaff.js';
 

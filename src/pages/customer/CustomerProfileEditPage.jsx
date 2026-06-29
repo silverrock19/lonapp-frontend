@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import { MOCK_CUSTOMER } from '../../data/mockCustomer.js';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 
 const CustomerProfileEditPage = () => {
   const navigate = useNavigate();

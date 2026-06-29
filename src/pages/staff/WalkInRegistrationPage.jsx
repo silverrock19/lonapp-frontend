@@ -7,7 +7,7 @@ import {
   User, Building2, ChevronDown, ChevronUp, CheckCircle2,
   AlertTriangle, Loader2, MapPin, ClipboardList, Info,
 } from 'lucide-react';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
 
 // ─── Mock data ────────────────────────────────────────────────────────────────

@@ -1,7 +1,7 @@
 ﻿import { useState } from 'react';
 import { Home, Building2, MapPin, Plus, Pencil, Trash2, X, Check, ChevronLeft, Crosshair, Loader2 } from 'lucide-react';
 import Button from '../../components/ui/Button.jsx';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
