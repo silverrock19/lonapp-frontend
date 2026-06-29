@@ -28,6 +28,30 @@ export const MOCK_FAVORITE_LAUNDRIES = [
   { id: 2, name: 'FreshPress Cantonments', address: 'Cantonments, Accra', rating: 4.6, orders: 11, open: true },
   { id: 3, name: 'SpinCycle Airport City', address: 'Airport City, Accra', rating: 4.3, orders: 5, open: false },
 ];
+export const MOCK_ADDRESSES = [
+  {
+    id: 1, label: 'Home', type: 'home',
+    street: '14 Cantonments Road', suburb: 'Cantonments', city: 'Accra',
+    gps: 'GA-045-3721', isDefault: true,
+  },
+  {
+    id: 2, label: 'Office', type: 'office',
+    street: 'Airport City Mall, 2nd Floor', suburb: 'Airport Residential', city: 'Accra',
+    gps: 'GA-184-7623', isDefault: false,
+  },
+  {
+    id: 3, label: "Mum's place", type: 'other',
+    street: '5 Adenta Highway', suburb: 'Adenta', city: 'Accra',
+    gps: '', isDefault: false,
+  },
+];
+export const MOCK_SOCIAL = {
+  google:   { firstName: 'Adwoa',  lastName: 'Mensah',  email: 'adwoa.mensah@gmail.com',   provider: 'Google',   color: '#4285F4' },
+  facebook: { firstName: 'Kofi',   lastName: 'Asante',  email: 'kofi.asante@outlook.com',  provider: 'Facebook', color: '#1877F2' },
+  apple:    { firstName: 'Ama',    lastName: 'Boateng', email: 'ama.boateng@icloud.com',   provider: 'Apple',    color: '#1D1D1F' },
+  whatsapp: { firstName: '',       lastName: '',          email: '',                          provider: 'WhatsApp', color: '#25D366' },
+};
+export const MOCK_PHONE_HINT = '+233 24 *** 7890';
 export const MOCK_ACTIVITIES = [
   { id: 1, type: 'LOGIN_SUCCESS', label: 'Signed in', desc: 'Signed in from Chrome on iPhone', time: '2 hours ago', device: 'iPhone · Chrome', location: 'Accra, Ghana', status: 'success', icon: 'LogIn' },
   { id: 2, type: 'ORDER_CREATED', label: 'Order placed', desc: 'Order #ORD-2024-1247 placed at CleanPro Osu', time: 'Yesterday 2:34 PM', device: 'iPhone · LonApp', location: 'Accra, Ghana', status: 'success', icon: 'ShoppingBag' },

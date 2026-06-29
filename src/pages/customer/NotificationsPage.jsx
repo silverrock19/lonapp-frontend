@@ -57,14 +57,14 @@ const CATEGORIES = [
   },
 ];
 
-function buildDefaults() {
+const buildDefaults = () => {
   const p = {};
   CATEGORIES.forEach(c => { p[c.key] = { ...c.defaults }; });
   return p;
-}
+};
 
 // ── Toggle switch ─────────────────────────────────────────────────────────────
-function Toggle({ on, onChange, locked }) {
+const Toggle = ({ on, onChange, locked }) => {
   if (locked) {
     return (
       <div
@@ -86,7 +86,7 @@ function Toggle({ on, onChange, locked }) {
       <span className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${on ? 'translate-x-5' : 'translate-x-0'}`} />
     </button>
   );
-}
+};
 
 const NAV_SECTIONS = [
   { id: 'global', icon: Bell,   label: 'Master toggle' },
@@ -96,7 +96,7 @@ const NAV_SECTIONS = [
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
-export default function NotificationsPage() {
+const NotificationsPage = () => {
   const [globalOn, setGlobalOn] = useState(true);
   const [prefs, setPrefs]       = useState(buildDefaults);
   const [savedPrefs, setSaved]  = useState(null);
@@ -108,16 +108,16 @@ export default function NotificationsPage() {
     ? JSON.stringify(prefs) !== JSON.stringify(savedPrefs)
     : false;
 
-  function toggle(cat, channel) {
+  const toggle = (cat, channel) => {
     setPrefs(p => ({ ...p, [cat]: { ...p[cat], [channel]: !p[cat][channel] } }));
-  }
+  };
 
-  function showToast(msg) {
+  const showToast = msg => {
     setToast(msg);
     setTimeout(() => setToast(null), 2500);
-  }
+  };
 
-  async function handleSave() {
+  const handleSave = async () => {
     setSaving(true);
     try {
       await new Promise(r => setTimeout(r, 600));
@@ -128,9 +128,9 @@ export default function NotificationsPage() {
     }
   }
 
-  function handleDiscard() {
+  const handleDiscard = () => {
     if (savedPrefs) setPrefs(JSON.parse(JSON.stringify(savedPrefs)));
-  }
+  };
 
   return (
     <CustomerSettingsLayout
@@ -288,4 +288,6 @@ export default function NotificationsPage() {
       </SettingsSection>
     </CustomerSettingsLayout>
   );
-}
+};
+
+export default NotificationsPage;

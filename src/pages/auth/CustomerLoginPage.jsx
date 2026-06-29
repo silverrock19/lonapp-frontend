@@ -11,17 +11,8 @@ import GoogleIcon from '../../components/icons/GoogleIcon.jsx';
 import FacebookIcon from '../../components/icons/FacebookIcon.jsx';
 import AppleIcon from '../../components/icons/AppleIcon.jsx';
 import WhatsAppIcon from '../../components/icons/WhatsAppIcon.jsx';
+import { MOCK_SOCIAL, MOCK_PHONE_HINT } from '../../data/mockCustomer.js';
 
-// ── Mock social profiles returned by OAuth providers ─────────────────────────
-const MOCK_SOCIAL = {
-  google:   { firstName: 'Adwoa',  lastName: 'Mensah',  email: 'adwoa.mensah@gmail.com',   provider: 'Google',   color: '#4285F4' },
-  facebook: { firstName: 'Kofi',   lastName: 'Asante',  email: 'kofi.asante@outlook.com',  provider: 'Facebook', color: '#1877F2' },
-  apple:    { firstName: 'Ama',    lastName: 'Boateng', email: 'ama.boateng@icloud.com',   provider: 'Apple',    color: '#1D1D1F' },
-  whatsapp: { firstName: '',       lastName: '',          email: '',                          provider: 'WhatsApp', color: '#25D366' },
-};
-
-// Mock: this account has 2FA enabled
-const MOCK_PHONE_HINT = '+233 24 *** 7890';
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_SECONDS = 15 * 60;
 

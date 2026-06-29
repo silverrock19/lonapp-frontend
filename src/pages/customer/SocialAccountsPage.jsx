@@ -45,7 +45,7 @@ const INITIAL_ACCOUNTS = [
   },
 ];
 
-function Toast({ toast }) {
+const Toast = ({ toast }) => {
   if (!toast) return null;
   const isSuccess = toast.type === 'success';
   return (
@@ -59,9 +59,9 @@ function Toast({ toast }) {
       </div>
     </div>
   );
-}
+};
 
-function UnlinkModal({ provider, onClose, onConfirm }) {
+const UnlinkModal = ({ provider, onClose, onConfirm }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ background: 'rgba(0,0,0,0.4)' }}>
       <div className="w-full max-w-[430px] rounded-t-2xl bg-white px-5 pt-6 pb-10">
@@ -94,9 +94,9 @@ function UnlinkModal({ provider, onClose, onConfirm }) {
       </div>
     </div>
   );
-}
+};
 
-function LinkModal({ provider, onClose, onConfirm }) {
+const LinkModal = ({ provider, onClose, onConfirm }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ background: 'rgba(0,0,0,0.4)' }}>
       <div className="w-full max-w-[430px] rounded-t-2xl bg-white px-5 pt-6 pb-10">
@@ -130,7 +130,7 @@ function LinkModal({ provider, onClose, onConfirm }) {
       </div>
     </div>
   );
-}
+};
 
 const SocialAccountsPage = () => {
   const navigate = useNavigate();
@@ -140,30 +140,30 @@ const SocialAccountsPage = () => {
 
   const linkedCount = accounts.filter((a) => a.linked).length;
 
-  function showToast(message, type = 'success') {
+  const showToast = (message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
-  }
+  };
 
-  function handleAction(account) {
+  const handleAction = account => {
     if (account.linked) {
       setModal({ type: 'unlink', key: account.key, label: account.label });
     } else {
       setModal({ type: 'link', key: account.key, label: account.label });
     }
-  }
+  };
 
-  function confirmUnlink() {
-    setAccounts((prev) =>
-      prev.map((a) => (a.key === modal.key ? { ...a, linked: false, email: null, phone: null } : a))
+  const confirmUnlink = () => {
+    setAccounts(prev =>
+      prev.map(a => (a.key === modal.key ? { ...a, linked: false, email: null, phone: null } : a))
     );
     setModal(null);
     showToast(`${modal.label} account unlinked.`, 'success');
-  }
+  };
 
-  function confirmLink() {
-    setAccounts((prev) =>
-      prev.map((a) =>
+  const confirmLink = () => {
+    setAccounts(prev =>
+      prev.map(a =>
         a.key === modal.key
           ? { ...a, linked: true, email: a.key === 'google' ? 'adwoa.mensah@gmail.com' : null }
           : a
@@ -171,7 +171,7 @@ const SocialAccountsPage = () => {
     );
     setModal(null);
     showToast(`${modal.label} account linked successfully.`, 'success');
-  }
+  };
 
   return (
     <div className="min-h-screen pb-24" style={{ background: '#FAFAF8' }}>

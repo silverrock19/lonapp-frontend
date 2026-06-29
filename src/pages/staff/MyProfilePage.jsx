@@ -3,29 +3,7 @@ import { Lock, Upload, Check, Camera, ShieldCheck } from 'lucide-react';
 import Button from '../../components/ui/Button.jsx';
 import Input from '../../components/forms/Input.jsx';
 import Alert from '../../components/ui/Alert.jsx';
-import { ROLES, STAFF_STATUS } from '../../data/mockStaff.js';
-
-// ─── Mock data for the logged-in staff member ──────────────────────────────────
-
-const MOCK_ME = {
-  fullName:    'Akua Darko',
-  displayName: 'Akua D.',
-  email:       'akua.darko@sparkle.com',
-  phone:       '+233 24 456 7890',
-  whatsapp:    '+233 24 456 7890',
-  // Emergency contact
-  emergencyName:         'Kofi Darko',
-  emergencyPhone:        '+233 24 999 8888',
-  emergencyRelationship: 'Spouse',
-  // Admin-controlled (read-only for self)
-  roleCode:       'ops_manager',
-  status:         'active',
-  employeeId:     'EMP-003',
-  outlet:         'HQ — Osu',
-  startDate:      '3 Feb 2025',
-  department:     'Operations',
-  employmentType: 'Full-time',
-};
+import { ROLES, STAFF_STATUS, MOCK_ME } from '../../data/mockStaff.js';
 
 const AVATAR_PALETTE = [
   { background: '#EBF2FD', color: '#0C5FC5' },

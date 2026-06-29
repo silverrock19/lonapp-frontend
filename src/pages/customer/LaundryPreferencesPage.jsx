@@ -17,8 +17,7 @@ const NAV_SECTIONS = [
   { id: 'instructions', icon: FileText, label: 'Special instructions'},
 ];
 
-function initState() {
-  return {
+const initState = () => ({
     fabrics:       MOCK_PREFERENCES.fabricCare ?? ['Cotton', 'Denim'],
     temperature:   MOCK_PREFERENCES.waterTemperature ?? 'Cold',
     detergent:     MOCK_PREFERENCES.detergent ?? 'Unscented / Hypoallergenic',
@@ -27,11 +26,10 @@ function initState() {
     dryingMethod:  MOCK_PREFERENCES.dryingMethod ?? 'Air dry',
     heat:          'Low',
     instructions:  MOCK_PREFERENCES.instructions ?? '',
-  };
-}
+});
 
 // Pill toggle
-function Pill({ label, selected, onClick }) {
+const Pill = ({ label, selected, onClick }) => {
   return (
     <button
       type="button"
@@ -45,10 +43,10 @@ function Pill({ label, selected, onClick }) {
       {label}
     </button>
   );
-}
+};
 
 // Toggle switch row
-function ToggleRow({ label, sub, on, onChange }) {
+const ToggleRow = ({ label, sub, on, onChange }) => {
   return (
     <div className="flex items-center justify-between py-3 border-b border-neutral-100 last:border-0">
       <div>
@@ -65,9 +63,9 @@ function ToggleRow({ label, sub, on, onChange }) {
       </button>
     </div>
   );
-}
+};
 
-export default function LaundryPreferencesPage() {
+const LaundryPreferencesPage = () => {
   const [form, setForm]   = useState(initState);
   const [saved, setSaved] = useState(initState);
   const [saving, setSaving] = useState(false);
@@ -75,18 +73,16 @@ export default function LaundryPreferencesPage() {
 
   const dirty = JSON.stringify(form) !== JSON.stringify(saved);
 
-  function set(field, value) {
-    setForm(f => ({ ...f, [field]: value }));
-  }
+  const set = (field, value) => setForm(f => ({ ...f, [field]: value }));
 
-  function toggleFabric(fabric) {
+  const toggleFabric = fabric => {
     setForm(f => ({
       ...f,
       fabrics: f.fabrics.includes(fabric) ? f.fabrics.filter(x => x !== fabric) : [...f.fabrics, fabric],
     }));
-  }
+  };
 
-  async function handleSave() {
+  const handleSave = async () => {
     setSaving(true);
     try {
       await new Promise(r => setTimeout(r, 700));
@@ -208,4 +204,6 @@ export default function LaundryPreferencesPage() {
       </SettingsSection>
     </CustomerSettingsLayout>
   );
-}
+};
+
+export default LaundryPreferencesPage;

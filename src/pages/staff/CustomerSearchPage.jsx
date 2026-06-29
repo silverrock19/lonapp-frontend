@@ -7,6 +7,7 @@ import {
   ChevronRight, AlertCircle, ExternalLink, UserPlus,
   LayoutGrid, List,
 } from 'lucide-react';
+import { MOCK_CUSTOMERS } from '../../data/mockStaff.js';
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
@@ -29,116 +30,6 @@ const ORDER_STATUS = {
   'In Transit':{ bg: '#FFF4E0', color: '#945800' },
   Cancelled:   { bg: '#FEE2E2', color: '#991B1B' },
 };
-
-const MOCK_CUSTOMERS = [
-  {
-    id: 'CUST-00421',
-    name: 'Abena Mensah',
-    phone: '+233 24 487 6543',
-    email: 'abena.mensah@email.com',
-    status: 'Active',
-    tier: 'Gold',
-    registeredDate: '2023-03-12',
-    hasPendingOrders: true,
-    totalOrders: 38,
-    totalSpend: 'GH₵ 4,820',
-    preferredOutlet: 'Osu HQ',
-    addresses: [
-      { label: 'Home', line1: '14 Cantonments Road', area: 'Cantonments', city: 'Accra', gps: 'GA-042-5621', primary: true },
-      { label: 'Office', line1: '1 Independence Ave', area: 'Ridge', city: 'Accra', gps: 'GA-018-7890', primary: false },
-    ],
-    recentOrders: [
-      { id: 'ORD-2024-1847', date: 'Dec 15, 2024', items: '8 items', amount: 'GH₵ 285.00', status: 'Completed' },
-      { id: 'ORD-2024-1701', date: 'Nov 28, 2024', items: '3 items', amount: 'GH₵ 95.00',  status: 'Completed' },
-      { id: 'ORD-2025-0041', date: 'Jan 8, 2025',  items: '12 items', amount: 'GH₵ 420.00', status: 'Processing' },
-    ],
-    lastOrder: { date: 'Jan 8, 2025', amount: 'GH₵ 420.00' },
-  },
-  {
-    id: 'CUST-00189',
-    name: 'Kwame Osei',
-    phone: '+233 20 012 3456',
-    email: 'kwame.osei@gmail.com',
-    status: 'Active',
-    tier: 'Silver',
-    registeredDate: '2022-11-05',
-    hasPendingOrders: false,
-    totalOrders: 14,
-    totalSpend: 'GH₵ 970',
-    preferredOutlet: 'Spintex',
-    addresses: [
-      { label: 'Home', line1: '22 Spintex Road', area: 'Spintex', city: 'Accra', gps: 'GA-154-3301', primary: true },
-    ],
-    recentOrders: [
-      { id: 'ORD-2025-0011', date: 'Jan 3, 2025',  items: '2 items', amount: 'GH₵ 85.00',  status: 'Completed' },
-      { id: 'ORD-2024-1604', date: 'Nov 14, 2024', items: '5 items', amount: 'GH₵ 150.00', status: 'Completed' },
-    ],
-    lastOrder: { date: 'Jan 3, 2025', amount: 'GH₵ 85.00' },
-  },
-  {
-    id: 'CUST-00734',
-    name: 'Ama Boateng',
-    phone: '+233 27 765 4321',
-    email: 'ama.b@outlook.com',
-    status: 'Suspended',
-    tier: 'Bronze',
-    registeredDate: '2023-08-19',
-    hasPendingOrders: false,
-    totalOrders: 4,
-    totalSpend: 'GH₵ 142',
-    preferredOutlet: 'Osu HQ',
-    addresses: [
-      { label: 'Home', line1: '7 Osu Badu Street', area: 'Osu', city: 'Accra', gps: 'GA-033-1190', primary: true },
-    ],
-    recentOrders: [
-      { id: 'ORD-2024-1209', date: 'Oct 28, 2024', items: '1 item', amount: 'GH₵ 42.50', status: 'Completed' },
-    ],
-    lastOrder: { date: 'Oct 28, 2024', amount: 'GH₵ 42.50' },
-  },
-  {
-    id: 'CUST-00056',
-    name: 'Yaw Darko',
-    phone: '+233 50 198 7654',
-    email: 'yaw.darko@business.gh',
-    status: 'Active',
-    tier: 'VIP',
-    registeredDate: '2021-06-30',
-    hasPendingOrders: true,
-    totalOrders: 112,
-    totalSpend: 'GH₵ 28,450',
-    preferredOutlet: 'Osu HQ',
-    addresses: [
-      { label: 'Office', line1: 'Plot 12, Airport City', area: 'Airport City', city: 'Accra', gps: 'GA-011-0044', primary: true },
-      { label: 'Home', line1: '4 Labone Close', area: 'Labone', city: 'Accra', gps: 'GA-028-9912', primary: false },
-    ],
-    recentOrders: [
-      { id: 'ORD-2025-0039', date: 'Jan 9, 2025',  items: '24 items', amount: 'GH₵ 1,240.00', status: 'In Transit' },
-      { id: 'ORD-2024-1890', date: 'Dec 22, 2024', items: '18 items', amount: 'GH₵ 890.00',   status: 'Completed' },
-      { id: 'ORD-2024-1756', date: 'Dec 1, 2024',  items: '9 items',  amount: 'GH₵ 410.00',   status: 'Completed' },
-    ],
-    lastOrder: { date: 'Jan 9, 2025', amount: 'GH₵ 1,240.00' },
-  },
-  {
-    id: 'CUST-01102',
-    name: 'Efua Asante',
-    phone: '+233 24 400 1122',
-    email: 'efua.asante@yahoo.com',
-    status: 'Inactive',
-    tier: 'Bronze',
-    registeredDate: '2024-01-08',
-    hasPendingOrders: false,
-    totalOrders: 2,
-    totalSpend: 'GH₵ 44',
-    preferredOutlet: 'Tema',
-    addresses: [
-      { label: 'Home', line1: '5B Community 11', area: 'Tema', city: 'Tema', gps: 'TM-002-5501', primary: true },
-    ],
-    recentOrders: [
-      { id: 'ORD-2024-0831', date: 'Jul 14, 2024', items: '1 item', amount: 'GH₵ 22.00', status: 'Completed' },
-    ],
-    lastOrder: { date: 'Jul 14, 2024', amount: 'GH₵ 22.00' },
-  },
-];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -171,7 +62,7 @@ const detectSearchType = (query) => {
 const searchTypeLabel = (type) =>
   ({ phone: 'Searching by phone', email: 'Searching by email', id: 'Searching by customer ID', name: 'Searching by name' }[type]);
 
-function filterCustomers(customers, query, filters) {
+const filterCustomers = (customers, query, filters) => {
   let results = [...customers];
   if (query.trim()) {
     const q = query.trim().toLowerCase();
@@ -189,7 +80,7 @@ function filterCustomers(customers, query, filters) {
   if (filters.dateFrom) results = results.filter((c) => c.registeredDate >= filters.dateFrom);
   if (filters.dateTo)   results = results.filter((c) => c.registeredDate <= filters.dateTo);
   return results;
-}
+};
 
 // ─── Badge ────────────────────────────────────────────────────────────────────
 

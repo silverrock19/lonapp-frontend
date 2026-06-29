@@ -2,26 +2,7 @@
 import { Home, Building2, MapPin, Plus, Pencil, Trash2, X, Check, ChevronLeft, Crosshair, Loader2 } from 'lucide-react';
 import Button from '../../components/ui/Button.jsx';
 import Input from '../../components/forms/Input.jsx';
-
-// ─── Mock data ────────────────────────────────────────────────────────────────
-
-const initAddresses = [
-  {
-    id: 1, label: 'Home', type: 'home',
-    street: '14 Cantonments Road', suburb: 'Cantonments', city: 'Accra',
-    gps: 'GA-045-3721', isDefault: true,
-  },
-  {
-    id: 2, label: 'Office', type: 'office',
-    street: 'Airport City Mall, 2nd Floor', suburb: 'Airport Residential', city: 'Accra',
-    gps: 'GA-184-7623', isDefault: false,
-  },
-  {
-    id: 3, label: "Mum's place", type: 'other',
-    street: '5 Adenta Highway', suburb: 'Adenta', city: 'Accra',
-    gps: '', isDefault: false,
-  },
-];
+import { MOCK_ADDRESSES } from '../../data/mockCustomer.js';
 
 const TYPE_META = {
   home:   { label: 'Home',   Icon: Home,      bg: '#EAF2FC', color: '#0C5FC5' },
@@ -33,7 +14,7 @@ const emptyForm = { label: '', type: 'home', street: '', suburb: '', city: 'Accr
 
 // ─── Address card ─────────────────────────────────────────────────────────────
 
-function AddressCard({ address, onSetDefault, onEdit, onDelete }) {
+const AddressCard = ({ address, onSetDefault, onEdit, onDelete }) => {
   const meta = TYPE_META[address.type] || TYPE_META.other;
   const Icon = meta.Icon;
 
@@ -81,17 +62,17 @@ function AddressCard({ address, onSetDefault, onEdit, onDelete }) {
       </div>
     </div>
   );
-}
+};
 
 // ─── Address form sheet ───────────────────────────────────────────────────────
 
-function AddressSheet({ initial, onSave, onClose }) {
+const AddressSheet = ({ initial, onSave, onClose }) => {
   const [form, setForm] = useState(initial || emptyForm);
   const [errors, setErrors] = useState({});
   const [gpsLoading, setGpsLoading] = useState(false);
   const [gpsError, setGpsError] = useState('');
 
-  function useMyLocation() {
+  const useMyLocation = () => {
     if (!navigator.geolocation) {
       setGpsError('Geolocation is not supported by your browser.');
       return;
@@ -110,18 +91,18 @@ function AddressSheet({ initial, onSave, onClose }) {
       },
       { timeout: 8000 },
     );
-  }
+  };
 
-  function set(k) { return v => { setForm(f => ({ ...f, [k]: v })); setErrors(e => ({ ...e, [k]: '' })); } }
+  const set = k => v => { setForm(f => ({ ...f, [k]: v })); setErrors(e => ({ ...e, [k]: '' })); };
 
-  function validate() {
+  const validate = () => {
     const e = {};
     if (!form.label.trim())  e.label  = 'Required';
     if (!form.street.trim()) e.street = 'Required';
     if (!form.city.trim())   e.city   = 'Required';
     setErrors(e);
     return Object.keys(e).length === 0;
-  }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-white">
@@ -232,11 +213,11 @@ function AddressSheet({ initial, onSave, onClose }) {
       </div>
     </div>
   );
-}
+};
 
 // ─── Delete confirmation ──────────────────────────────────────────────────────
 
-function DeleteModal({ address, onConfirm, onCancel }) {
+const DeleteModal = ({ address, onConfirm, onCancel }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center p-0" style={{ background: 'rgba(0,0,0,0.4)' }}>
       <div className="w-full rounded-t-2xl bg-white p-5 pb-8 shadow-2xl">
@@ -259,20 +240,20 @@ function DeleteModal({ address, onConfirm, onCancel }) {
       </div>
     </div>
   );
-}
+};
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 const AddressesPage = () => {
-  const [addresses, setAddresses] = useState(initAddresses);
+  const [addresses, setAddresses] = useState(MOCK_ADDRESSES);
   const [sheet, setSheet]         = useState(null);   // null | { mode: 'add' | 'edit', address?: obj }
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  function setDefault(id) {
+  const setDefault = id => {
     setAddresses(prev => prev.map(a => ({ ...a, isDefault: a.id === id })));
-  }
+  };
 
-  function saveAddress(form) {
+  const saveAddress = form => {
     if (form.id) {
       setAddresses(prev => prev.map(a => a.id === form.id ? { ...a, ...form } : a));
     } else {
@@ -280,9 +261,9 @@ const AddressesPage = () => {
       setAddresses(prev => [...prev, newAddr]);
     }
     setSheet(null);
-  }
+  };
 
-  function deleteAddress(id) {
+  const deleteAddress = id => {
     setAddresses(prev => {
       const next = prev.filter(a => a.id !== id);
       if (next.length > 0 && !next.some(a => a.isDefault)) {
@@ -291,7 +272,7 @@ const AddressesPage = () => {
       return next;
     });
     setDeleteTarget(null);
-  }
+  };
 
   return (
     <div className="min-h-screen" style={{ background: '#FAFAF8', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>

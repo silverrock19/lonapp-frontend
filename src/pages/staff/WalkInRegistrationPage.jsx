@@ -9,14 +9,7 @@ import {
 } from 'lucide-react';
 import Input from '../../components/forms/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
-
-// ─── Mock data ────────────────────────────────────────────────────────────────
-
-const MOCK_OUTLETS = [
-  { id: 'osu',     label: 'HQ — Osu' },
-  { id: 'spintex', label: 'Spintex Outlet' },
-  { id: 'tema',    label: 'Tema Factory' },
-];
+import { MOCK_OUTLETS, MOCK_DUPLICATE } from '../../data/mockStaff.js';
 
 const REFERRAL_SOURCES = [
   'Walk-by / Signage', 'Referral from existing customer', 'Social media',
@@ -28,9 +21,6 @@ const ID_TYPES = [
 ];
 
 const SUBURB_SUGGESTIONS = ['Osu', 'Cantonments', 'Labone', 'Airport City', 'East Legon', 'Adabraka'];
-
-// Simulated duplicate-check: phone 0200000000 returns a match
-const MOCK_DUPLICATE = { phone: '0200000000', name: 'Adwoa M.' };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
