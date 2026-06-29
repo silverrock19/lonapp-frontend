@@ -14,11 +14,11 @@ const BIZ_PALETTE = [
   { background: '#E6FAFB', color: '#0B7C87' },
   { background: '#FDECEA', color: '#A31C12' },
 ];
-function bizColor(name) { return BIZ_PALETTE[(name?.charCodeAt(0) || 0) % BIZ_PALETTE.length]; }
-function bizInitials(name) {
+const bizColor = name => BIZ_PALETTE[(name?.charCodeAt(0) || 0) % BIZ_PALETTE.length];
+const bizInitials = name => {
   if (!name) return '?';
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-}
+};
 
 const FILTER_TABS = [
   { key: 'all',                  label: 'All'               },
@@ -31,7 +31,7 @@ const FILTER_TABS = [
 
 const DRAWER_TABS = ['Overview', 'Company', 'Outlets', 'Services', 'Payment', 'Admin', 'History'];
 
-function StatusBadge({ status }) {
+const StatusBadge = ({ status }) => {
   const { label, dot, bg, text } = STATUS_META[status] || STATUS_META.pending;
   return (
     <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold" style={{ background: bg, color: text }}>
@@ -41,7 +41,7 @@ function StatusBadge({ status }) {
   );
 }
 
-function Section({ title, children }) {
+const Section = ({ title, children }) => {
   return (
     <div className="mx-4 my-3 overflow-hidden rounded-lg border border-neutral-100 bg-white shadow-sm">
       {title && (
@@ -54,7 +54,7 @@ function Section({ title, children }) {
   );
 }
 
-function Field({ label, value, mono }) {
+const Field = ({ label, value, mono }) => {
   return (
     <div>
       <p className="text-caption text-neutral-400">{label}</p>
@@ -65,7 +65,7 @@ function Field({ label, value, mono }) {
 
 // ─── Drawer tab panels ──────────────────────────────────────────────────────
 
-function TabOverview({ biz }) {
+const TabOverview = ({ biz }) => {
   return (
     <>
       {biz.previousRejection && (
@@ -123,7 +123,7 @@ function TabOverview({ biz }) {
   );
 }
 
-function TabCompany({ biz }) {
+const TabCompany = ({ biz }) => {
   return (
     <Section title="Company Details">
       <div className="grid grid-cols-2 gap-4">
@@ -158,7 +158,7 @@ function TabCompany({ biz }) {
   );
 }
 
-function TabOutlets({ biz }) {
+const TabOutlets = ({ biz }) => {
   const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   return (
     <>
@@ -203,7 +203,7 @@ function TabOutlets({ biz }) {
   );
 }
 
-function TabServices({ biz }) {
+const TabServices = ({ biz }) => {
   const s = biz.services;
   return (
     <>
@@ -246,7 +246,7 @@ function TabServices({ biz }) {
   );
 }
 
-function TabPayment({ biz }) {
+const TabPayment = ({ biz }) => {
   return (
     <>
       {biz.payment.methods.map((m, i) => (
@@ -273,7 +273,7 @@ function TabPayment({ biz }) {
   );
 }
 
-function TabAdmin({ biz }) {
+const TabAdmin = ({ biz }) => {
   const a = biz.admin;
   return (
     <Section title="Admin Account">
@@ -303,7 +303,7 @@ const HISTORY_COLORS = {
   clarification_requested: { dot: 'bg-primary-400',   label: 'Clarification Requested' },
 };
 
-function TabHistory({ biz }) {
+const TabHistory = ({ biz }) => {
   const history = biz.history || [];
   if (!history.length) return <Section><p className="text-small text-neutral-400">No history yet.</p></Section>;
   return (
@@ -329,7 +329,7 @@ function TabHistory({ biz }) {
   );
 }
 
-function DrawerContent({ biz, tab }) {
+const DrawerContent = ({ biz, tab }) => {
   switch (tab) {
     case 'Overview':  return <TabOverview  biz={biz} />;
     case 'Company':   return <TabCompany   biz={biz} />;
@@ -344,7 +344,7 @@ function DrawerContent({ biz, tab }) {
 
 // ─── Checkbox ────────────────────────────────────────────────────────────────
 
-function Checkbox({ checked, onChange }) {
+const Checkbox = ({ checked, onChange }) => {
   return (
     <button onClick={onChange} className="flex items-center justify-center text-neutral-400 hover:text-neutral-700">
       <div className={cn('flex h-4 w-4 items-center justify-center border', checked ? 'border-primary-500 bg-primary-500' : 'border-neutral-300 bg-white')} style={{ borderRadius: 2 }}>
@@ -391,7 +391,7 @@ const BusinessApprovalPage = () => {
     return c;
   }, [businesses]);
 
-  function openReview(biz) {
+  const openReview = biz => {
     setReviewing(biz);
     setDrawerTab('Overview');
     setAction('');
@@ -401,9 +401,9 @@ const BusinessApprovalPage = () => {
     setFormErrors({});
   }
 
-  function closeDrawer() { setReviewing(null); }
+  const closeDrawer = () => setReviewing(null);
 
-  function toggleSelect(id) {
+  const toggleSelect = id => {
     setSelected(prev => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
@@ -411,14 +411,14 @@ const BusinessApprovalPage = () => {
     });
   }
 
-  function toggleAll() {
+  const toggleAll = () => {
     setSelected(selected.size === filtered.length && filtered.length > 0
       ? new Set()
       : new Set(filtered.map(b => b.id))
     );
   }
 
-  function applyDecision(id, newStatus, historyEntry) {
+  const applyDecision = (id, newStatus, historyEntry) => {
     setBusinesses(prev => prev.map(b => b.id !== id ? b : {
       ...b,
       status: newStatus,
@@ -426,7 +426,7 @@ const BusinessApprovalPage = () => {
     }));
   }
 
-  function handleSubmit() {
+  const handleSubmit = () => {
     const errs = {};
     if (!action) errs.action = 'Please select an action';
     if (action === 'reject' && !rejectionReason) errs.rejectionReason = 'Rejection reason is required';
@@ -448,7 +448,7 @@ const BusinessApprovalPage = () => {
     closeDrawer();
   }
 
-  function handleClarification() {
+  const handleClarification = () => {
     if (!additionalNotes.trim()) {
       setFormErrors({ additionalNotes: 'Enter your clarification message to send to the business' });
       return;
@@ -460,7 +460,7 @@ const BusinessApprovalPage = () => {
     closeDrawer();
   }
 
-  function handleBulkApprove() {
+  const handleBulkApprove = () => {
     const toApprove = filtered.filter(b => selected.has(b.id) && ACTIONABLE.has(b.status));
     toApprove.forEach(b => applyDecision(b.id, 'approved', {
       action: 'approved', date: 'Jun 28, 2026', by: 'Admin (bulk)', notes: null,
@@ -469,7 +469,7 @@ const BusinessApprovalPage = () => {
     setSelected(new Set());
   }
 
-  function showToast(type, message) {
+  const showToast = (type, message) => {
     setToast({ type, message });
     setTimeout(() => setToast(null), 4000);
   }
