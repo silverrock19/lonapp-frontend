@@ -24,7 +24,7 @@ const Button = ({ variant = 'primary', size = 'default', loading = false, pill =
   return (
     <button
       className={cn(base, variants[variant], sizes[size], className)}
-      style={{ borderRadius: pill ? 9999 : 8, ...props.style }}
+      style={{ borderRadius: pill ? 12 : 8, ...props.style }}
       disabled={props.disabled || loading}
       {...props}
     >
