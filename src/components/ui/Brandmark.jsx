@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-function removeBgIfNeeded(img) {
+const removeBgIfNeeded = (img) => {
   const canvas = document.createElement('canvas');
   canvas.width = img.naturalWidth;
   canvas.height = img.naturalHeight;

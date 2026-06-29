@@ -4,70 +4,33 @@ import {
   Plus, Trash2, ChevronDown, ChevronUp, Store, Factory,
   AlertTriangle, Building2, GitBranch, Lock, Info, CheckCircle2,
 } from 'lucide-react';
-
-// ─── Operating models ─────────────────────────────────────────────────────────
-
-const MODELS = [
-  {
-    tag: 'CENTRALIZED_NETWORK',
-    name: 'Centralized (Hub-and-Spoke)',
-    desc: 'One processing factory serves multiple customer drop-off outlets.',
-    icon: Factory,
-    color: '#C77700', bg: '#FFF4E0',
-    rules: ['1 processing factory', 'One or more outlets', 'Outlets route to the single factory'],
-  },
-  {
-    tag: 'HYBRID_NETWORK',
-    name: 'Hybrid Network',
-    desc: 'Two or more factories, each serving their own group of outlets.',
-    icon: GitBranch,
-    color: '#7C3AED', bg: '#F3F0FF',
-    rules: ['2+ processing factories', 'Each outlet linked to one factory', 'Multiple hub-and-spoke clusters'],
-  },
-  {
-    tag: 'ASSET_LIGHT_NETWORK',
-    name: 'Asset-Light Network',
-    desc: 'Outlets only — processing outsourced to third-party partner factories.',
-    icon: Store,
-    color: '#1F9D57', bg: '#E6F6EE',
-    rules: ['No owned factory', 'One or more outlets', 'Partner factories handle processing'],
-  },
-  {
-    tag: 'STANDALONE_UNIT',
-    name: 'Standalone Unit',
-    desc: 'A single location that handles customer intake and processing in-house.',
-    icon: Building2,
-    color: '#0C5FC5', bg: '#EAF2FC',
-    rules: ['Single combined location', 'No outlet / factory separation', 'Minimal logistics overhead'],
-  },
-];
+import { DAYS_FULL as DAYS } from '../../../utils/geoOptions.js';
+import { NETWORK_MODELS as MODELS } from '../../../utils/businessOptions.js';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const HOURS = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
 
-function defaultHours() {
+const defaultHours = () => {
   return DAYS.reduce((acc, d) => ({
     ...acc,
     [d]: { open: d !== 'Sunday', from: '08:00', to: '18:00' },
   }), {});
 }
 
-function mkFactory(type = 'owned') {
+const mkFactory = (type = 'owned') => {
   return {
     id: Date.now() + Math.random(), name: '', address: '', gps: '', phone: '',
     capacity: '', doublesAsOutlet: false, type,
   };
 }
-function mkOutlet() {
+const mkOutlet = () => {
   return {
     id: Date.now() + Math.random(),
     name: '', abbrev: '', address: '', gps: '', phone: '',
     hours: defaultHours(), linkedFactoryId: '',
   };
 }
-function mkLocation() {
+const mkLocation = () => {
   return { name: '', address: '', gps: '', phone: '', capacity: '', hours: defaultHours() };
 }
 
@@ -78,14 +41,14 @@ const inputCls = err =>
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 
-function validateFactory(fa) {
+const validateFactory = (fa) => {
   const e = {};
   if (!fa.name.trim())    e.name    = 'Name is required';
   if (!fa.address.trim()) e.address = 'Address is required';
   return e;
 }
 
-function validateOutlet(o, requireLink) {
+const validateOutlet = (o, requireLink) => {
   const e = {};
   if (!o.name.trim())                          e.name    = 'Name is required';
   else if (o.name.length < 2)                  e.name    = 'Min 2 characters';
@@ -98,7 +61,7 @@ function validateOutlet(o, requireLink) {
   return e;
 }
 
-function validateLocation(l) {
+const validateLocation = (l) => {
   const e = {};
   if (!l.name.trim())    e.name    = 'Name is required';
   if (!l.address.trim()) e.address = 'Address is required';
@@ -108,9 +71,9 @@ function validateLocation(l) {
 
 // ─── HoursGrid ────────────────────────────────────────────────────────────────
 
-function HoursGrid({ hours, onChange }) {
-  function toggleDay(day) { onChange({ ...hours, [day]: { ...hours[day], open: !hours[day].open } }); }
-  function setTime(day, field, val) { onChange({ ...hours, [day]: { ...hours[day], [field]: val } }); }
+const HoursGrid = ({ hours, onChange }) => {
+  const toggleDay = (day) => { onChange({ ...hours, [day]: { ...hours[day], open: !hours[day].open } }); }
+  const setTime = (day, field, val) => { onChange({ ...hours, [day]: { ...hours[day], [field]: val } }); }
 
   return (
     <div className="mt-2 overflow-hidden border border-neutral-200" style={{ borderRadius: 4 }}>
@@ -165,7 +128,7 @@ function HoursGrid({ hours, onChange }) {
 
 // ─── DualOutletToggle ─────────────────────────────────────────────────────────
 
-function DualOutletToggle({ checked, onChange }) {
+const DualOutletToggle = ({ checked, onChange }) => {
   return (
     <div
       onClick={() => onChange(!checked)}
@@ -193,7 +156,7 @@ function DualOutletToggle({ checked, onChange }) {
 
 // ─── FactoryCard ──────────────────────────────────────────────────────────────
 
-function FactoryCard({ factory, index, errors, onChange, onRemove, isPartner }) {
+const FactoryCard = ({ factory, index, errors, onChange, onRemove, isPartner }) => {
   const [expanded, setExpanded] = useState(true);
   const e = errors || {};
   const label = isPartner ? 'Partner factory' : 'Factory';
@@ -271,7 +234,7 @@ function FactoryCard({ factory, index, errors, onChange, onRemove, isPartner }) 
 
 // ─── OutletCard ───────────────────────────────────────────────────────────────
 
-function OutletCard({ outlet, index, errors, onChange, onRemove, factories, requireLink }) {
+const OutletCard = ({ outlet, index, errors, onChange, onRemove, factories, requireLink }) => {
   const [expanded, setExpanded] = useState(true);
   const e = errors || {};
 
@@ -371,7 +334,7 @@ function OutletCard({ outlet, index, errors, onChange, onRemove, factories, requ
 
 // ─── LocationCard (Standalone only) ──────────────────────────────────────────
 
-function LocationCard({ location, errors, onChange }) {
+const LocationCard = ({ location, errors, onChange }) => {
   const e = errors || {};
   return (
     <div className="rounded-lg border border-neutral-200 overflow-hidden">
@@ -424,7 +387,7 @@ function LocationCard({ location, errors, onChange }) {
 
 // ─── ModelCard ────────────────────────────────────────────────────────────────
 
-function ModelCard({ model, selected, onSelect }) {
+const ModelCard = ({ model, selected, onSelect }) => {
   const Icon = model.icon;
   return (
     <div
@@ -460,7 +423,7 @@ function ModelCard({ model, selected, onSelect }) {
 
 // ─── Section Header ───────────────────────────────────────────────────────────
 
-function SectionHeader({ icon: Icon, iconColor, title, count, desc, onAdd, addLabel, locked, lockReason }) {
+const SectionHeader = ({ icon: Icon, iconColor, title, count, desc, onAdd, addLabel, locked, lockReason }) => {
   return (
     <div className="mb-3 flex items-start justify-between">
       <div className="flex items-start gap-2.5">
@@ -487,7 +450,7 @@ function SectionHeader({ icon: Icon, iconColor, title, count, desc, onAdd, addLa
   );
 }
 
-function EmptySlot({ icon: Icon, text, muted }) {
+const EmptySlot = ({ icon: Icon, text, muted }) => {
   return (
     <div className={`flex flex-col items-center justify-center rounded-lg border border-dashed py-6 text-center ${muted ? 'border-neutral-100 bg-neutral-50' : 'border-neutral-200'}`}>
       <Icon className={`mb-2 h-6 w-6 ${muted ? 'text-neutral-200' : 'text-neutral-300'}`} />
@@ -496,7 +459,7 @@ function EmptySlot({ icon: Icon, text, muted }) {
   );
 }
 
-function StepBadge({ n, active }) {
+const StepBadge = ({ n, active }) => {
   return (
     <span className={`flex h-5 w-5 items-center justify-center rounded-full text-caption font-bold text-white ${active ? 'bg-primary-500' : 'bg-neutral-300'}`}>{n}</span>
   );
@@ -520,14 +483,14 @@ const Step2Outlets = ({ data, onNext, onBack, onSaveDraft }) => {
 
   // ── Model change ──────────────────────────────────────────────────────────
 
-  function requestModelChange(tag) {
+  const requestModelChange = (tag) => {
     if (tag === model) return;
     const hasData = outlets.length > 0 || factories.length > 0 || !!location;
     if (hasData) { setPendingModel(tag); setShowWarning(true); }
     else applyModel(tag);
   }
 
-  function applyModel(tag) {
+  const applyModel = (tag) => {
     setModel(tag); setOutlets([]); setFactories([]); setLocation(null);
     setGlobalError(''); setOutletErrors([]); setFactoryErrors([]); setLocationErrors({});
     setShowWarning(false); setPendingModel('');
@@ -546,16 +509,16 @@ const Step2Outlets = ({ data, onNext, onBack, onSaveDraft }) => {
 
   // ── Mutations ────────────────────────────────────────────────────────────
 
-  function addFactory(type = 'owned') { setFactories(p => [...p, mkFactory(type)]); }
-  function addOutlet()                { setOutlets(p  => [...p, mkOutlet()]); }
-  function removeFactory(i) { setFactories(p => p.filter((_, idx) => idx !== i)); }
-  function removeOutlet(i)  { setOutlets(p  => p.filter((_, idx) => idx !== i)); }
-  function updateFactory(i, val) { setFactories(p => p.map((f, idx) => idx === i ? val : f)); }
-  function updateOutlet(i, val)  { setOutlets(p  => p.map((o, idx) => idx === i ? val : o)); }
+  const addFactory = (type = 'owned') => { setFactories(p => [...p, mkFactory(type)]); }
+  const addOutlet = ()                => { setOutlets(p  => [...p, mkOutlet()]); }
+  const removeFactory = (i) => { setFactories(p => p.filter((_, idx) => idx !== i)); }
+  const removeOutlet = (i)  => { setOutlets(p  => p.filter((_, idx) => idx !== i)); }
+  const updateFactory = (i, val) => { setFactories(p => p.map((f, idx) => idx === i ? val : f)); }
+  const updateOutlet = (i, val)  => { setOutlets(p  => p.map((o, idx) => idx === i ? val : o)); }
 
   // ── Submit ───────────────────────────────────────────────────────────────
 
-  function handleNext() {
+  const handleNext = () => {
     if (!model) { setGlobalError('Select an operating model to continue.'); return; }
     setGlobalError('');
 

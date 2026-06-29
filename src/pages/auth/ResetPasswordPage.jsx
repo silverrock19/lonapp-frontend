@@ -16,7 +16,7 @@ const ResetPasswordPage = () => {
 
   const strength = passwordStrength(form.password);
 
-  function validate() {
+  const validate = () => {
     const e = {};
     if (!form.password) {
       e.password = 'Password is required';
@@ -28,7 +28,7 @@ const ResetPasswordPage = () => {
     return e;
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }

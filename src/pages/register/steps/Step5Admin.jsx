@@ -1,10 +1,9 @@
 ﻿import { useState, useRef, useEffect } from 'react';
 import Button from '../../../components/ui/Button.jsx';
 import { Eye, EyeOff, Check } from 'lucide-react';
+import { TITLES, ADMIN_ROLES } from '../../../utils/businessOptions.js';
+import { ID_TYPES } from '../../../utils/identityOptions.js';
 
-const TITLES = ['Mr', 'Mrs', 'Ms', 'Dr', 'Prof'];
-const ROLES  = ['Owner', 'Manager', 'Operations Head'];
-const ID_TYPES = ['Passport', "Driver's License", 'Ghana Card', 'Other'];
 
 const inputCls = (err) =>
   `w-full rounded-md border px-3 py-2.5 text-small text-neutral-900 outline-none focus:ring-2 transition-all ${
@@ -13,16 +12,16 @@ const inputCls = (err) =>
 const selectCls = `w-full rounded-md border border-neutral-200 bg-white px-3 py-2.5 text-small text-neutral-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all`;
 
 // ── Sub-step 1: Admin Profile ────────────────────────────────
-function ProfileForm({ data, onNext, onBack, onSaveDraft }) {
+const ProfileForm = ({ data, onNext, onBack, onSaveDraft }) => {
   const [f, setF] = useState({ ...data });
   const [errors, setErrors] = useState({});
 
-  function set(field, value) {
+  const set = (field, value) => {
     setF(p => ({ ...p, [field]: value }));
     setErrors(e => { const n = { ...e }; delete n[field]; return n; });
   }
 
-  function validate() {
+  const validate = () => {
     const e = {};
     if (!f.firstName.trim()) e.firstName = 'First name is required';
     if (!f.lastName.trim())  e.lastName  = 'Last name is required';
@@ -33,7 +32,7 @@ function ProfileForm({ data, onNext, onBack, onSaveDraft }) {
     return e;
   }
 
-  function handleNext() {
+  const handleNext = () => {
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
     onNext(f);
@@ -89,7 +88,7 @@ function ProfileForm({ data, onNext, onBack, onSaveDraft }) {
             <select className={`${selectCls} ${errors.role ? 'border-error' : ''}`}
               value={f.role} onChange={e => set('role', e.target.value)}>
               <option value="">Select role…</option>
-              {ROLES.map(r => <option key={r}>{r}</option>)}
+              {ADMIN_ROLES.map(r => <option key={r}>{r}</option>)}
             </select>
             {errors.role && <p className="mt-0.5 text-caption text-error">{errors.role}</p>}
           </div>
@@ -136,14 +135,14 @@ function ProfileForm({ data, onNext, onBack, onSaveDraft }) {
 }
 
 // ── Sub-step 2: OTP ─────────────────────────────────────────
-function OtpForm({ phone, onNext, onBack }) {
+const OtpForm = ({ phone, onNext, onBack }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [attempts, setAttempts] = useState(0);
   const [resent, setResent] = useState(false);
   const refs = useRef([]);
 
-  function handleChange(i, val) {
+  const handleChange = (i, val) => {
     if (!/^\d?$/.test(val)) return;
     const next = [...otp];
     next[i] = val;
@@ -152,13 +151,13 @@ function OtpForm({ phone, onNext, onBack }) {
     if (val && i < 5) refs.current[i + 1]?.focus();
   }
 
-  function handleKeyDown(i, e) {
+  const handleKeyDown = (i, e) => {
     if (e.key === 'Backspace' && !otp[i] && i > 0) {
       refs.current[i - 1]?.focus();
     }
   }
 
-  function handlePaste(e) {
+  const handlePaste = (e) => {
     const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
     if (pasted.length === 6) {
       setOtp(pasted.split(''));
@@ -167,7 +166,7 @@ function OtpForm({ phone, onNext, onBack }) {
     e.preventDefault();
   }
 
-  function handleVerify() {
+  const handleVerify = () => {
     const code = otp.join('');
     if (code.length < 6) { setError('Enter the 6-digit code'); return; }
     if (attempts >= 2) { setError('Too many attempts. Please request a new code.'); return; }
@@ -183,7 +182,7 @@ function OtpForm({ phone, onNext, onBack }) {
     onNext();
   }
 
-  function handleResend() {
+  const handleResend = () => {
     setOtp(['', '', '', '', '', '']);
     setAttempts(0);
     setError('');
@@ -247,7 +246,7 @@ function OtpForm({ phone, onNext, onBack }) {
 }
 
 // ── Sub-step 3: Password ─────────────────────────────────────
-function PasswordForm({ email, onNext, onBack, onSaveDraft }) {
+const PasswordForm = ({ email, onNext, onBack, onSaveDraft }) => {
   const [f, setF] = useState({ password: '', confirm: '', terms: false, privacy: false });
   const [show, setShow]   = useState({ pw: false, confirm: false });
   const [errors, setErrors] = useState({});
@@ -260,7 +259,7 @@ function PasswordForm({ email, onNext, onBack, onSaveDraft }) {
     { label: '1 special character',   ok: /[!@#$%^&*(),.?":{}|<>]/.test(pw) },
   ];
 
-  function validate() {
+  const validate = () => {
     const e = {};
     if (!pw)                           e.password = 'Password is required';
     else if (rules.some(r => !r.ok))   e.password = 'Password does not meet requirements';
@@ -271,13 +270,13 @@ function PasswordForm({ email, onNext, onBack, onSaveDraft }) {
     return e;
   }
 
-  function handleNext() {
+  const handleNext = () => {
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
     onNext({ email, password: f.password });
   }
 
-  function set(field, value) {
+  const set = (field, value) => {
     setF(p => ({ ...p, [field]: value }));
     setErrors(e => { const n = { ...e }; delete n[field]; return n; });
   }
@@ -373,9 +372,9 @@ const Step5Admin = ({ data, onNext, onBack, onSaveDraft }) => {
   const [profileData, setProfileData]   = useState(data.profile   || { title: '', firstName: '', lastName: '', phone: data.companyPhone || '', whatsapp: '', role: '', idType: '', idDoc: '' });
   const [passwordData, setPasswordData] = useState(data.password  || {});
 
-  function onProfileNext(d)   { setProfileData(d);   setSub(1); }
-  function onOtpNext()        {                       setSub(2); }
-  function onPasswordNext(d)  { setPasswordData(d); onNext({ profile: profileData, password: d }); }
+  const onProfileNext = (d) =>  { setProfileData(d);   setSub(1); }
+  const onOtpNext = () =>       {                       setSub(2); }
+  const onPasswordNext = (d) => { setPasswordData(d); onNext({ profile: profileData, password: d }); }
 
   if (sub === 0) return <ProfileForm  data={profileData} onNext={onProfileNext}
     onBack={onBack} onSaveDraft={d => onSaveDraft({ profile: d })} />;

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import Toggle from '../../components/ui/Toggle.jsx';
 
 const initialTopics = [
   { id: 1, name: 'Promotions & Discounts', frequency: 'Weekly', enabled: true },
@@ -184,18 +185,7 @@ const NewsletterPage = () => {
             </button>
 
             {/* Toggle */}
-            <button
-              onClick={() => toggleTopic(topic.id)}
-              className={`relative inline-flex h-6 w-11 rounded-full border-2 border-transparent transition-colors ${
-                topic.enabled ? 'bg-[#0E9AA7]' : 'bg-neutral-300'
-              }`}
-            >
-              <span
-                className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                  topic.enabled ? 'translate-x-5' : 'translate-x-0'
-                }`}
-              />
-            </button>
+            <Toggle size="md" checked={topic.enabled} onChange={() => toggleTopic(topic.id)} />
           </div>
         ))}
       </div>

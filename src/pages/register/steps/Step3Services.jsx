@@ -1,12 +1,9 @@
 ﻿import { useState } from 'react';
 import Button from '../../../components/ui/Button.jsx';
+import { RETAIL_SERVICES, COMMERCIAL_SERVICES, DURATION_DAYS, DURATION_HOURS } from '../../../utils/businessOptions.js';
 
-const RETAIL_SERVICES = ['Washing', 'Ironing', 'Dry Cleaning', 'Wash & Iron', 'Wash & Fold'];
-const COMMERCIAL_SERVICES = ['Bulk Washing', 'Linen Service', 'Uniform Cleaning', 'Industrial Laundry'];
-const DURATION_DAYS  = ['1', '2', '3', '4', '5', '6', '7'];
-const DURATION_HOURS = ['6', '8', '12', '18', '24', '36', '48'];
 
-function validate(f) {
+const validate = (f) => {
   const e = {};
   if (!f.businessTypes.length) { e.businessTypes = 'Select at least one business type'; }
   if (f.businessTypes.includes('Retail')     && !f.retailServices.length)     e.retailServices     = 'Select at least one retail service';
@@ -20,8 +17,8 @@ function validate(f) {
   return e;
 }
 
-function CheckboxGroup({ label, items, selected, onChange, error, cols = 3 }) {
-  function toggle(item) {
+const CheckboxGroup = ({ label, items, selected, onChange, error, cols = 3 }) => {
+  const toggle = (item) => {
     onChange(selected.includes(item) ? selected.filter(s => s !== item) : [...selected, item]);
   }
   return (
@@ -49,8 +46,8 @@ function CheckboxGroup({ label, items, selected, onChange, error, cols = 3 }) {
   );
 }
 
-function TurnaroundRow({ label, durationVal, durationUnit, surcharge, showSurcharge,
-  onDuration, onUnit, onSurcharge, error, errorSurcharge }) {
+const TurnaroundRow = ({ label, durationVal, durationUnit, surcharge, showSurcharge,
+  onDuration, onUnit, onSurcharge, error, errorSurcharge }) => {
   const options = durationUnit === 'days' ? DURATION_DAYS : DURATION_HOURS;
   const selectCls = 'rounded-md border border-neutral-200 bg-white px-3 py-2 text-small text-neutral-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all';
   return (
@@ -89,18 +86,18 @@ const Step3Services = ({ data, onNext, onBack, onSaveDraft }) => {
   const [f, setF] = useState({ ...data });
   const [errors, setErrors] = useState({});
 
-  function set(field, value) {
+  const set = (field, value) => {
     setF(p => ({ ...p, [field]: value }));
     setErrors(e => ({ ...e, [field]: '', retailServices: '', commercialServices: '' }));
   }
 
-  function toggleBusinessType(type) {
+  const toggleBusinessType = (type) => {
     const current = f.businessTypes;
     const next = current.includes(type) ? current.filter(t => t !== type) : [...current, type];
     set('businessTypes', next);
   }
 
-  function handleNext() {
+  const handleNext = () => {
     const errs = validate(f);
     if (Object.keys(errs).length) { setErrors(errs); return; }
     onNext(f);

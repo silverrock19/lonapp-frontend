@@ -1,9 +1,11 @@
 ﻿import { useState, useMemo } from 'react';
-import { Search, X, CheckCircle2, XCircle, FileText } from 'lucide-react';
+import { Search, X, CheckCircle2, XCircle } from 'lucide-react';
 import { cn } from '../../utils/classNames.js';
 import Button from '../../components/ui/Button.jsx';
 import Alert from '../../components/ui/Alert.jsx';
-import CheckIcon from '../../components/icons/CheckIcon.jsx';
+import Checkbox from '../../components/ui/Checkbox.jsx';
+import StatusBadge from '../../components/ui/StatusBadge.jsx';
+import ApprovalDrawerContent from '../../features/admin/ApprovalDrawerContent.jsx';
 import { mockBusinesses, REJECTION_REASONS, STATUS_META } from '../../data/mockAdminData.js';
 
 const BIZ_PALETTE = [
@@ -30,329 +32,6 @@ const FILTER_TABS = [
 ];
 
 const DRAWER_TABS = ['Overview', 'Company', 'Outlets', 'Services', 'Payment', 'Admin', 'History'];
-
-const StatusBadge = ({ status }) => {
-  const { label, dot, bg, text } = STATUS_META[status] || STATUS_META.pending;
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold" style={{ background: bg, color: text }}>
-      <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ background: dot }} />
-      {label}
-    </span>
-  );
-}
-
-const Section = ({ title, children }) => {
-  return (
-    <div className="mx-4 my-3 overflow-hidden rounded-lg border border-neutral-100 bg-white shadow-sm">
-      {title && (
-        <div className="border-b border-neutral-100 bg-neutral-50 px-5 py-2.5">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400">{title}</p>
-        </div>
-      )}
-      <div className="px-5 py-4">{children}</div>
-    </div>
-  );
-}
-
-const Field = ({ label, value, mono }) => {
-  return (
-    <div>
-      <p className="text-caption text-neutral-400">{label}</p>
-      <p className={cn('mt-0.5 text-small text-neutral-800', mono && 'font-mono')}>{value || '—'}</p>
-    </div>
-  );
-}
-
-// ─── Drawer tab panels ──────────────────────────────────────────────────────
-
-const TabOverview = ({ biz }) => {
-  return (
-    <>
-      {biz.previousRejection && (
-        <Section>
-          <Alert type="warning" title="Previously Rejected">
-            Rejected {biz.previousRejection.date}: <em>{biz.previousRejection.reason}</em>.{' '}
-            {biz.previousRejection.notes && <span>"{biz.previousRejection.notes}"</span>}
-          </Alert>
-        </Section>
-      )}
-      {biz.clarificationQuestion && (
-        <Section>
-          <Alert type="info" title="Awaiting Clarification">
-            Sent {biz.clarificationSent}: "{biz.clarificationQuestion}"
-          </Alert>
-        </Section>
-      )}
-      <Section title="Quick Summary">
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Business Name"       value={biz.name}               />
-          <Field label="Registration Type"   value={biz.registrationType}   />
-          <Field label="Country"             value={biz.country}            />
-          <Field label="Currency"            value={biz.currency}           />
-          <Field label="Business Email"      value={biz.email}              />
-          <Field label="Phone Number"        value={biz.phone}              />
-          <div className="col-span-2"><Field label="Physical Address" value={biz.address} /></div>
-          <Field label="GPS / Location"      value={biz.gps}                />
-        </div>
-      </Section>
-      <Section title="Submission Checklist">
-        <div className="space-y-2">
-          {[
-            ['Registration type selected',       true                          ],
-            ['Registration number provided',     !!(biz.registrationNumber)    ],
-            ['Registration document uploaded',   !!(biz.registrationDoc)       ],
-            ['Business logo uploaded',           !!(biz.logo)                  ],
-            ['At least one outlet added',        biz.outlets.length > 0        ],
-            ['Services configured',              biz.services.businessTypes.length > 0],
-            ['Payment method added',             biz.payment.methods.length > 0],
-            ['Admin account created',            !!(biz.admin.email)           ],
-          ].map(([label, done]) => (
-            <div key={label} className="flex items-center gap-2.5">
-              <div className={done ? 'text-success' : 'text-neutral-300'}>
-                {done
-                  ? <CheckCircle2 className="h-4 w-4" />
-                  : <XCircle      className="h-4 w-4" />
-                }
-              </div>
-              <span className={cn('text-small', done ? 'text-neutral-700' : 'text-neutral-400')}>{label}</span>
-            </div>
-          ))}
-        </div>
-      </Section>
-    </>
-  );
-}
-
-const TabCompany = ({ biz }) => {
-  return (
-    <Section title="Company Details">
-      <div className="grid grid-cols-2 gap-4">
-        <Field label="Company Name"        value={biz.name}               />
-        <Field label="Registration Type"   value={biz.registrationType}   />
-        <Field label="Country"             value={biz.country}            />
-        <Field label="Currency"            value={biz.currency}           />
-        <Field label="Business Email"      value={biz.email}              />
-        <Field label="Phone"               value={biz.phone}              />
-        <Field label="WhatsApp"            value={biz.whatsapp}           />
-        <Field label="GPS Code"            value={biz.gps}                />
-        <div className="col-span-2"><Field label="Physical Address" value={biz.address} /></div>
-        <Field label="Registration Number" value={biz.registrationNumber} mono />
-        <div>
-          <p className="text-caption text-neutral-400">Registration Document</p>
-          {biz.registrationDoc
-            ? <a href="#" className="mt-0.5 inline-flex items-center gap-1 text-small text-primary-600 hover:underline">
-                <FileText className="h-3.5 w-3.5" />{biz.registrationDoc}
-              </a>
-            : <p className="mt-0.5 text-small text-neutral-300">Not uploaded</p>}
-        </div>
-        <div>
-          <p className="text-caption text-neutral-400">Business Logo</p>
-          {biz.logo
-            ? <a href="#" className="mt-0.5 inline-flex items-center gap-1 text-small text-primary-600 hover:underline">
-                <FileText className="h-3.5 w-3.5" />{biz.logo}
-              </a>
-            : <p className="mt-0.5 text-small text-neutral-300">Not uploaded</p>}
-        </div>
-      </div>
-    </Section>
-  );
-}
-
-const TabOutlets = ({ biz }) => {
-  const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  return (
-    <>
-      {biz.outlets.map((o, i) => (
-        <Section key={o.id} title={`Outlet ${i + 1}${o.doublesAsFactory ? ' (+ Factory)' : ''}`}>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <Field label="Name"              value={o.name}             />
-            <Field label="Abbreviation"      value={o.abbrev}  mono     />
-            <div className="col-span-2"><Field label="Address" value={o.address} /></div>
-            <Field label="Phone"             value={o.phone}            />
-            <Field label="Doubles as Factory" value={o.doublesAsFactory ? 'Yes' : 'No'} />
-          </div>
-          <p className="text-caption text-neutral-400 mb-2">Operating Hours</p>
-          <div className="grid grid-cols-7 gap-1 text-center">
-            {DAYS.map(d => (
-              <div key={d} className="flex flex-col items-center">
-                <span className="text-caption font-semibold text-neutral-500 mb-1">{d}</span>
-                {o.hours[d] === 'Closed'
-                  ? <span className="text-[10px] text-neutral-300">Closed</span>
-                  : <span className="text-[10px] text-neutral-700 leading-tight whitespace-pre-wrap">
-                      {(o.hours[d] || '').replace('–', '\n')}
-                    </span>
-                }
-              </div>
-            ))}
-          </div>
-        </Section>
-      ))}
-      {biz.factories.filter(f => !f.doublesAsOutlet).map((f, i) => (
-        <Section key={f.id} title={`Factory ${i + 1}`}>
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Name"    value={f.name} />
-            <Field label="GPS"     value={f.gps}  mono />
-            <div className="col-span-2"><Field label="Address" value={f.address} /></div>
-          </div>
-        </Section>
-      ))}
-      {biz.outlets.length === 0 && biz.factories.length === 0 && (
-        <Section><p className="text-small text-neutral-400">No outlets or factories added.</p></Section>
-      )}
-    </>
-  );
-}
-
-const TabServices = ({ biz }) => {
-  const s = biz.services;
-  return (
-    <>
-      <Section title="Business Type">
-        <div className="flex flex-wrap gap-2">
-          {s.businessTypes.map(t => (
-            <span key={t} className="rounded-full border border-primary-200 bg-primary-50 px-2.5 py-0.5 text-small font-semibold text-primary-700">{t}</span>
-          ))}
-        </div>
-      </Section>
-      {s.retailServices.length > 0 && (
-        <Section title="Retail Services">
-          <div className="flex flex-wrap gap-2">
-            {s.retailServices.map(sv => (
-              <span key={sv} className="rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 text-small text-neutral-700">{sv}</span>
-            ))}
-          </div>
-        </Section>
-      )}
-      {s.commercialServices.length > 0 && (
-        <Section title="Commercial Services">
-          <div className="flex flex-wrap gap-2">
-            {s.commercialServices.map(sv => (
-              <span key={sv} className="rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 text-small text-neutral-700">{sv}</span>
-            ))}
-          </div>
-        </Section>
-      )}
-      <Section title="Turnaround Time">
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Standard Turnaround"  value={`${s.standardDuration} ${s.standardUnit}`}                   />
-          <Field label="Express Enabled"       value={s.expressEnabled ? 'Yes' : 'No'}                             />
-          {s.expressEnabled && <>
-            <Field label="Express Turnaround" value={`${s.expressDuration} ${s.expressUnit}`}                     />
-            <Field label="Express Surcharge"  value={s.expressSurcharge ? `${s.expressSurcharge}%` : '—'}         />
-          </>}
-        </div>
-      </Section>
-    </>
-  );
-}
-
-const TabPayment = ({ biz }) => {
-  return (
-    <>
-      {biz.payment.methods.map((m, i) => (
-        <Section key={i} title={m.type === 'bank' ? `Bank Transfer ${i + 1}` : `Mobile Money ${i + 1}`}>
-          <div className="grid grid-cols-2 gap-4">
-            {m.type === 'bank' ? <>
-              <Field label="Bank Name"       value={m.bankName}    />
-              <Field label="Account Name"    value={m.accountName} />
-              <Field label="Account Number"  value={m.accountNumber} mono />
-              <Field label="Branch"          value={m.branch}      />
-              <Field label="Account Type"    value={m.accountType} />
-            </> : <>
-              <Field label="Provider"     value={m.provider}    />
-              <Field label="Account Name" value={m.accountName} />
-              <Field label="Phone Number" value={m.phone} mono  />
-            </>}
-          </div>
-        </Section>
-      ))}
-      <Section title="Cash Payments">
-        <Field label="Accept Cash" value={biz.payment.cashEnabled ? 'Yes — cash accepted at outlets' : 'No'} />
-      </Section>
-    </>
-  );
-}
-
-const TabAdmin = ({ biz }) => {
-  const a = biz.admin;
-  return (
-    <Section title="Admin Account">
-      <div className="grid grid-cols-2 gap-4">
-        <Field label="Full Name"  value={`${a.title} ${a.firstName} ${a.lastName}`} />
-        <Field label="Role"       value={a.role}   />
-        <Field label="Email"      value={a.email}  />
-        <Field label="Phone"      value={a.phone}  />
-        <Field label="ID Type"    value={a.idType} />
-        <div>
-          <p className="text-caption text-neutral-400">ID Document</p>
-          {a.idDoc
-            ? <a href="#" className="mt-0.5 inline-flex items-center gap-1 text-small text-primary-600 hover:underline">
-                <FileText className="h-3.5 w-3.5" />{a.idDoc}
-              </a>
-            : <p className="mt-0.5 text-small text-neutral-300">Not uploaded</p>}
-        </div>
-      </div>
-    </Section>
-  );
-}
-
-const HISTORY_COLORS = {
-  approved:                { dot: 'bg-success',       label: 'Approved'                },
-  rejected:                { dot: 'bg-error',         label: 'Rejected'                },
-  resubmitted:             { dot: 'bg-primary-400',   label: 'Resubmitted'             },
-  clarification_requested: { dot: 'bg-primary-400',   label: 'Clarification Requested' },
-};
-
-const TabHistory = ({ biz }) => {
-  const history = biz.history || [];
-  if (!history.length) return <Section><p className="text-small text-neutral-400">No history yet.</p></Section>;
-  return (
-    <Section>
-      <div className="relative pl-5">
-        <div className="absolute left-[7px] top-0 bottom-0 w-px bg-neutral-100" />
-        <div className="space-y-5">
-          {history.map((h, i) => {
-            const cfg = HISTORY_COLORS[h.action] || { dot: 'bg-neutral-300', label: h.action };
-            return (
-              <div key={i} className="relative">
-                <div className={cn('absolute top-1 h-3 w-3 rounded-full border-2 border-white', cfg.dot)} style={{ left: -19 }} />
-                <p className="text-small font-semibold text-neutral-800">{cfg.label}</p>
-                <p className="text-caption text-neutral-400">{h.date} · {h.by}</p>
-                {h.reason && <p className="mt-1 text-small text-neutral-600">Reason: {h.reason}</p>}
-                {h.notes  && <p className="mt-0.5 text-small text-neutral-500 italic">"{h.notes}"</p>}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </Section>
-  );
-}
-
-const DrawerContent = ({ biz, tab }) => {
-  switch (tab) {
-    case 'Overview':  return <TabOverview  biz={biz} />;
-    case 'Company':   return <TabCompany   biz={biz} />;
-    case 'Outlets':   return <TabOutlets   biz={biz} />;
-    case 'Services':  return <TabServices  biz={biz} />;
-    case 'Payment':   return <TabPayment   biz={biz} />;
-    case 'Admin':     return <TabAdmin     biz={biz} />;
-    case 'History':   return <TabHistory   biz={biz} />;
-    default:          return null;
-  }
-}
-
-// ─── Checkbox ────────────────────────────────────────────────────────────────
-
-const Checkbox = ({ checked, onChange }) => {
-  return (
-    <button onClick={onChange} className="flex items-center justify-center text-neutral-400 hover:text-neutral-700">
-      <div className={cn('flex h-4 w-4 items-center justify-center border', checked ? 'border-primary-500 bg-primary-500' : 'border-neutral-300 bg-white')} style={{ borderRadius: 2 }}>
-        {checked && <CheckIcon />}
-      </div>
-    </button>
-  );
-}
 
 // ─── Main page ───────────────────────────────────────────────────────────────
 
@@ -609,7 +288,7 @@ const BusinessApprovalPage = () => {
                     )}
                   </div>
                 </td>
-                <td className="px-4 py-3.5"><StatusBadge status={biz.status} /></td>
+                <td className="px-4 py-3.5"><StatusBadge {...(STATUS_META[biz.status] || STATUS_META.pending)} /></td>
                 <td className="px-4 py-3.5 text-right">
                   <Button variant="outline" size="sm" onClick={() => openReview(biz)}>Review</Button>
                 </td>
@@ -650,7 +329,7 @@ const BusinessApprovalPage = () => {
               <div className="min-w-0">
                 <div className="mb-1 flex flex-wrap items-center gap-2">
                   <h2 className="truncate text-[16px] font-bold leading-tight text-neutral-900">{reviewing.name}</h2>
-                  <StatusBadge status={reviewing.status} />
+                  <StatusBadge {...(STATUS_META[reviewing.status] || STATUS_META.pending)} />
                   {reviewing.resubmissionCount > 0 && (
                     <span className="rounded-full px-2 py-0.5 text-[10px] font-semibold" style={{ background: '#EAF2FC', color: '#093F84' }}>
                       Resubmission #{reviewing.resubmissionCount}
@@ -691,7 +370,7 @@ const BusinessApprovalPage = () => {
 
           {/* ── Scrollable area: tab content + decision forms ── */}
           <div className="min-h-0 flex-1 overflow-y-auto bg-neutral-50/60 pb-2">
-            <DrawerContent biz={reviewing} tab={drawerTab} />
+            <ApprovalDrawerContent biz={reviewing} tab={drawerTab} />
 
             {/* Decision + forms (scrollable, above sticky footer) */}
             {ACTIONABLE.has(reviewing.status) && (

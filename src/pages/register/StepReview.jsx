@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/Button.jsx';
 import { CheckCircle2, Building2, Store, Factory, CreditCard, Smartphone, Banknote, User } from 'lucide-react';
 
-function Row({ label, value }) {
+const Row = ({ label, value }) => {
   if (!value) return null;
   return (
     <div className="flex justify-between py-2 text-small">
@@ -13,7 +13,7 @@ function Row({ label, value }) {
   );
 }
 
-function Section({ title, icon: Icon, children, color = 'text-primary-500' }) {
+const Section = ({ title, icon: Icon, children, color = 'text-primary-500' }) => {
   return (
     <div className="rounded-lg border border-neutral-200 overflow-hidden">
       <div className="flex items-center gap-2.5 border-b border-neutral-100 bg-neutral-50 px-5 py-3">

@@ -2,13 +2,9 @@ import { useState, useEffect } from 'react';
 import { Shirt, Droplets, Wind, FileText } from 'lucide-react';
 import CustomerSettingsLayout, { SettingsSection } from '../../components/layout/CustomerSettingsLayout.jsx';
 import { MOCK_PREFERENCES } from '../../data/mockCustomer.js';
+import { FABRIC_OPTIONS, TEMP_OPTIONS, DETERGENT_OPTIONS, DRYING_OPTIONS, HEAT_OPTIONS, STARCH_OPTIONS } from '../../utils/laundryOptions.js';
+import Toggle from '../../components/ui/Toggle.jsx';
 
-const FABRIC_OPTIONS   = ['Cotton', 'Denim', 'Silk', 'Wool', 'Linen', 'Synthetic', 'Delicates'];
-const TEMP_OPTIONS     = ['Cold', 'Warm', 'Hot'];
-const DETERGENT_OPTIONS = ['Unscented / Hypoallergenic', 'Regular', 'Eco-friendly', 'Fabric Softener'];
-const DRYING_OPTIONS   = ['Air dry', 'Tumble dry', 'Line dry'];
-const HEAT_OPTIONS     = ['Low', 'Medium', 'High'];
-const STARCH_OPTIONS   = ['No starching', 'Light iron', 'Heavy starch'];
 
 const NAV_SECTIONS = [
   { id: 'fabric',       icon: Shirt,    label: 'Fabric care'         },
@@ -53,14 +49,7 @@ const ToggleRow = ({ label, sub, on, onChange }) => {
         <p className="text-[14px] font-medium text-neutral-800">{label}</p>
         {sub && <p className="text-[12px] text-neutral-400">{sub}</p>}
       </div>
-      <button
-        role="switch"
-        aria-checked={on}
-        onClick={onChange}
-        className={`relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors ${on ? 'bg-[#0E9AA7]' : 'bg-neutral-300'}`}
-      >
-        <span className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${on ? 'translate-x-5' : 'translate-x-0'}`} />
-      </button>
+      <Toggle size="md" checked={on} onChange={() => onChange()} />
     </div>
   );
 };

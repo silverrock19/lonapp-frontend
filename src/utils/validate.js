@@ -1,5 +1,28 @@
 export const isValidEmail = v => /\S+@\S+\.\S+/.test(v);
 
+export const detectMode = val => {
+  if (!val) return 'email';
+  if (/^[\d+()\s-]/.test(val)) return 'phone';
+  return 'email';
+};
+
+export const strengthScore = pw => {
+  if (!pw) return { score: 0, label: '', color: '#E5E7EB' };
+  let s = 0;
+  if (pw.length >= 8) s++;
+  if (/[A-Z]/.test(pw)) s++;
+  if (/\d/.test(pw)) s++;
+  if (/[!@#$%^&*(),.?":{}|<>]/.test(pw)) s++;
+  const map = [
+    { label: '', color: '#E5E7EB' },
+    { label: 'Weak', color: '#EF4444' },
+    { label: 'Fair', color: '#F97316' },
+    { label: 'Good', color: '#EAB308' },
+    { label: 'Strong', color: '#22C55E' },
+  ];
+  return { score: s, ...map[s] };
+};
+
 export const passwordStrength = pw => {
   if (!pw) return { score: 0, label: '', color: '' };
   let score = 0;

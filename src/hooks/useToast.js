@@ -1,8 +1,8 @@
-import { useAppDispatch } from './useAppDispatch.js';
+import { useDispatch } from 'react-redux';
 import { showToast } from '../store/slices/uiSlice.js';
 
 export function useToast() {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
   return {
     success: (message, opts) => dispatch(showToast({ type: 'success', message, ...opts })),
     error:   (message, opts) => dispatch(showToast({ type: 'error',   message, ...opts })),

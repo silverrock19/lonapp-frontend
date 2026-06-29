@@ -1,9 +1,9 @@
-import { useAppSelector } from './useAppSelector.js';
+import { useSelector } from 'react-redux';
 import { selectUserRole } from '../store/slices/authSlice.js';
 import { PERMISSIONS } from '../utils/rbac.js';
 
 export function useRBAC() {
-  const role = useAppSelector(selectUserRole);
+  const role = useSelector(selectUserRole);
   return {
     role,
     can: (permission) => {

@@ -1,63 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Mail, Phone, CheckCircle2 } from 'lucide-react';
-import { isValidEmail, passwordStrength } from '../../utils/validate.js';
+import { isValidEmail, passwordStrength, detectMode } from '../../utils/validate.js';
 import Button from '../../components/ui/Button.jsx';
 import PasswordInput from '../../components/forms/PasswordInput.jsx';
+import OtpInput from '../../components/forms/OtpInput.jsx';
 import useForm from '../../hooks/useForm.js';
 import Brandmark from '../../components/ui/Brandmark.jsx';
-
-// ── Detect input type ─────────────────────────────────────────────────────────
-const detectMode = val => {
-  if (!val) return 'email';
-  if (/^[\d+()\s-]/.test(val)) return 'phone';
-  return 'email';
-};
-
-// ── OTP boxes ─────────────────────────────────────────────────────────────────
-const OtpBoxes = ({ otp, setOtp }) => {
-  const refs = useRef([]);
-  useEffect(() => { refs.current[0]?.focus(); }, []);
-
-  const handleChange = (i, val) => {
-    const d = val.replace(/\D/g, '').slice(-1);
-    const next = [...otp];
-    next[i] = d;
-    setOtp(next);
-    if (d && i < 5) refs.current[i + 1]?.focus();
-  };
-  const handleKeyDown = (i, e) => {
-    if (e.key === 'Backspace' && !otp[i] && i > 0) refs.current[i - 1]?.focus();
-  };
-  const handlePaste = e => {
-    e.preventDefault();
-    const p = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
-    const next = [...Array(6).fill('')];
-    p.split('').forEach((c, i) => { next[i] = c; });
-    setOtp(next);
-    refs.current[Math.min(p.length, 5)]?.focus();
-  };
-
-  return (
-    <div className="flex justify-center gap-2" onPaste={handlePaste}>
-      {otp.map((digit, i) => (
-        <input
-          key={i}
-          ref={el => (refs.current[i] = el)}
-          type="text" inputMode="numeric" maxLength={1}
-          value={digit}
-          onChange={e => handleChange(i, e.target.value)}
-          onKeyDown={e => handleKeyDown(i, e)}
-          aria-label={`Digit ${i + 1}`}
-          className="h-14 w-12 rounded-xl border text-center text-[22px] font-bold outline-none transition-all"
-          style={{ borderColor: digit ? '#0E9AA7' : '#E5E7EB', color: '#111827' }}
-          onFocus={e => { e.target.style.borderColor = '#0E9AA7'; e.target.style.boxShadow = '0 0 0 3px rgba(14,154,167,0.15)'; }}
-          onBlur={e => { e.target.style.borderColor = digit ? '#0E9AA7' : '#E5E7EB'; e.target.style.boxShadow = ''; }}
-        />
-      ))}
-    </div>
-  );
-}
 
 // ── Main component ────────────────────────────────────────────────────────────
 // Steps: 'entry' → email: 'email_sent' / phone: 'phone_otp' → 'new_password' → 'done'
@@ -70,7 +19,7 @@ const CustomerForgotPasswordPage = () => {
   const [loading, setLoading] = useState(false);
 
   // Phone OTP state
-  const [otp, setOtp] = useState(Array(6).fill(''));
+  const [otp, setOtp] = useState('');
   const [otpError, setOtpError] = useState('');
   const [cooldown, setCooldown] = useState(60);
   const [otpLoading, setOtpLoading] = useState(false);
@@ -110,7 +59,7 @@ const CustomerForgotPasswordPage = () => {
         setStep('email_sent');
       } else {
         setCooldown(60);
-        setOtp(Array(6).fill(''));
+        setOtp('');
         setStep('phone_otp');
       }
     } catch {
@@ -121,7 +70,7 @@ const CustomerForgotPasswordPage = () => {
   }
 
   const handleOtpVerify = async () => {
-    if (otp.join('').length < 6) { setOtpError('Enter all 6 digits'); return; }
+    if (otp.length < 6) { setOtpError('Enter all 6 digits'); return; }
     setOtpLoading(true);
     setOtpError('');
     try {
@@ -137,7 +86,7 @@ const CustomerForgotPasswordPage = () => {
   const handleResend = () => {
     if (cooldown > 0) return;
     setCooldown(60);
-    setOtp(Array(6).fill(''));
+    setOtp('');
   }
 
   const handleNewPassword = async e => {
@@ -212,7 +161,7 @@ const CustomerForgotPasswordPage = () => {
 
   // ── Phone OTP screen ─────────────────────────────────────────────────────────
   if (step === 'phone_otp') {
-    const isComplete = otp.every(d => d !== '');
+    const isComplete = otp.length === 6;
     return (
       <div className="w-full text-center space-y-6">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full" style={{ background: '#E8F9FA' }}>
@@ -231,7 +180,7 @@ const CustomerForgotPasswordPage = () => {
           </div>
         )}
 
-        <OtpBoxes otp={otp} setOtp={setOtp} />
+        <OtpInput value={otp} onChange={setOtp} autoFocus />
 
         <button
           onClick={handleOtpVerify}

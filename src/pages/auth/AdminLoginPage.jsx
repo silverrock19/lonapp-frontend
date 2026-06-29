@@ -14,7 +14,7 @@ const AdminLoginPage = () => {
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  function validate() {
+  const validate = () => {
     const e = {};
     if (!form.identifier) {
       e.identifier = 'Email or phone is required';
@@ -27,7 +27,7 @@ const AdminLoginPage = () => {
     return e;
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }

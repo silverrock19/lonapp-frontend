@@ -12,7 +12,7 @@ const ForgotPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email) { setError('Email is required'); return; }
     if (!isValidEmail(email)) { setError('Enter a valid email address'); return; }

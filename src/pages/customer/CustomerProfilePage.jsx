@@ -7,6 +7,7 @@ import {
 import CustomerSettingsLayout, { SettingsSection } from '../../components/layout/CustomerSettingsLayout.jsx';
 import { MOCK_CUSTOMER } from '../../data/mockCustomer.js';
 import Input from '../../components/forms/Input.jsx';
+import Toggle from '../../components/ui/Toggle.jsx';
 
 // ── Mock initial profile ──────────────────────────────────────────────────────
 
@@ -87,14 +88,7 @@ const ToggleRow = ({ label, sub, checked, onChange }) => {
         <p className="text-[14px] font-medium text-neutral-800">{label}</p>
         {sub && <p className="text-[12px] text-neutral-400">{sub}</p>}
       </div>
-      <button
-        role="switch"
-        aria-checked={checked}
-        onClick={onChange}
-        className={`relative inline-flex h-6 w-11 rounded-full border-2 border-transparent transition-colors ${checked ? 'bg-[#0E9AA7]' : 'bg-neutral-300'}`}
-      >
-        <span className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-5' : 'translate-x-0'}`} />
-      </button>
+      <Toggle size="md" checked={checked} onChange={() => onChange()} />
     </div>
   );
 };

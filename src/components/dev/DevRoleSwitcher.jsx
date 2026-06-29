@@ -42,7 +42,7 @@ const ROLES = [
   },
 ];
 
-function setAuth(r) {
+const setAuth = (r) => {
   localStorage.setItem(
     'persist:__lonapp_auth__',
     JSON.stringify({

@@ -35,13 +35,13 @@ const BusinessWizardPage = () => {
     admin:    { ...defaultStep5 },
   });
 
-  function handleNext1(data) { setDraft(d => ({ ...d, company:  data })); setStep(1); }
-  function handleNext2(data) { setDraft(d => ({ ...d, outlets:  data })); setStep(2); }
-  function handleNext3(data) { setDraft(d => ({ ...d, services: data })); setStep(3); }
-  function handleNext4(data) { setDraft(d => ({ ...d, payment:  data })); setStep(4); }
-  function handleNext5(data) { setDraft(d => ({ ...d, admin:    data })); setStep(5); }
+  const handleNext1 = (data) => { setDraft(d => ({ ...d, company:  data })); setStep(1); }
+  const handleNext2 = (data) => { setDraft(d => ({ ...d, outlets:  data })); setStep(2); }
+  const handleNext3 = (data) => { setDraft(d => ({ ...d, services: data })); setStep(3); }
+  const handleNext4 = (data) => { setDraft(d => ({ ...d, payment:  data })); setStep(4); }
+  const handleNext5 = (data) => { setDraft(d => ({ ...d, admin:    data })); setStep(5); }
 
-  function saveDraft(key, data) {
+  const saveDraft = (key, data) => {
     setDraft(d => ({ ...d, [key]: { ...d[key], ...data } }));
     // In production this would POST to /drafts
     console.log('[draft saved]', key, data);

@@ -45,7 +45,7 @@ const ROLE_ALLOWED_PATHS = {
   receptionist: new Set(['/', '/orders', '/customers', '/profile', '/settings']),
 };
 
-function getNavGroups(role) {
+const getNavGroups = (role) => {
   const allowed = ROLE_ALLOWED_PATHS[role] ?? null;
   if (!allowed) return ALL_NAV_GROUPS;
   return ALL_NAV_GROUPS
@@ -53,7 +53,7 @@ function getNavGroups(role) {
     .filter(group => group.items.length > 0);
 }
 
-function initials(name) {
+const initials = (name) => {
   if (!name) return 'U';
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
@@ -64,7 +64,7 @@ const AppShell = () => {
   const { logoUrl } = useLogo();
   const navGroups = getNavGroups(user?.role);
 
-  function handleLogout() {
+  const handleLogout = () => {
     logout();
     navigate('/login');
   }

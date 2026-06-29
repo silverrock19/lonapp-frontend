@@ -4,6 +4,7 @@ import {
   ShoppingBag, Star, Tag, Shield, Info,
 } from 'lucide-react';
 import CustomerSettingsLayout, { SettingsSection } from '../../components/layout/CustomerSettingsLayout.jsx';
+import Toggle from '../../components/ui/Toggle.jsx';
 
 // ── Channels ──────────────────────────────────────────────────────────────────
 const CHANNELS = [
@@ -63,30 +64,6 @@ const buildDefaults = () => {
   return p;
 };
 
-// ── Toggle switch ─────────────────────────────────────────────────────────────
-const Toggle = ({ on, onChange, locked }) => {
-  if (locked) {
-    return (
-      <div
-        title="Required — cannot be disabled"
-        className="relative inline-flex h-6 w-11 cursor-not-allowed rounded-full border-2 border-transparent bg-neutral-200"
-      >
-        <span className="inline-block h-5 w-5 translate-x-5 rounded-full bg-neutral-400 shadow" />
-        <Lock className="absolute right-0.5 top-0.5 h-3 w-3 text-neutral-500" />
-      </div>
-    );
-  }
-  return (
-    <button
-      role="switch"
-      aria-checked={on}
-      onClick={onChange}
-      className={`relative inline-flex h-6 w-11 rounded-full border-2 border-transparent transition-colors ${on ? 'bg-[#0E9AA7]' : 'bg-neutral-300'}`}
-    >
-      <span className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${on ? 'translate-x-5' : 'translate-x-0'}`} />
-    </button>
-  );
-};
 
 const NAV_SECTIONS = [
   { id: 'global', icon: Bell,   label: 'Master toggle' },
@@ -156,14 +133,7 @@ const NotificationsPage = () => {
               {globalOn ? 'Notifications are active' : 'All non-essential notifications are paused'}
             </p>
           </div>
-          <button
-            role="switch"
-            aria-checked={globalOn}
-            onClick={() => setGlobalOn(v => !v)}
-            className={`relative inline-flex h-7 w-12 shrink-0 rounded-full border-2 border-transparent transition-colors ${globalOn ? 'bg-[#0E9AA7]' : 'bg-neutral-300'}`}
-          >
-            <span className={`inline-block h-6 w-6 rounded-full bg-white shadow transition-transform ${globalOn ? 'translate-x-5' : 'translate-x-0'}`} />
-          </button>
+          <Toggle size="lg" checked={globalOn} onChange={v => setGlobalOn(v)} />
         </div>
         {!globalOn && (
           <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] text-amber-800">
@@ -204,9 +174,10 @@ const NotificationsPage = () => {
                   return (
                     <div key={ch.key} className="flex items-center justify-center">
                       <Toggle
-                        on={prefs[cat.key][ch.key]}
+                        size="md"
+                        checked={prefs[cat.key][ch.key]}
                         locked={locked}
-                        onChange={() => !locked && toggle(cat.key, ch.key)}
+                        onChange={() => toggle(cat.key, ch.key)}
                       />
                     </div>
                   );
@@ -248,14 +219,7 @@ const NotificationsPage = () => {
                   : 'Notifications delivered at all times'}
               </p>
             </div>
-            <button
-              role="switch"
-              aria-checked={quietHours.enabled}
-              onClick={() => setQuietHours(q => ({ ...q, enabled: !q.enabled }))}
-              className={`relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors ${quietHours.enabled ? 'bg-[#0E9AA7]' : 'bg-neutral-300'}`}
-            >
-              <span className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${quietHours.enabled ? 'translate-x-5' : 'translate-x-0'}`} />
-            </button>
+            <Toggle size="md" checked={quietHours.enabled} onChange={() => setQuietHours(q => ({ ...q, enabled: !q.enabled }))} />
           </div>
 
           {quietHours.enabled && (

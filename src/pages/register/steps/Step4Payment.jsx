@@ -1,26 +1,8 @@
 ﻿import { useState } from 'react';
 import Button from '../../../components/ui/Button.jsx';
 import { Plus, Trash2, CreditCard, Smartphone, Banknote } from 'lucide-react';
+import { BANKS_BY_COUNTRY, MOMO_BY_COUNTRY, DEFAULT_BANKS, DEFAULT_MOMO, ACCOUNT_TYPES } from '../../../utils/paymentOptions.js';
 
-const BANKS_BY_COUNTRY = {
-  Ghana:        ['GCB Bank', 'Ecobank Ghana', 'Fidelity Bank', 'Stanbic Bank', 'Absa Ghana', 'Standard Chartered', 'Agricultural Development Bank', 'Consolidated Bank Ghana'],
-  Nigeria:      ['Access Bank', 'Zenith Bank', 'GTBank', 'First Bank', 'UBA', 'Polaris Bank', 'Sterling Bank', 'FCMB'],
-  Kenya:        ['Kenya Commercial Bank', 'Equity Bank', 'Co-operative Bank', 'Absa Kenya', 'Standard Chartered Kenya', 'NCBA', 'DTB'],
-  'South Africa': ['Standard Bank', 'ABSA', 'FNB', 'Nedbank', 'Capitec', 'Investec'],
-  Rwanda:       ['Bank of Kigali', 'Equity Bank Rwanda', 'KCB Rwanda', 'Cogebanque', 'I&M Bank Rwanda'],
-  Uganda:       ['Stanbic Uganda', 'DFCU Bank', 'Centenary Bank', 'Equity Bank Uganda', 'KCB Uganda'],
-};
-const MOMO_BY_COUNTRY = {
-  Ghana:        ['MTN Mobile Money', 'Vodafone Cash', 'AirtelTigo Money'],
-  Nigeria:      ['OPay', 'PalmPay', 'Kuda', 'MTN MoMo Nigeria'],
-  Kenya:        ['M-Pesa', 'Airtel Money Kenya', 'Telkom T-Kash'],
-  'South Africa': ['MTN MoMo SA', 'Standard Bank Instant Money'],
-  Rwanda:       ['MTN MoMo Rwanda', 'Airtel Money Rwanda'],
-  Uganda:       ['MTN MoMo Uganda', 'Airtel Money Uganda'],
-};
-const DEFAULT_BANKS = ['GCB Bank', 'Ecobank Ghana', 'Fidelity Bank', 'Stanbic Bank'];
-const DEFAULT_MOMO  = ['MTN Mobile Money', 'Vodafone Cash', 'AirtelTigo Money'];
-const ACCOUNT_TYPES = ['Current', 'Savings'];
 
 const inputCls = (err) =>
   `w-full rounded-md border px-3 py-2.5 text-small text-neutral-900 outline-none focus:ring-2 transition-all ${
@@ -28,14 +10,14 @@ const inputCls = (err) =>
   }`;
 const selectCls = `w-full rounded-md border border-neutral-200 bg-white px-3 py-2.5 text-small text-neutral-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100 transition-all`;
 
-function emptyBank() {
+const emptyBank = () => {
   return { id: Date.now(), type: 'bank', bankName: '', accountName: '', accountNumber: '', branch: '', accountType: 'Current' };
 }
-function emptyMomo() {
+const emptyMomo = () => {
   return { id: Date.now() + 1, type: 'momo', provider: '', phone: '', accountName: '', merchantId: '' };
 }
 
-function validateBank(m) {
+const validateBank = (m) => {
   const e = {};
   if (!m.bankName)           e.bankName       = 'Select a bank';
   if (!m.accountName.trim()) e.accountName    = 'Account name is required';
@@ -43,7 +25,7 @@ function validateBank(m) {
   return e;
 }
 
-function validateMomo(m) {
+const validateMomo = (m) => {
   const e = {};
   if (!m.provider)        e.provider    = 'Select a provider';
   if (!m.phone.trim())    e.phone       = 'Phone number is required';
@@ -51,7 +33,7 @@ function validateMomo(m) {
   return e;
 }
 
-function BankForm({ method, errors, onChange, banks }) {
+const BankForm = ({ method, errors, onChange, banks }) => {
   const e = errors || {};
   return (
     <div className="space-y-3.5">
@@ -94,7 +76,7 @@ function BankForm({ method, errors, onChange, banks }) {
   );
 }
 
-function MomoForm({ method, errors, onChange, momoProviders }) {
+const MomoForm = ({ method, errors, onChange, momoProviders }) => {
   const e = errors || {};
   return (
     <div className="space-y-3.5">
@@ -130,7 +112,7 @@ function MomoForm({ method, errors, onChange, momoProviders }) {
   );
 }
 
-function MethodCard({ method, index, errors, onChange, onRemove, banks, momoProviders }) {
+const MethodCard = ({ method, index, errors, onChange, onRemove, banks, momoProviders }) => {
   const icon = method.type === 'bank' ? CreditCard : Smartphone;
   const Icon = icon;
   return (
@@ -165,12 +147,12 @@ const Step4Payment = ({ data, country, onNext, onBack, onSaveDraft }) => {
   const [methodErrors, setMethodErrors] = useState([]);
   const [globalError, setGlobalError]   = useState('');
 
-  function addBank() { setMethods(p => [...p, emptyBank()]); }
-  function addMomo() { setMethods(p => [...p, emptyMomo()]); }
-  function remove(i) { setMethods(p => p.filter((_, idx) => idx !== i)); }
-  function update(i, val) { setMethods(p => p.map((m, idx) => idx === i ? val : m)); }
+  const addBank = () => { setMethods(p => [...p, emptyBank()]); }
+  const addMomo = () => { setMethods(p => [...p, emptyMomo()]); }
+  const remove = (i) => { setMethods(p => p.filter((_, idx) => idx !== i)); }
+  const update = (i, val) => { setMethods(p => p.map((m, idx) => idx === i ? val : m)); }
 
-  function handleNext() {
+  const handleNext = () => {
     const errs = methods.map(m => m.type === 'bank' ? validateBank(m) : validateMomo(m));
     const hasErr = errs.some(e => Object.keys(e).length > 0);
     if (hasErr) { setMethodErrors(errs); return; }

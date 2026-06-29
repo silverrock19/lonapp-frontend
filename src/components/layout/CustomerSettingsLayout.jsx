@@ -32,7 +32,7 @@ export default function CustomerSettingsLayout({
     return () => obs.forEach(o => o.disconnect());
   }, [sections]);
 
-  function scrollTo(id) {
+  const scrollTo = (id) => {
     const el = document.getElementById(`section-${id}`);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     setActiveId(id);
@@ -121,7 +121,7 @@ export default function CustomerSettingsLayout({
 // ── Section anchor wrapper ────────────────────────────────────────────────────
 // Wrap each logical section in this so scroll-spy can find them.
 
-export function SettingsSection({ id, icon: Icon, title, helper, children }) {
+export const SettingsSection = ({ id, icon: Icon, title, helper, children }) => {
   return (
     <section id={`section-${id}`} className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
       {/* Section header */}

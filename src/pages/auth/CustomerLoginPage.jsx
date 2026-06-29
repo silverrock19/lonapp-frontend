@@ -1,85 +1,24 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { ChevronLeft, Fingerprint, Shield } from 'lucide-react';
 import Input from '../../components/forms/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
 import PasswordInput from '../../components/forms/PasswordInput.jsx';
+import OtpInput from '../../components/forms/OtpInput.jsx';
 import useForm from '../../hooks/useForm.js';
+import { detectMode } from '../../utils/validate.js';
 import Brandmark from '../../components/ui/Brandmark.jsx';
 import GoogleIcon from '../../components/icons/GoogleIcon.jsx';
 import FacebookIcon from '../../components/icons/FacebookIcon.jsx';
 import AppleIcon from '../../components/icons/AppleIcon.jsx';
 import WhatsAppIcon from '../../components/icons/WhatsAppIcon.jsx';
 import { MOCK_SOCIAL, MOCK_PHONE_HINT } from '../../data/mockCustomer.js';
+import SocialBtn from '../../components/ui/SocialBtn.jsx';
 
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_SECONDS = 15 * 60;
 
-function detectMode(val) {
-  if (!val) return 'email';
-  if (/^[\d+()\s-]/.test(val)) return 'phone';
-  return 'email';
-}
-
-// ── Reusable 6-digit OTP boxes ───────────────────────────────────────────────
-function OtpBoxes({ otp, setOtp, autoFocus }) {
-  const refs = useRef([]);
-  useEffect(() => { if (autoFocus) refs.current[0]?.focus(); }, [autoFocus]);
-
-  function handleChange(i, val) {
-    const d = val.replace(/\D/g, '').slice(-1);
-    const next = [...otp];
-    next[i] = d;
-    setOtp(next);
-    if (d && i < 5) refs.current[i + 1]?.focus();
-  }
-  function handleKeyDown(i, e) {
-    if (e.key === 'Backspace' && !otp[i] && i > 0) refs.current[i - 1]?.focus();
-  }
-  function handlePaste(e) {
-    e.preventDefault();
-    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
-    const next = [...Array(6).fill('')];
-    pasted.split('').forEach((c, i) => { next[i] = c; });
-    setOtp(next);
-    refs.current[Math.min(pasted.length, 5)]?.focus();
-  }
-
-  return (
-    <div className="flex justify-center gap-2" onPaste={handlePaste}>
-      {otp.map((digit, i) => (
-        <input
-          key={i}
-          ref={el => (refs.current[i] = el)}
-          type="text" inputMode="numeric" maxLength={1}
-          value={digit}
-          onChange={e => handleChange(i, e.target.value)}
-          onKeyDown={e => handleKeyDown(i, e)}
-          aria-label={`Digit ${i + 1}`}
-          className="h-14 w-12 rounded-xl border text-center text-[22px] font-bold outline-none transition-all"
-          style={{ borderRadius: 8, borderColor: digit ? '#0E9AA7' : '#E5E7EB', color: '#111827' }}
-          onFocus={e => { e.target.style.borderColor = '#0E9AA7'; e.target.style.boxShadow = '0 0 0 3px rgba(14,154,167,0.15)'; }}
-          onBlur={e => { e.target.style.borderColor = digit ? '#0E9AA7' : '#E5E7EB'; e.target.style.boxShadow = ''; }}
-        />
-      ))}
-    </div>
-  );
-}
-
-// ── Social login button ───────────────────────────────────────────────────────
-function SocialBtn({ icon: Icon, label, onClick, iconColor }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex h-12 w-full items-center justify-center gap-2.5 rounded-xl border border-neutral-200 bg-white px-4 text-[14px] font-semibold text-neutral-700 shadow-sm transition-colors hover:bg-neutral-50 active:bg-neutral-100"
-    >
-      <Icon style={{ color: iconColor }} />
-      {label}
-    </button>
-  );
-}
 
 // ── Main component ────────────────────────────────────────────────────────────
 const CustomerLoginPage = () => {
@@ -99,7 +38,7 @@ const CustomerLoginPage = () => {
   const [lockoutRemaining, setLockoutRemaining] = useState(0);
 
   // 2FA state
-  const [twoFaOtp, setTwoFaOtp] = useState(Array(6).fill(''));
+  const [twoFaOtp, setTwoFaOtp] = useState('');
   const [twoFaTrust, setTwoFaTrust] = useState(false);
   const [twoFaCooldown, setTwoFaCooldown] = useState(30);
   const [twoFaLoading, setTwoFaLoading] = useState(false);
@@ -126,7 +65,7 @@ const CustomerLoginPage = () => {
 
   const inputMode = detectMode(form.identifier);
 
-  function validate() {
+  const validate = () => {
     const e = {};
     if (!form.identifier) {
       e.identifier = 'Email or phone number is required';
@@ -139,7 +78,7 @@ const CustomerLoginPage = () => {
     return e;
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
@@ -161,7 +100,7 @@ const CustomerLoginPage = () => {
       }
       // Mock: 2FA required for demo@test.com
       if (form.identifier === 'demo@test.com' || form.identifier === '0241234567') {
-        setTwoFaOtp(Array(6).fill(''));
+        setTwoFaOtp('');
         setTwoFaCooldown(30);
         setStep('two_fa');
         return;
@@ -175,7 +114,7 @@ const CustomerLoginPage = () => {
     }
   }
 
-  function handleSocialClick(providerKey) {
+  const handleSocialClick = (providerKey) => {
     const profile = MOCK_SOCIAL[providerKey];
     setProvider(providerKey);
     setSocialForm({ firstName: profile.firstName, lastName: profile.lastName, email: profile.email, phone: '', terms: false, privacy: false });
@@ -183,7 +122,7 @@ const CustomerLoginPage = () => {
     setStep('social_review');
   }
 
-  function handleSocialSubmit(e) {
+  const handleSocialSubmit = (e) => {
     e.preventDefault();
     const se = {};
     if (!socialForm.firstName.trim()) se.firstName = 'First name is required';
@@ -196,8 +135,8 @@ const CustomerLoginPage = () => {
     navigate('/app');
   }
 
-  async function handleTwoFaVerify() {
-    if (twoFaOtp.join('').length < 6) { setTwoFaError('Enter all 6 digits'); return; }
+  const handleTwoFaVerify = async () => {
+    if (twoFaOtp.length < 6) { setTwoFaError('Enter all 6 digits'); return; }
     setTwoFaLoading(true);
     setTwoFaError('');
     try {
@@ -210,17 +149,17 @@ const CustomerLoginPage = () => {
     }
   }
 
-  function handleTwoFaResend() {
+  const handleTwoFaResend = () => {
     if (twoFaCooldown > 0) return;
     setTwoFaCooldown(60);
-    setTwoFaOtp(Array(6).fill(''));
+    setTwoFaOtp('');
   }
 
   const providerInfo = provider ? MOCK_SOCIAL[provider] : null;
 
   // ── 2FA screen ──────────────────────────────────────────────────────────────
   if (step === 'two_fa') {
-    const isComplete = twoFaOtp.every(d => d !== '');
+    const isComplete = twoFaOtp.length === 6;
     return (
       <div className="w-full text-center space-y-6">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full" style={{ background: '#E8F9FA' }}>
@@ -240,7 +179,7 @@ const CustomerLoginPage = () => {
           </div>
         )}
 
-        <OtpBoxes otp={twoFaOtp} setOtp={setTwoFaOtp} autoFocus />
+        <OtpInput value={twoFaOtp} onChange={setTwoFaOtp} autoFocus />
 
         <label className="flex cursor-pointer items-center justify-center gap-2 text-[14px] text-neutral-600">
           <input

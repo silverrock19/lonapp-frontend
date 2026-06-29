@@ -1,10 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { cn } from '../../utils/classNames.js';
 
-const OtpInput = ({ length = 6, value = '', onChange, error, disabled }) => {
+const OtpInput = ({ length = 6, value = '', onChange, error, disabled, autoFocus = false }) => {
   const refs = useRef([]);
+  useEffect(() => { if (autoFocus) refs.current[0]?.focus(); }, [autoFocus]);
 
-  function handleChange(i, e) {
+  const handleChange = (i, e) => {
     const char = e.target.value.replace(/\D/g, '').slice(-1);
     const arr = value.padEnd(length, '').split('');
     arr[i] = char;
@@ -13,7 +14,7 @@ const OtpInput = ({ length = 6, value = '', onChange, error, disabled }) => {
     if (char && i < length - 1) refs.current[i + 1]?.focus();
   }
 
-  function handleKeyDown(i, e) {
+  const handleKeyDown = (i, e) => {
     if (e.key === 'Backspace') {
       if (value[i]) {
         const arr = value.padEnd(length, '').split('');
@@ -29,7 +30,7 @@ const OtpInput = ({ length = 6, value = '', onChange, error, disabled }) => {
     }
   }
 
-  function handlePaste(e) {
+  const handlePaste = (e) => {
     const text = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, length);
     onChange(text);
     refs.current[Math.min(text.length, length - 1)]?.focus();
