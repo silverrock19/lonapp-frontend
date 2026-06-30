@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Smartphone, CreditCard, Trash2, Plus, X } from 'lucide-react';
 import { MOCK_PAYMENT_METHODS } from '../../data/mockCustomer.js';
 import Button from '../../components/ui/Button.jsx';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 
 const PaymentMethodsPage = () => {
   const navigate = useNavigate();
