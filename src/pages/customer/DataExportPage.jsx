@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Download, Clock } from 'lucide-react';
-import PasswordInput from '../../components/ui/PasswordInput.jsx';
+import PasswordInput from '../../components/forms/PasswordInput.jsx';
 
 const DataExportPage = () => {
   const navigate = useNavigate();

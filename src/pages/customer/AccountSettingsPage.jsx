@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { ChevronLeft, ChevronRight, AlertTriangle, Trash2, Check, X, ShieldAlert, LogOut } from 'lucide-react';
-import PasswordInput from '../../components/ui/PasswordInput.jsx';
+import PasswordInput from '../../components/forms/PasswordInput.jsx';
 import Button from '../../components/ui/Button.jsx';
 import { resetAuth } from '../../store/slices/authSlice.js';
 

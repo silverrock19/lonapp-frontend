@@ -2,23 +2,10 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, CheckCircle2 } from 'lucide-react';
 import Button from '../../components/ui/Button.jsx';
-import PasswordInput from '../../components/ui/PasswordInput.jsx';
+import PasswordInput from '../../components/forms/PasswordInput.jsx';
 import useForm from '../../hooks/useForm.js';
 import Brandmark from '../../components/ui/Brandmark.jsx';
-
-function pwStrength(pw) {
-  if (!pw) return { score: 0, label: '', color: '' };
-  let s = 0;
-  if (pw.length >= 8) s++;
-  if (pw.length >= 12) s++;
-  if (/[A-Z]/.test(pw)) s++;
-  if (/[0-9]/.test(pw)) s++;
-  if (/[^A-Za-z0-9]/.test(pw)) s++;
-  if (s <= 1) return { score: s, label: 'Weak',   color: '#EF4444' };
-  if (s === 2) return { score: s, label: 'Fair',   color: '#F59E0B' };
-  if (s === 3) return { score: s, label: 'Good',   color: '#0E9AA7' };
-  return              { score: s, label: 'Strong', color: '#16A34A' };
-}
+import { passwordStrength } from '../../utils/validate.js';
 
 const CustomerResetPasswordPage = () => {
   const navigate = useNavigate();
@@ -26,9 +13,9 @@ const CustomerResetPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
-  const str = pwStrength(form.password);
+  const str = passwordStrength(form.password);
 
-  async function handleSubmit(e) {
+  const handleSubmit = async e => {
     e.preventDefault();
     const e2 = {};
     if (!form.password) e2.password = 'Password is required';
@@ -98,13 +85,13 @@ const CustomerResetPasswordPage = () => {
                   <div
                     key={n}
                     className="h-1.5 flex-1 rounded-full transition-all"
-                    style={{ background: str.score >= n ? str.color : '#E5E7EB' }}
+                    className={`h-1.5 flex-1 rounded-full transition-all ${str.score >= n ? str.color : 'bg-neutral-200'}`}
                   />
                 ))}
               </div>
               <p className="text-[12px] text-neutral-500">
                 Strength:{' '}
-                <span className="font-medium" style={{ color: str.color }}>{str.label}</span>
+                <span className="font-medium text-neutral-700">{str.label}</span>
               </p>
             </div>
           )}

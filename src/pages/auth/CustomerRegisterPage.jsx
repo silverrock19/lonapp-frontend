@@ -1,93 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { isValidEmail } from '../../utils/validate.js';
+import { isValidEmail, strengthScore } from '../../utils/validate.js';
 import useForm from '../../hooks/useForm.js';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
-import PasswordInput from '../../components/ui/PasswordInput.jsx';
-import OtpInput from '../../components/ui/OtpInput.jsx';
+import PasswordInput from '../../components/forms/PasswordInput.jsx';
+import OtpInput from '../../components/forms/OtpInput.jsx';
 import Brandmark from '../../components/ui/Brandmark.jsx';
 import GoogleIcon from '../../components/icons/GoogleIcon.jsx';
 import FacebookIcon from '../../components/icons/FacebookIcon.jsx';
 import AppleIcon from '../../components/icons/AppleIcon.jsx';
 import WhatsAppIcon from '../../components/icons/WhatsAppIcon.jsx';
-
-// ── Social button ─────────────────────────────────────────────────────────────
-function SocialBtn({ icon: Icon, label, onClick, iconColor }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex h-12 w-full items-center justify-center gap-2.5 rounded-xl border border-neutral-200 bg-white px-4 text-[14px] font-semibold text-neutral-700 shadow-sm transition-colors hover:bg-neutral-50 active:bg-neutral-100"
-    >
-      <Icon style={{ color: iconColor }} />
-      {label}
-    </button>
-  );
-}
-
-// ── OTP boxes (inline, same as login) ────────────────────────────────────────
-import { useRef } from 'react';
-function OtpBoxes({ otp, setOtp, autoFocus }) {
-  const refs = useRef([]);
-  useEffect(() => { if (autoFocus) refs.current[0]?.focus(); }, [autoFocus]);
-
-  function handleChange(i, val) {
-    const d = val.replace(/\D/g, '').slice(-1);
-    const next = [...otp];
-    next[i] = d;
-    setOtp(next);
-    if (d && i < 5) refs.current[i + 1]?.focus();
-  }
-  function handleKeyDown(i, e) {
-    if (e.key === 'Backspace' && !otp[i] && i > 0) refs.current[i - 1]?.focus();
-  }
-  function handlePaste(e) {
-    e.preventDefault();
-    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
-    const next = [...Array(6).fill('')];
-    pasted.split('').forEach((c, i) => { next[i] = c; });
-    setOtp(next);
-    refs.current[Math.min(pasted.length, 5)]?.focus();
-  }
-  return (
-    <div className="flex justify-center gap-2" onPaste={handlePaste}>
-      {otp.map((digit, i) => (
-        <input
-          key={i}
-          ref={el => (refs.current[i] = el)}
-          type="text" inputMode="numeric" maxLength={1}
-          value={digit}
-          onChange={e => handleChange(i, e.target.value)}
-          onKeyDown={e => handleKeyDown(i, e)}
-          className="h-14 w-12 rounded-xl border text-center text-[22px] font-bold outline-none transition-all"
-          style={{ borderRadius: 8, borderColor: digit ? '#0E9AA7' : '#E5E7EB', color: '#111827' }}
-          onFocus={e => { e.target.style.borderColor = '#0E9AA7'; e.target.style.boxShadow = '0 0 0 3px rgba(14,154,167,0.15)'; }}
-          onBlur={e => { e.target.style.borderColor = digit ? '#0E9AA7' : '#E5E7EB'; e.target.style.boxShadow = ''; }}
-        />
-      ))}
-    </div>
-  );
-}
-
-// ── Password strength meter ───────────────────────────────────────────────────
-function strengthScore(pw) {
-  if (!pw) return { score: 0, label: '', color: '#E5E7EB' };
-  let s = 0;
-  if (pw.length >= 8) s++;
-  if (/[A-Z]/.test(pw)) s++;
-  if (/\d/.test(pw)) s++;
-  if (/[!@#$%^&*(),.?":{}|<>]/.test(pw)) s++;
-  const map = [
-    { label: '', color: '#E5E7EB' },
-    { label: 'Weak', color: '#EF4444' },
-    { label: 'Fair', color: '#F97316' },
-    { label: 'Good', color: '#EAB308' },
-    { label: 'Strong', color: '#22C55E' },
-  ];
-  return { score: s, ...map[s] };
-}
+import SocialBtn from '../../components/ui/SocialBtn.jsx';
 
 // ── Main component ────────────────────────────────────────────────────────────
 const CustomerRegisterPage = () => {
@@ -97,7 +22,7 @@ const CustomerRegisterPage = () => {
     firstName: '', lastName: '', email: '', password: '', terms: false, privacy: false,
   });
   const [loading, setLoading] = useState(false);
-  const [otp, setOtp] = useState(Array(6).fill(''));
+  const [otp, setOtp] = useState('');
   const [otpError, setOtpError] = useState('');
   const [cooldown, setCooldown] = useState(30);
 
@@ -110,7 +35,7 @@ const CustomerRegisterPage = () => {
 
   const str = strengthScore(form.password);
 
-  function validateStep0() {
+  const validateStep0 = () => {
     const e = {};
     if (!form.firstName.trim()) e.firstName = 'First name is required';
     if (!form.lastName.trim())  e.lastName  = 'Last name is required';
@@ -126,14 +51,14 @@ const CustomerRegisterPage = () => {
     return e;
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validateStep0();
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setLoading(true);
     try {
       await new Promise(r => setTimeout(r, 700));
-      setOtp(Array(6).fill(''));
+      setOtp('');
       setCooldown(30);
       setStep(1);
     } catch {
@@ -143,9 +68,9 @@ const CustomerRegisterPage = () => {
     }
   }
 
-  async function handleVerify(e) {
+  const handleVerify = async (e) => {
     e.preventDefault();
-    const filled = otp.filter(Boolean).length;
+    const filled = otp.length;
     if (filled < 6) { setOtpError('Enter the 6-digit code'); return; }
     setLoading(true);
     try {
@@ -158,9 +83,9 @@ const CustomerRegisterPage = () => {
     }
   }
 
-  async function handleResend() {
+  const handleResend = async () => {
     setCooldown(60);
-    setOtp(Array(6).fill(''));
+    setOtp('');
     setOtpError('');
   }
 
@@ -176,13 +101,13 @@ const CustomerRegisterPage = () => {
         </p>
 
         <form onSubmit={handleVerify} noValidate className="space-y-5">
-          <OtpBoxes otp={otp} setOtp={v => { setOtp(v); setOtpError(''); }} autoFocus />
+          <OtpInput value={otp} onChange={v => { setOtp(v); setOtpError(''); }} autoFocus />
 
           {otpError && <p className="text-[13px] text-red-500">{otpError}</p>}
 
           <button
             type="submit"
-            disabled={loading || otp.filter(Boolean).length < 6}
+            disabled={loading || otp.length < 6}
             className="w-full h-12 rounded-2xl text-white text-[15px] font-semibold transition-all disabled:opacity-50"
             style={{ background: '#0E9AA7' }}
           >

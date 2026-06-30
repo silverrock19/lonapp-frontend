@@ -1,44 +1,9 @@
-﻿import { TrendingUp, TrendingDown, Minus, ArrowRight, CheckCircle2, Circle } from 'lucide-react';
+﻿import { ArrowRight, CheckCircle2, Circle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { kpiData, recentOrders, setupChecklist } from '../../data/mock.js';
-
-const ORDER_STATUS = {
-  Processing: { dot: '#C77700', bg: '#FFF4E0', text: '#945800' },
-  Pickup:     { dot: '#0C5FC5', bg: '#EAF2FC', text: '#093F84' },
-  Delivered:  { dot: '#1F9D57', bg: '#E6F6EE', text: '#13753F' },
-  Pending:    { dot: '#6B7280', bg: '#F3F4F6', text: '#374151' },
-  Cancelled:  { dot: '#D92D20', bg: '#FDECEA', text: '#A31C12' },
-};
-
-function OrderBadge({ status }) {
-  const s = ORDER_STATUS[status] ?? ORDER_STATUS.Pending;
-  return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
-      style={{ background: s.bg, color: s.text }}
-    >
-      <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ background: s.dot }} />
-      {status}
-    </span>
-  );
-}
-
-function KPICard({ label, value, trend, up, down }) {
-  const trendColor = up ? '#1F9D57' : down ? '#D92D20' : '#6B7280';
-  return (
-    <div className="rounded-lg border border-neutral-200 bg-white p-5">
-      <p className="text-caption font-semibold uppercase tracking-widest text-neutral-400">{label}</p>
-      <p className="mt-3 text-[28px] font-extrabold tabular-nums leading-none text-neutral-900">{value}</p>
-      <div className="mt-2.5 flex items-center gap-1 text-caption font-semibold" style={{ color: trendColor }}>
-        {up   && <TrendingUp   className="h-3 w-3 flex-shrink-0" />}
-        {down && <TrendingDown className="h-3 w-3 flex-shrink-0" />}
-        {!up && !down && <Minus className="h-3 w-3 flex-shrink-0" />}
-        <span>{trend}</span>
-      </div>
-    </div>
-  );
-}
+import KPICard from '../../features/dashboard/KPICard.jsx';
+import OrderBadge from '../../features/dashboard/OrderBadge.jsx';
 
 const DashboardPage = () => {
   const user = useSelector(s => s.auth.user);

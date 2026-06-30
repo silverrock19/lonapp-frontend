@@ -152,7 +152,7 @@ import EnvironmentalCompliancePage from './pages/production/EnvironmentalComplia
 import TempHumidityPage from './pages/production/TempHumidityPage.jsx';
 
 // Constrains customer pages to phone width on desktop; full-width on mobile.
-function MobileShell({ children }) {
+const MobileShell = ({ children }) => {
   return (
     <div data-theme="customer" className="flex min-h-screen justify-center bg-neutral-100">
       <div className="relative w-full max-w-[430px] min-h-screen bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.06),0_8px_40px_rgba(0,0,0,0.12)]">
@@ -162,7 +162,7 @@ function MobileShell({ children }) {
   );
 }
 
-function ComingSoon({ title }) {
+const ComingSoon = ({ title }) => {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
       <div className="mb-4 text-[40px] text-neutral-300">◳</div>

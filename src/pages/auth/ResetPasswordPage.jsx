@@ -2,23 +2,10 @@
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2 } from 'lucide-react';
 import Button from '../../components/ui/Button.jsx';
-import PasswordInput from '../../components/ui/PasswordInput.jsx';
+import PasswordInput from '../../components/forms/PasswordInput.jsx';
 import useForm from '../../hooks/useForm.js';
 import Brandmark from '../../components/ui/Brandmark.jsx';
-
-function passwordStrength(pw) {
-  if (!pw) return { score: 0, label: '', color: '' };
-  let score = 0;
-  if (pw.length >= 8) score++;
-  if (pw.length >= 12) score++;
-  if (/[A-Z]/.test(pw)) score++;
-  if (/[0-9]/.test(pw)) score++;
-  if (/[^A-Za-z0-9]/.test(pw)) score++;
-  if (score <= 1) return { score, label: 'Weak', color: 'bg-error' };
-  if (score === 2) return { score, label: 'Fair', color: 'bg-warning' };
-  if (score === 3) return { score, label: 'Good', color: 'bg-accent-400' };
-  return { score, label: 'Strong', color: 'bg-success' };
-}
+import { passwordStrength } from '../../utils/validate.js';
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
@@ -29,7 +16,7 @@ const ResetPasswordPage = () => {
 
   const strength = passwordStrength(form.password);
 
-  function validate() {
+  const validate = () => {
     const e = {};
     if (!form.password) {
       e.password = 'Password is required';
@@ -41,7 +28,7 @@ const ResetPasswordPage = () => {
     return e;
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }

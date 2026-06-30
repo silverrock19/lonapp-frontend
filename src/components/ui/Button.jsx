@@ -30,7 +30,8 @@ const sizes = {
 const Button = ({ variant = 'primary', size = 'default', loading = false, pill = false, children, className, ...props }) => {
   return (
     <button
-      className={cn(base, variants[variant], sizes[size], pill && '!rounded-full', className)}
+      className={cn(base, variants[variant], sizes[size], className)}
+      style={{ borderRadius: pill ? 12 : 8, ...props.style }}
       disabled={props.disabled || loading}
       {...props}
     >

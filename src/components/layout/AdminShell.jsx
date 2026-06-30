@@ -37,7 +37,7 @@ const navGroups = [
   },
 ];
 
-function initials(name) {
+const initials = (name) => {
   if (!name) return 'A';
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
@@ -46,7 +46,7 @@ const AdminShell = () => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
 
-  function handleLogout() { logout(); navigate('/login'); }
+  const handleLogout = () => { logout(); navigate('/login'); }
 
   return (
     <div className="flex h-screen overflow-hidden bg-neutral-50">

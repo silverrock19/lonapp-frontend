@@ -8,7 +8,7 @@ const RetailOnboardingPage = () => {
   const navigate = useNavigate();
   const [socialToast, setSocialToast] = useState('');
 
-  function showSocialToast() {
+  const showSocialToast = () => {
     setSocialToast('Social login is coming soon.');
     setTimeout(() => setSocialToast(''), 3000);
   }

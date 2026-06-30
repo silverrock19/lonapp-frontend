@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Mail } from 'lucide-react';
 import { isValidEmail } from '../../utils/validate.js';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
 import Brandmark from '../../components/ui/Brandmark.jsx';
 
@@ -12,7 +12,7 @@ const ForgotPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email) { setError('Email is required'); return; }
     if (!isValidEmail(email)) { setError('Enter a valid email address'); return; }

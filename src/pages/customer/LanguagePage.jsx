@@ -1,15 +1,8 @@
 import { useState } from 'react';
 import { Globe, Clock, ChevronRight, Check } from 'lucide-react';
 import CustomerSettingsLayout, { SettingsSection } from '../../components/layout/CustomerSettingsLayout.jsx';
+import { LANGUAGES, DATE_FORMATS, TIME_FORMATS } from '../../utils/localeOptions.js';
 
-const LANGUAGES = [
-  { code: 'en', name: 'English',    subtitle: 'Default'     },
-  { code: 'tw', name: 'Twi (Akan)', subtitle: 'Asante Twi' },
-  { code: 'ga', name: 'Ga',         subtitle: 'Gã'          },
-];
-
-const DATE_FORMATS = ['DD/MM/YYYY', 'MM/DD/YYYY'];
-const TIME_FORMATS = ['12hr', '24hr'];
 
 const NAV_SECTIONS = [
   { id: 'language', icon: Globe,  label: 'Language' },
@@ -29,12 +22,12 @@ export default function LanguagePage() {
   const current = { language, dateFormat, timeFormat };
   const dirty = JSON.stringify(current) !== JSON.stringify(saved);
 
-  function showToast(msg) {
+  const showToast = (msg) => {
     setToast(msg);
     setTimeout(() => setToast(null), 2500);
   }
 
-  async function handleSave() {
+  const handleSave = async () => {
     setSaving(true);
     try {
       await new Promise(r => setTimeout(r, 600));
@@ -45,7 +38,7 @@ export default function LanguagePage() {
     }
   }
 
-  function handleDiscard() {
+  const handleDiscard = () => {
     setLanguage(saved.language);
     setDateFormat(saved.dateFormat);
     setTimeFormat(saved.timeFormat);

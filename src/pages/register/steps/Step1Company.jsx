@@ -1,15 +1,14 @@
 ﻿import { useState } from 'react';
-import Input from '../../../components/ui/Input.jsx';
+import Input from '../../../components/forms/Input.jsx';
 import Button from '../../../components/ui/Button.jsx';
 import { Paperclip } from 'lucide-react';
+import { COUNTRIES, CURRENCIES } from '../../../utils/geoOptions.js';
+import { REG_TYPES } from '../../../utils/businessOptions.js';
 
-const COUNTRIES = ['Ghana', 'Nigeria', 'Kenya', 'South Africa', 'Rwanda', 'Uganda'];
-const CURRENCIES = { Ghana: 'GHS', Nigeria: 'NGN', Kenya: 'KES', 'South Africa': 'ZAR', Rwanda: 'RWF', Uganda: 'UGX' };
-const REG_TYPES  = ['Sole Proprietor', 'Partnership', 'Limited Liability', 'Unregistered'];
 
 const selectCls = 'w-full border border-neutral-200 bg-white px-3.5 py-2 text-body text-neutral-800 outline-none focus:border-primary-400 focus:ring-[3px] focus:ring-primary-100 transition-all appearance-none';
 
-function validate(f) {
+const validate = (f) => {
   const e = {};
   if (!f.companyName.trim())           e.companyName = 'Company name is required';
   else if (f.companyName.length < 2)   e.companyName = 'Must be at least 2 characters';
@@ -32,17 +31,17 @@ const Step1Company = ({ data, onNext, onSaveDraft }) => {
   const [f, setF] = useState({ ...data });
   const [errors, setErrors] = useState({});
 
-  function set(field, value) {
+  const set = (field, value) => {
     setF(p => ({ ...p, [field]: value }));
     setErrors(e => { const n = { ...e }; delete n[field]; return n; });
   }
 
-  function handleCountryChange(country) {
+  const handleCountryChange = (country) => {
     setF(p => ({ ...p, country, currency: CURRENCIES[country] || '' }));
     setErrors(e => { const n = { ...e }; delete n.country; return n; });
   }
 
-  function handleNext() {
+  const handleNext = () => {
     const errs = validate(f);
     if (Object.keys(errs).length) { setErrors(errs); return; }
     onNext(f);

@@ -12,7 +12,7 @@ const config = {
   info:    { icon: Info,          bar: 'bg-primary-500', text: 'text-primary-700' },
 };
 
-function ToastItem({ toast }) {
+const ToastItem = ({ toast }) => {
   const dispatch = useAppDispatch();
   const { icon: Icon, bar, text } = config[toast.type] || config.info;
 

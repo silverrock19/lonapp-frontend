@@ -1,78 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Mail, Phone, CheckCircle2 } from 'lucide-react';
-import { isValidEmail } from '../../utils/validate.js';
+import { isValidEmail, passwordStrength, detectMode } from '../../utils/validate.js';
 import Button from '../../components/ui/Button.jsx';
-import PasswordInput from '../../components/ui/PasswordInput.jsx';
+import PasswordInput from '../../components/forms/PasswordInput.jsx';
+import OtpInput from '../../components/forms/OtpInput.jsx';
 import useForm from '../../hooks/useForm.js';
 import Brandmark from '../../components/ui/Brandmark.jsx';
-
-// ── Detect input type ─────────────────────────────────────────────────────────
-function detectMode(val) {
-  if (!val) return 'email';
-  if (/^[\d+()\s-]/.test(val)) return 'phone';
-  return 'email';
-}
-
-// ── Password strength helper ──────────────────────────────────────────────────
-function pwStrength(pw) {
-  if (!pw) return { score: 0, label: '', color: '' };
-  let s = 0;
-  if (pw.length >= 8) s++;
-  if (pw.length >= 12) s++;
-  if (/[A-Z]/.test(pw)) s++;
-  if (/[0-9]/.test(pw)) s++;
-  if (/[^A-Za-z0-9]/.test(pw)) s++;
-  if (s <= 1) return { score: s, label: 'Weak',   color: '#EF4444' };
-  if (s === 2) return { score: s, label: 'Fair',   color: '#F59E0B' };
-  if (s === 3) return { score: s, label: 'Good',   color: '#0E9AA7' };
-  return              { score: s, label: 'Strong', color: '#16A34A' };
-}
-
-// ── OTP boxes ─────────────────────────────────────────────────────────────────
-function OtpBoxes({ otp, setOtp }) {
-  const refs = useRef([]);
-  useEffect(() => { refs.current[0]?.focus(); }, []);
-
-  function handleChange(i, val) {
-    const d = val.replace(/\D/g, '').slice(-1);
-    const next = [...otp];
-    next[i] = d;
-    setOtp(next);
-    if (d && i < 5) refs.current[i + 1]?.focus();
-  }
-  function handleKeyDown(i, e) {
-    if (e.key === 'Backspace' && !otp[i] && i > 0) refs.current[i - 1]?.focus();
-  }
-  function handlePaste(e) {
-    e.preventDefault();
-    const p = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
-    const next = [...Array(6).fill('')];
-    p.split('').forEach((c, i) => { next[i] = c; });
-    setOtp(next);
-    refs.current[Math.min(p.length, 5)]?.focus();
-  }
-
-  return (
-    <div className="flex justify-center gap-2" onPaste={handlePaste}>
-      {otp.map((digit, i) => (
-        <input
-          key={i}
-          ref={el => (refs.current[i] = el)}
-          type="text" inputMode="numeric" maxLength={1}
-          value={digit}
-          onChange={e => handleChange(i, e.target.value)}
-          onKeyDown={e => handleKeyDown(i, e)}
-          aria-label={`Digit ${i + 1}`}
-          className="h-14 w-12 rounded-xl border text-center text-[22px] font-bold outline-none transition-all"
-          style={{ borderColor: digit ? '#0E9AA7' : '#E5E7EB', color: '#111827' }}
-          onFocus={e => { e.target.style.borderColor = '#0E9AA7'; e.target.style.boxShadow = '0 0 0 3px rgba(14,154,167,0.15)'; }}
-          onBlur={e => { e.target.style.borderColor = digit ? '#0E9AA7' : '#E5E7EB'; e.target.style.boxShadow = ''; }}
-        />
-      ))}
-    </div>
-  );
-}
 
 // ── Main component ────────────────────────────────────────────────────────────
 // Steps: 'entry' → email: 'email_sent' / phone: 'phone_otp' → 'new_password' → 'done'
@@ -85,7 +19,7 @@ const CustomerForgotPasswordPage = () => {
   const [loading, setLoading] = useState(false);
 
   // Phone OTP state
-  const [otp, setOtp] = useState(Array(6).fill(''));
+  const [otp, setOtp] = useState('');
   const [otpError, setOtpError] = useState('');
   const [cooldown, setCooldown] = useState(60);
   const [otpLoading, setOtpLoading] = useState(false);
@@ -103,7 +37,7 @@ const CustomerForgotPasswordPage = () => {
     return () => clearInterval(t);
   }, [step, cooldown]);
 
-  async function handleSendCode(e) {
+  const handleSendCode = async e => {
     e.preventDefault();
     setIdentifierError('');
     if (!identifier.trim()) {
@@ -125,7 +59,7 @@ const CustomerForgotPasswordPage = () => {
         setStep('email_sent');
       } else {
         setCooldown(60);
-        setOtp(Array(6).fill(''));
+        setOtp('');
         setStep('phone_otp');
       }
     } catch {
@@ -135,8 +69,8 @@ const CustomerForgotPasswordPage = () => {
     }
   }
 
-  async function handleOtpVerify() {
-    if (otp.join('').length < 6) { setOtpError('Enter all 6 digits'); return; }
+  const handleOtpVerify = async () => {
+    if (otp.length < 6) { setOtpError('Enter all 6 digits'); return; }
     setOtpLoading(true);
     setOtpError('');
     try {
@@ -149,15 +83,15 @@ const CustomerForgotPasswordPage = () => {
     }
   }
 
-  function handleResend() {
+  const handleResend = () => {
     if (cooldown > 0) return;
     setCooldown(60);
-    setOtp(Array(6).fill(''));
+    setOtp('');
   }
 
-  async function handleNewPassword(e) {
+  const handleNewPassword = async e => {
     e.preventDefault();
-    const str = pwStrength(form.password);
+    const str = passwordStrength(form.password);
     const e2 = {};
     if (!form.password) e2.password = 'Password is required';
     else if (str.score < 4) e2.password = 'Too weak — use 8+ chars, uppercase, number, and special character';
@@ -227,7 +161,7 @@ const CustomerForgotPasswordPage = () => {
 
   // ── Phone OTP screen ─────────────────────────────────────────────────────────
   if (step === 'phone_otp') {
-    const isComplete = otp.every(d => d !== '');
+    const isComplete = otp.length === 6;
     return (
       <div className="w-full text-center space-y-6">
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full" style={{ background: '#E8F9FA' }}>
@@ -246,7 +180,7 @@ const CustomerForgotPasswordPage = () => {
           </div>
         )}
 
-        <OtpBoxes otp={otp} setOtp={setOtp} />
+        <OtpInput value={otp} onChange={setOtp} autoFocus />
 
         <button
           onClick={handleOtpVerify}
@@ -273,7 +207,7 @@ const CustomerForgotPasswordPage = () => {
 
   // ── New password screen (phone flow, after OTP verified) ─────────────────────
   if (step === 'new_password') {
-    const str = pwStrength(form.password);
+    const str = passwordStrength(form.password);
     return (
       <div className="w-full">
         <button onClick={() => setStep('phone_otp')} className="mb-4 flex items-center gap-1 text-[14px] text-neutral-500 hover:text-neutral-700">
@@ -299,10 +233,10 @@ const CustomerForgotPasswordPage = () => {
               <div className="space-y-1 pt-1">
                 <div className="flex gap-1">
                   {[1, 2, 3, 4].map(n => (
-                    <div key={n} className="h-1.5 flex-1 rounded-full transition-all" style={{ background: str.score >= n ? str.color : '#E5E7EB' }} />
+                    <div key={n} className={`h-1.5 flex-1 rounded-full transition-all ${str.score >= n ? str.color : 'bg-neutral-200'}`} />
                   ))}
                 </div>
-                <p className="text-[12px] text-neutral-500">Strength: <span className="font-medium" style={{ color: str.color }}>{str.label}</span></p>
+                <p className="text-[12px] text-neutral-500">Strength: <span className="font-medium text-neutral-700">{str.label}</span></p>
               </div>
             )}
           </div>

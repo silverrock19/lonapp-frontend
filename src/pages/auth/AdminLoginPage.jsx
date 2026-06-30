@@ -1,9 +1,9 @@
 ﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import Input from '../../components/ui/Input.jsx';
+import Input from '../../components/forms/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
-import PasswordInput from '../../components/ui/PasswordInput.jsx';
+import PasswordInput from '../../components/forms/PasswordInput.jsx';
 import useForm from '../../hooks/useForm.js';
 import Brandmark from '../../components/ui/Brandmark.jsx';
 
@@ -14,7 +14,7 @@ const AdminLoginPage = () => {
   const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  function validate() {
+  const validate = () => {
     const e = {};
     if (!form.identifier) {
       e.identifier = 'Email or phone is required';
@@ -27,7 +27,7 @@ const AdminLoginPage = () => {
     return e;
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }

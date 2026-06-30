@@ -67,7 +67,17 @@ const ALL_NAV_GROUPS = [
   },
 ];
 
-function getNavGroups(role) {
+// Paths accessible per role (null = all paths allowed)
+const ROLE_ALLOWED_PATHS = {
+  owner:        null,
+  ops_manager:  null,
+  cashier:      new Set(['/', '/orders', '/customers', '/profile', '/settings']),
+  receptionist: new Set(['/', '/orders', '/customers', '/profile', '/settings']),
+};
+
+const getNavGroups = (role) => {
+  const allowed = ROLE_ALLOWED_PATHS[role] ?? null;
+  if (!allowed) return ALL_NAV_GROUPS;
   return ALL_NAV_GROUPS
     .map(group => ({
       ...group,
@@ -79,7 +89,7 @@ function getNavGroups(role) {
     .filter(group => group.items.length > 0);
 }
 
-function initials(name) {
+const initials = (name) => {
   if (!name) return 'U';
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
@@ -91,7 +101,7 @@ const AppShell = () => {
   const navGroups = getNavGroups(user?.role);
   const roleLabel = ROLE_LABELS[user?.role] ?? user?.role ?? 'Staff';
 
-  function handleLogout() {
+  const handleLogout = () => {
     logout();
     navigate('/login');
   }

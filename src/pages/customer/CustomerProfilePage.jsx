@@ -10,6 +10,7 @@ import CustomerSettingsLayout, { SettingsSection } from '../../components/layout
 import { MOCK_CUSTOMER } from '../../data/mockCustomer.js';
 import Input from '../../components/ui/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
+import Toggle from '../../components/ui/Toggle.jsx';
 import { resetAuth } from '../../store/slices/authSlice.js';
 
 // ── Mock initial profile ──────────────────────────────────────────────────────
@@ -66,12 +67,12 @@ const TIER_META = {
 
 // ── Small field helpers ───────────────────────────────────────────────────────
 
-function FieldHint({ children }) {
-  return <p className="mt-1 text-[12px] text-neutral-400">{children}</p>;
-}
+const FieldHint = ({ children }) => (
+  <p className="mt-1 text-[12px] text-neutral-400">{children}</p>
+);
 
 // ── Verified badge ────────────────────────────────────────────────────────────
-function VerifiedBadge({ verified }) {
+const VerifiedBadge = ({ verified }) => {
   return verified ? (
     <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-[11px] font-semibold text-green-700">
       <CheckCircle2 className="h-3 w-3" /> Verified
@@ -81,30 +82,23 @@ function VerifiedBadge({ verified }) {
       <XCircle className="h-3 w-3" /> Unverified
     </span>
   );
-}
+};
 
 // ── Toggle switch ─────────────────────────────────────────────────────────────
-function ToggleRow({ label, sub, checked, onChange }) {
+const ToggleRow = ({ label, sub, checked, onChange }) => {
   return (
     <div className="flex items-center justify-between py-3 border-b border-neutral-100 last:border-0">
       <div>
         <p className="text-[14px] font-medium text-neutral-800">{label}</p>
         {sub && <p className="text-[12px] text-neutral-400">{sub}</p>}
       </div>
-      <button
-        role="switch"
-        aria-checked={checked}
-        onClick={onChange}
-        className={`relative inline-flex h-6 w-11 rounded-full border-2 border-transparent transition-colors ${checked ? 'bg-[#0E9AA7]' : 'bg-neutral-300'}`}
-      >
-        <span className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-5' : 'translate-x-0'}`} />
-      </button>
+      <Toggle size="md" checked={checked} onChange={() => onChange()} />
     </div>
   );
-}
+};
 
 // ── Photo crop modal ──────────────────────────────────────────────────────────
-function PhotoModal({ preview, onConfirm, onCancel }) {
+const PhotoModal = ({ preview, onConfirm, onCancel }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.7)' }}>
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
@@ -131,7 +125,7 @@ function PhotoModal({ preview, onConfirm, onCancel }) {
       </div>
     </div>
   );
-}
+};
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 
@@ -154,19 +148,15 @@ export default function CustomerProfilePage() {
 
   const dirty = JSON.stringify(form) !== JSON.stringify(saved);
 
-  function set(field) {
-    return (e) => {
-      const val = e && e.target ? e.target.value : e;
-      setForm(f => ({ ...f, [field]: val }));
-      setErrors(er => { const c = { ...er }; delete c[field]; return c; });
-    };
-  }
+  const set = field => e => {
+    const val = e && e.target ? e.target.value : e;
+    setForm(f => ({ ...f, [field]: val }));
+    setErrors(er => { const c = { ...er }; delete c[field]; return c; });
+  };
 
-  function setFlag(field) {
-    return (val) => setForm(f => ({ ...f, [field]: val }));
-  }
+  const setFlag = field => val => setForm(f => ({ ...f, [field]: val }));
 
-  function validate() {
+  const validate = () => {
     const e = {};
     if (!form.firstName.trim())  e.firstName  = 'First name is required';
     if (!form.lastName.trim())   e.lastName   = 'Last name is required';
@@ -176,9 +166,9 @@ export default function CustomerProfilePage() {
     if (form.emergencyPhone && !/^\+?[\d\s\-().]{7,}$/.test(form.emergencyPhone))
       e.emergencyPhone = 'Enter a valid phone number';
     return e;
-  }
+  };
 
-  async function handleSave() {
+  const handleSave = async () => {
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setSaving(true);
@@ -191,34 +181,33 @@ export default function CustomerProfilePage() {
     }
   }
 
-  function handleDiscard() {
+  const handleDiscard = () => {
     setForm({ ...saved });
     setErrors({});
-  }
+  };
 
-  function showToast(msg, type = 'success') {
+  const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3000);
-  }
+  };
 
-  // Photo upload
-  function handleFileChange(e) {
+  const handleFileChange = e => {
     const file = e.target.files?.[0];
     if (!file) return;
     const url = URL.createObjectURL(file);
     setPhotoPreview(url);
     setShowCropModal(true);
-  }
+  };
 
-  function confirmPhoto() {
+  const confirmPhoto = () => {
     setForm(f => ({ ...f, photo: photoPreview }));
     setShowCropModal(false);
-  }
+  };
 
-  function removePhoto() {
+  const removePhoto = () => {
     setForm(f => ({ ...f, photo: null }));
     setPhotoPreview(null);
-  }
+  };
 
   const initials = ((form.firstName[0] ?? '') + (form.lastName[0] ?? '')).toUpperCase();
   const tierMeta = TIER_META[form.tier] ?? TIER_META.Silver;

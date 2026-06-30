@@ -4,7 +4,7 @@ import { PERSONA_TIERS, ROLE_HOME } from '../../lib/rbac/permissions.js';
 
 const DEV_BADGE_KEY = 'lonapp_dev_persona';
 
-function setAuth(persona) {
+const setAuth = (persona) => {
   localStorage.setItem(
     'persist:__lonapp_auth__',
     JSON.stringify({

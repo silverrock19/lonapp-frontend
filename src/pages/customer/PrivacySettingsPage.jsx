@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
+import Toggle from '../../components/ui/Toggle.jsx';
 
 const PrivacySettingsPage = () => {
   const navigate = useNavigate();
@@ -72,16 +73,6 @@ const PrivacySettingsPage = () => {
     }
   };
 
-  const Toggle = ({ on, onToggle }) => (
-    <button
-      onClick={onToggle}
-      className={`relative inline-flex h-6 w-11 rounded-full border-2 border-transparent transition-colors ${on ? 'bg-[#0E9AA7]' : 'bg-neutral-300'}`}
-    >
-      <span
-        className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${on ? 'translate-x-5' : 'translate-x-0'}`}
-      />
-    </button>
-  );
 
   return (
     <div className="min-h-screen pb-24" style={{ background: '#FAFAF8' }}>
@@ -145,22 +136,22 @@ const PrivacySettingsPage = () => {
       <div className="rounded-2xl border border-neutral-200 bg-white mx-4 overflow-hidden">
         <div className="flex items-center justify-between h-14 px-4 bg-white border-b border-neutral-100">
           <span className="text-[15px] text-neutral-900">Allow personalised recommendations</span>
-          <Toggle on={personalised} onToggle={() => handleToggle(setPersonalised, personalised)} />
+          <Toggle size="md" checked={personalised} onChange={() => handleToggle(setPersonalised, personalised)} />
         </div>
         <div className="flex items-center justify-between h-14 px-4 bg-white border-b border-neutral-100">
           <span className="text-[15px] text-neutral-900">Allow location-based services</span>
-          <Toggle on={location} onToggle={() => handleToggle(setLocation, location)} />
+          <Toggle size="md" checked={location} onChange={() => handleToggle(setLocation, location)} />
         </div>
         <div className="flex items-center justify-between h-14 px-4 bg-white border-b border-neutral-100">
           <span className="text-[15px] text-neutral-900">Allow usage analytics</span>
-          <Toggle on={analytics} onToggle={() => handleToggle(setAnalytics, analytics)} />
+          <Toggle size="md" checked={analytics} onChange={() => handleToggle(setAnalytics, analytics)} />
         </div>
         <div className="flex items-center justify-between h-14 px-4 bg-white">
           <div>
             <span className="text-[15px] text-neutral-900">Share data with partners</span>
             <p className="text-[12px] text-neutral-400 mt-0.5">Opt-in only</p>
           </div>
-          <Toggle on={sharePartners} onToggle={handleShareToggle} />
+          <Toggle size="md" checked={sharePartners} onChange={handleShareToggle} />
         </div>
       </div>
 
@@ -193,11 +184,11 @@ const PrivacySettingsPage = () => {
         </div>
         <div className="flex items-center justify-between h-14 px-4 bg-white border-b border-neutral-100">
           <span className="text-[15px] text-neutral-900">Show order history to laundry companies</span>
-          <Toggle on={showOrderHistory} onToggle={() => handleToggle(setShowOrderHistory, showOrderHistory)} />
+          <Toggle size="md" checked={showOrderHistory} onChange={() => handleToggle(setShowOrderHistory, showOrderHistory)} />
         </div>
         <div className="flex items-center justify-between h-14 px-4 bg-white">
           <span className="text-[15px] text-neutral-900">Show reviews & ratings publicly</span>
-          <Toggle on={showReviews} onToggle={() => handleToggle(setShowReviews, showReviews)} />
+          <Toggle size="md" checked={showReviews} onChange={() => handleToggle(setShowReviews, showReviews)} />
         </div>
       </div>
 
