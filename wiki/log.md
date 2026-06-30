@@ -3,6 +3,11 @@ Append-only. Most recent first. Format: `YYYY-MM-DD | action | detail`
 
 ---
 
+2026-06-30 | session  | Session 006ec48c-f480-453e-835c-86b374d28796 — extract features/staff components, deploy to Vercel via GitHub Actions CD, fix login button radius, fix double AppShell on BusinessProfilePage. Transcript: C:\Users\DELL PRECISION 5530\.claude\projects\c--Users-DELL-PRECISION-5530-OneDrive-Desktop-js-files-lonapp-frontend\006ec48c-f480-453e-835c-86b374d28796.jsonl
+2026-06-30 | refactor | Extract CustomerSearchPage, StaffPage, WalkInRegistrationPage, MyProfilePage into features/staff/ — CustomerCard, CustomerRow, CustomerDetailPanel, StaffTab, RolesTab, StaffDrawer, InviteModal, BulkImportModal, DuplicateCheckBanner; new atoms: PillSelect, CollapsibleSection, SelectField
+2026-06-30 | fix      | Restore pill button border-radius to 12px (was incorrectly set to 9999 in previous refactor)
+2026-06-30 | deploy   | Add vercel.json SPA rewrite rule + GitHub Actions CD workflow (.github/workflows/deploy.yml) — deploys to Vercel on push to main via npx vercel CLI
+2026-06-30 | fix      | Remove double AppShell from BusinessProfilePage — route was already wrapped in AppShell layout in App.jsx, causing duplicate sidebar render
 2026-06-29 | session  | Session 91e222cc-e0ef-4aa3-9ee1-4fa1635e7277 — merge EP-02 dev→main, fix stale import paths, arrow-function conversion across EP-02 files, extract inline mock data to src/data/. Transcript: C:\Users\DELL PRECISION 5530\.claude\projects\c--Users-DELL-PRECISION-5530-OneDrive-Desktop-js-files-lonapp-frontend\91e222cc-e0ef-4aa3-9ee1-4fa1635e7277.jsonl
 2026-06-29 | merge    | Merged origin/dev into main (5 commits: EP-01 QA fixes + EP-02 customer flows/staff tools); resolved 1 conflict in CustomerLoginPage.jsx
 2026-06-29 | fix      | Fixed 9 EP-02 files importing Input/PasswordInput from stale components/ui/ path → components/forms/

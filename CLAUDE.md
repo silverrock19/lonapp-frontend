@@ -3,6 +3,19 @@
 ## Read wiki/ first
 Start every session with `wiki/INDEX.md` to find the relevant page. Append discoveries to `wiki/log.md`.
 
+## Session logging (required)
+At the **start** of every session, append a `session` entry to `wiki/log.md` with:
+- The session ID (found in the transcript path shown in the system context, e.g. `006ec48c-...`)
+- A one-line summary of the session's goal
+- The full transcript path
+
+Format:
+```
+YYYY-MM-DD | session | Session <id> — <goal summary>. Transcript: <full path to .jsonl>
+```
+
+At the **end** of the session, append `log` entries for every significant change made (refactor, fix, feat, scaffold, merge).
+
 ## Project
 LonApp is a laundry business management platform for Ghana. Two apps in one repo:
 - **Business/Staff app** — desktop-led, dense operational UI (default theme)
