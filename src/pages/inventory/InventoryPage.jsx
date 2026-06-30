@@ -109,6 +109,12 @@ function ReceiveModal({ onClose }) {
   );
 }
 
+const STATUS_PANEL = {
+  OK:  { headerBg: 'bg-success/8',  border: 'border-success/20',  icon: 'text-success'  },
+  LOW: { headerBg: 'bg-warning/8',  border: 'border-warning/20',  icon: 'text-warning'  },
+  OUT: { headerBg: 'bg-error/8',    border: 'border-error/20',    icon: 'text-error'    },
+};
+
 function DetailPanel({ item, onClose }) {
   const [rQty, setRQty] = useState('');
   const [rLoc, setRLoc] = useState('');
@@ -117,6 +123,7 @@ function DetailPanel({ item, onClose }) {
   const [aReason, setAReason] = useState('');
 
   const status = getStockStatus(item);
+  const theme = STATUS_PANEL[status] ?? STATUS_PANEL.OK;
 
   function handleReceive(e) {
     e.preventDefault();
@@ -129,115 +136,181 @@ function DetailPanel({ item, onClose }) {
     setAQty(''); setAReason('');
   }
 
-  return (
-    <div className="fixed right-0 top-0 bottom-0 z-40 w-96 bg-white border-l border-neutral-200 shadow-xl flex flex-col overflow-y-auto">
-      <div className="flex items-start justify-between p-5 border-b border-neutral-100">
-        <div>
-          <h3 className="font-bold text-neutral-900 leading-snug">{item.name}</h3>
-          <p className="text-xs text-neutral-500 mt-0.5">{INVENTORY_CATEGORIES[item.category]} · {item.supplier}</p>
-          <p className="text-xs text-neutral-400 mt-0.5">{item.supplierContact}</p>
-        </div>
-        <button onClick={onClose} className="p-1 rounded-lg hover:bg-neutral-100 ml-2 flex-shrink-0"><X size={16} /></button>
-      </div>
+  const inputCls = 'w-full rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2.5 text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100 focus:bg-white transition-all';
 
-      <div className="p-5 border-b border-neutral-100 space-y-3">
-        <div className="flex items-center justify-between">
-          <p className={LABEL}>Stock Overview</p>
+  return (
+    <div className="fixed right-0 top-0 bottom-0 z-40 w-[400px] bg-white border-l border-neutral-200 shadow-2xl flex flex-col overflow-y-auto">
+
+      {/* ── Header ── */}
+      <div className={cn('p-5 border-b', theme.headerBg, theme.border)}>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <Package size={15} className={theme.icon} />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-neutral-400">
+                {INVENTORY_CATEGORIES[item.category]}
+              </span>
+            </div>
+            <h3 className="text-[17px] font-bold text-neutral-900 leading-snug">{item.name}</h3>
+            <p className="text-[13px] text-neutral-500 mt-1">per {item.unit}</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-white/80 hover:bg-white border border-neutral-200 text-neutral-500 hover:text-neutral-800 transition-all"
+          >
+            <X size={15} />
+          </button>
+        </div>
+
+        <div className="flex items-center justify-between mt-4">
+          <div>
+            <p className="text-[12px] text-neutral-400">{item.supplier}</p>
+            <p className="text-[12px] font-mono text-neutral-500 mt-0.5">{item.supplierContact}</p>
+          </div>
           <StatusBadge status={status} />
         </div>
-        {LOCATIONS.map(loc => (
-          <div key={loc}>
-            <div className="flex justify-between mb-1">
-              <span className="text-xs text-neutral-600">{loc}</span>
-              <span className="text-xs font-mono font-semibold tabular-nums">{item.locationStock[loc]} / {item.maxStock}</span>
+      </div>
+
+      {/* ── Stock overview ── */}
+      <div className="p-5 border-b border-neutral-100 space-y-4">
+        {/* Big numbers */}
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { label: 'Total', value: item.currentStock, mono: false, bold: true },
+            { label: 'Reorder At', value: item.reorderLevel, mono: false, bold: false },
+            { label: 'Unit Cost', value: formatGHS(item.unitCost), mono: true, bold: false },
+          ].map(({ label, value, mono, bold }) => (
+            <div key={label} className="rounded-xl bg-neutral-50 border border-neutral-100 px-3 py-3 text-center">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-1">{label}</p>
+              <p className={cn('text-[15px]', mono ? 'font-mono tabular-nums' : '', bold ? 'font-bold text-neutral-900' : 'font-semibold text-neutral-700')}>
+                {value}
+              </p>
             </div>
-            <StockBar current={item.locationStock[loc]} max={item.maxStock} />
-          </div>
-        ))}
-        <div className="grid grid-cols-3 gap-2 pt-1">
-          <div className="text-center">
-            <p className={LABEL}>Total</p>
-            <p className="font-bold text-lg">{item.currentStock}</p>
-          </div>
-          <div className="text-center">
-            <p className={LABEL}>Reorder At</p>
-            <p className="font-bold text-lg">{item.reorderLevel}</p>
-          </div>
-          <div className="text-center">
-            <p className={LABEL}>Unit Cost</p>
-            <p className="font-bold text-sm font-mono tabular-nums">{formatGHS(item.unitCost)}</p>
-          </div>
+          ))}
         </div>
+
+        {/* Per-location bars */}
+        <div className="space-y-2.5">
+          <p className={LABEL}>Stock by location</p>
+          {LOCATIONS.map(loc => {
+            const qty = item.locationStock[loc] ?? 0;
+            const pct = Math.min(100, item.maxStock > 0 ? Math.round((qty / item.maxStock) * 100) : 0);
+            const barColor = pct === 0 ? 'bg-error' : pct <= 25 ? 'bg-warning' : 'bg-success';
+            return (
+              <div key={loc}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[13px] text-neutral-700 font-medium">{loc}</span>
+                  <span className="text-[12px] font-mono font-semibold tabular-nums text-neutral-500">
+                    {qty} <span className="text-neutral-300">/</span> {item.maxStock}
+                  </span>
+                </div>
+                <div className="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                  <div className={cn('h-full rounded-full transition-all duration-300', barColor)} style={{ width: `${pct}%` }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Urgent note */}
         {item.notes && (
-          <p className="text-xs bg-warning-bg text-warning-text rounded-lg px-3 py-2">{item.notes}</p>
+          <div className="flex items-start gap-2.5 rounded-xl bg-warning-bg border border-warning/30 px-3.5 py-3">
+            <AlertTriangle size={14} className="text-warning mt-0.5 flex-shrink-0" />
+            <p className="text-[13px] text-warning-text font-medium">{item.notes}</p>
+          </div>
         )}
       </div>
 
+      {/* ── Movement history ── */}
       {item.movements.length > 0 && (
         <div className="p-5 border-b border-neutral-100">
           <p className={cn(LABEL, 'mb-3')}>Movement History</p>
-          <table className="w-full border-collapse text-xs">
-            <thead>
-              <tr className="border-b border-neutral-100">
-                {['Type', 'Qty', 'Date', 'By', 'Note'].map(h => (
-                  <th key={h} className="text-left py-1.5 pr-2 text-neutral-400 font-semibold">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {item.movements.map((m, i) => (
-                <tr key={i} className="border-b border-neutral-50">
-                  <td className="py-1.5 pr-2">
-                    <span className={cn('font-bold', m.type === 'IN' ? 'text-success' : 'text-error')}>
-                      {m.type === 'IN' ? <ArrowDown size={12} className="inline mr-0.5" /> : <ArrowUp size={12} className="inline mr-0.5" />}
-                      {m.type}
-                    </span>
-                  </td>
-                  <td className="py-1.5 pr-2 font-mono tabular-nums font-semibold">{m.qty}</td>
-                  <td className="py-1.5 pr-2 text-neutral-500">{m.date}</td>
-                  <td className="py-1.5 pr-2 text-neutral-500">{m.by}</td>
-                  <td className="py-1.5 text-neutral-400 truncate max-w-[80px]">{m.note}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="space-y-2">
+            {item.movements.map((m, i) => {
+              const isIn = m.type === 'IN';
+              return (
+                <div key={i} className="flex items-start gap-3 rounded-xl bg-neutral-50 border border-neutral-100 px-3.5 py-3">
+                  <span className={cn(
+                    'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold flex-shrink-0 mt-0.5',
+                    isIn ? 'bg-success/10 text-success' : 'bg-error/10 text-error'
+                  )}>
+                    {isIn ? <ArrowDown size={10} /> : <ArrowUp size={10} />}
+                    {m.type}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[14px] font-bold text-neutral-900 font-mono tabular-nums">
+                        {isIn ? '+' : '−'}{m.qty}
+                      </span>
+                      <span className="text-[12px] text-neutral-400 flex-shrink-0">{m.date}</span>
+                    </div>
+                    <p className="text-[12px] text-neutral-500 mt-0.5 truncate">
+                      {m.by}{m.note ? <> · <span className="text-neutral-400">{m.note}</span></> : null}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 
+      {/* ── Receive stock ── */}
       <div className="p-5 border-b border-neutral-100">
-        <p className={cn(LABEL, 'mb-3')}>Receive Stock</p>
-        <form onSubmit={handleReceive} className="space-y-2">
-          <div className="grid grid-cols-2 gap-2">
-            <input required type="number" min="1" value={rQty} onChange={e => setRQty(e.target.value)}
-              placeholder="Quantity"
-              className="rounded-lg border border-neutral-200 px-3 py-2 text-sm w-full" />
-            <select required value={rLoc} onChange={e => setRLoc(e.target.value)}
-              className="rounded-lg border border-neutral-200 px-3 py-2 text-sm w-full">
-              <option value="">Location…</option>
-              {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
-            </select>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-50">
+            <ArrowDown size={13} className="text-primary-600" />
           </div>
-          <input type="text" value={rNote} onChange={e => setRNote(e.target.value)}
-            placeholder="Note (optional)"
-            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm" />
+          <p className={LABEL}>Receive Stock</p>
+        </div>
+        <form onSubmit={handleReceive} className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[11px] font-semibold text-neutral-500 mb-1.5">Quantity</label>
+              <input required type="number" min="1" value={rQty} onChange={e => setRQty(e.target.value)}
+                placeholder="0" className={inputCls} />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-neutral-500 mb-1.5">Location</label>
+              <select required value={rLoc} onChange={e => setRLoc(e.target.value)} className={inputCls}>
+                <option value="">Select…</option>
+                {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className="block text-[11px] font-semibold text-neutral-500 mb-1.5">Note (optional)</label>
+            <input type="text" value={rNote} onChange={e => setRNote(e.target.value)}
+              placeholder="e.g. Quarterly order" className={inputCls} />
+          </div>
           <button type="submit"
-            className="w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90">
+            className="w-full py-2.5 rounded-xl bg-primary-600 text-white text-[14px] font-semibold hover:bg-primary-700 transition-colors shadow-sm">
             Confirm Receipt
           </button>
         </form>
       </div>
 
+      {/* ── Adjust stock ── */}
       <div className="p-5">
-        <p className={cn(LABEL, 'mb-3')}>Adjust Stock</p>
-        <form onSubmit={handleAdjust} className="space-y-2">
-          <input required type="number" value={aQty} onChange={e => setAQty(e.target.value)}
-            placeholder="Adjustment (e.g. -2 or +5)"
-            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm" />
-          <input required type="text" value={aReason} onChange={e => setAReason(e.target.value)}
-            placeholder="Reason for adjustment"
-            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm" />
+        <div className="flex items-center gap-2 mb-4">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-neutral-100">
+            <RefreshCw size={13} className="text-neutral-500" />
+          </div>
+          <p className={LABEL}>Adjust Stock</p>
+        </div>
+        <form onSubmit={handleAdjust} className="space-y-3">
+          <div>
+            <label className="block text-[11px] font-semibold text-neutral-500 mb-1.5">Adjustment</label>
+            <input required type="number" value={aQty} onChange={e => setAQty(e.target.value)}
+              placeholder="e.g. -2 or +5" className={inputCls} />
+          </div>
+          <div>
+            <label className="block text-[11px] font-semibold text-neutral-500 mb-1.5">Reason</label>
+            <input required type="text" value={aReason} onChange={e => setAReason(e.target.value)}
+              placeholder="Damaged, usage depletion…" className={inputCls} />
+          </div>
           <button type="submit"
-            className="w-full py-2 rounded-lg border border-neutral-200 text-sm font-semibold hover:bg-neutral-50">
+            className="w-full py-2.5 rounded-xl border border-neutral-300 bg-white text-neutral-700 text-[14px] font-semibold hover:bg-neutral-50 transition-colors">
             Apply Adjustment
           </button>
         </form>

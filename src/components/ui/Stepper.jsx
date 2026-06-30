@@ -10,7 +10,7 @@ const Stepper = ({ steps, fullLabels, currentStep }) => {
   const caption = (fullLabels ?? steps)[currentStep];
 
   return (
-    <div style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <div>
 
       {/* Caption: "Step 2 of 5 · Outlets & factories" */}
       <div className="mb-2.5 flex items-baseline gap-1.5">

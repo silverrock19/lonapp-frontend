@@ -156,7 +156,7 @@ const BusinessApprovalPage = () => {
   const isOther = rejectionReason === 'Other (requires additional notes)';
 
   return (
-    <div className="min-h-full" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <div className="min-h-full">
 
       {/* Toast */}
       {toast && (
@@ -313,7 +313,6 @@ const BusinessApprovalPage = () => {
           className="fixed right-0 top-0 bottom-0 z-50 flex flex-col bg-white"
           style={{
             width: 520,
-            fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
             boxShadow: '-12px 0 40px -4px rgba(15,23,42,0.18), -2px 0 8px -2px rgba(15,23,42,0.08)',
           }}
         >

@@ -50,7 +50,7 @@ const BusinessWizardPage = () => {
   const isReview = step === 5;
 
   return (
-    <div className="relative min-h-screen overflow-auto" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <div className="relative min-h-screen overflow-auto">
 
       {/* Brand-washed background — matches AuthLayout */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">

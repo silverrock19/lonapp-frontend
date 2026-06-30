@@ -273,7 +273,7 @@ const AddressesPage = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: '#FAFAF8', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ background: '#FAFAF8' }}>
       {/* Top header */}
       <div className="sticky top-0 z-10 border-b border-neutral-100 bg-white px-4 py-3.5">
         <div className="flex items-center gap-3">
