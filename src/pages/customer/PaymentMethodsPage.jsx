@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Smartphone, CreditCard, Trash2, Plus, X } from 'lucide-react';
 import { MOCK_PAYMENT_METHODS } from '../../data/mockCustomer.js';
 import Button from '../../components/ui/Button.jsx';
+import Input from '../../components/forms/Input.jsx';
 
 const PaymentMethodsPage = () => {
   const navigate = useNavigate();
@@ -209,7 +210,7 @@ const PaymentMethodsPage = () => {
       {showMomoModal && (
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-neutral-900/40 backdrop-blur-[2px] animate-fade-in"
             onClick={() => setShowMomoModal(false)}
           />
           <div className="relative z-10 bg-white rounded-t-3xl px-4 pt-5 pb-10">
@@ -241,45 +242,32 @@ const PaymentMethodsPage = () => {
 
             {/* Phone number */}
             <div className="mb-4">
-              <label className="block text-[13px] font-medium text-neutral-600 mb-1.5">
-                Phone Number
-              </label>
-              <input
+              <Input
+                label="Phone Number"
                 type="tel"
                 placeholder="+233 24 000 0000"
                 value={momoForm.phone}
                 onChange={(e) => setMomoForm((f) => ({ ...f, phone: e.target.value }))}
-                className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-[15px] outline-none focus:border-[#0E9AA7] focus:ring-2 focus:ring-[#0E9AA7]/20 transition-all"
               />
             </div>
 
             {/* Account name */}
             <div className="mb-6">
-              <label className="block text-[13px] font-medium text-neutral-600 mb-1.5">
-                Account Name
-              </label>
-              <input
-                type="text"
+              <Input
+                label="Account Name"
                 placeholder="Full name on account"
                 value={momoForm.name}
                 onChange={(e) => setMomoForm((f) => ({ ...f, name: e.target.value }))}
-                className="w-full rounded-xl border border-neutral-200 px-4 py-3 text-[15px] outline-none focus:border-[#0E9AA7] focus:ring-2 focus:ring-[#0E9AA7]/20 transition-all"
               />
             </div>
 
             <div className="flex gap-3">
-              <button
-                onClick={() => setShowMomoModal(false)}
-                className="flex-1 h-12 rounded-2xl border border-[#0E9AA7] text-[#0E9AA7] text-[15px] font-semibold"
-              >
+              <Button variant="outline" onClick={() => setShowMomoModal(false)} className="flex-1 !h-12 !rounded-2xl !text-[15px] !border-accent-400 !text-accent-600">
                 Cancel
-              </button>
-              <button
-                onClick={handleAddMomo}
-                className="flex-1 h-12 rounded-2xl bg-[#0E9AA7] text-white text-[15px] font-semibold"
-              >
+              </Button>
+              <Button variant="accent" onClick={handleAddMomo} className="flex-1 !h-12 !rounded-2xl !text-[15px]">
                 Add Method
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -289,7 +277,7 @@ const PaymentMethodsPage = () => {
       {showCardModal && (
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-neutral-900/40 backdrop-blur-[2px] animate-fade-in"
             onClick={() => setShowCardModal(false)}
           />
           <div className="relative z-10 bg-white rounded-t-3xl px-4 pt-5 pb-10">

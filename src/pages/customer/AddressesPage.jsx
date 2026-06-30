@@ -1,13 +1,14 @@
 ﻿import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Home, Building2, MapPin, Plus, Pencil, Trash2, X, Check, ChevronLeft, Crosshair, Loader2 } from 'lucide-react';
 import Button from '../../components/ui/Button.jsx';
 import Input from '../../components/forms/Input.jsx';
 import { MOCK_ADDRESSES } from '../../data/mockCustomer.js';
 
 const TYPE_META = {
-  home:   { label: 'Home',   Icon: Home,      bg: '#EAF2FC', color: '#0C5FC5' },
-  office: { label: 'Office', Icon: Building2,  bg: '#F3F0FF', color: '#7C3AED' },
-  other:  { label: 'Other',  Icon: MapPin,     bg: '#F3F4F6', color: '#374151' },
+  home:   { label: 'Home',   Icon: Home,      bgCls: 'bg-accent-50',   colorCls: 'text-accent-600'   },
+  office: { label: 'Office', Icon: Building2,  bgCls: 'bg-primary-50',  colorCls: 'text-primary-600'  },
+  other:  { label: 'Other',  Icon: MapPin,     bgCls: 'bg-neutral-100', colorCls: 'text-neutral-500'  },
 };
 
 const emptyForm = { label: '', type: 'home', street: '', suburb: '', city: 'Accra', gps: '' };
@@ -19,17 +20,15 @@ const AddressCard = ({ address, onSetDefault, onEdit, onDelete }) => {
   const Icon = meta.Icon;
 
   return (
-    <div className={`relative rounded-2xl border bg-white p-4 ${address.isDefault ? 'border-blue-300' : 'border-neutral-200'}`}>
+    <div className={`relative rounded-2xl border bg-white p-4 ${address.isDefault ? 'border-accent-300' : 'border-neutral-200'}`}>
       {address.isDefault && (
-        <span className="absolute right-3 top-3 rounded-full px-2 py-0.5 text-[11px] font-semibold"
-          style={{ background: '#EAF2FC', color: '#0C5FC5' }}>
+        <span className="absolute right-3 top-3 rounded-full px-2 py-0.5 text-[11px] font-semibold bg-accent-50 text-accent-700">
           Default
         </span>
       )}
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl"
-          style={{ background: meta.bg }}>
-          <Icon className="h-5 w-5" style={{ color: meta.color }} />
+        <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl ${meta.bgCls}`}>
+          <Icon className={`h-5 w-5 ${meta.colorCls}`} />
         </div>
         <div className="flex-1 min-w-0 pr-14">
           <p className="font-semibold text-[15px] text-neutral-900">{address.label}</p>
@@ -114,11 +113,9 @@ const AddressSheet = ({ initial, onSave, onClose }) => {
         <h2 className="flex-1 text-[17px] font-semibold text-neutral-900">
           {initial?.id ? 'Edit address' : 'New address'}
         </h2>
-        <button onClick={() => { if (validate()) onSave(form); }}
-          className="rounded-xl px-4 py-2 text-[14px] font-semibold text-white"
-          style={{ background: '#0C5FC5' }}>
+        <Button onClick={() => { if (validate()) onSave(form); }} variant="accent" className="!rounded-xl px-4 py-2 text-[14px]">
           Save
-        </button>
+        </Button>
       </div>
 
       {/* Body */}
@@ -139,15 +136,15 @@ const AddressSheet = ({ initial, onSave, onClose }) => {
           <div className="flex gap-2">
             {Object.entries(TYPE_META).map(([key, meta]) => {
               const TIcon = meta.Icon;
+              const active = form.type === key;
               return (
                 <button key={key} type="button"
                   onClick={() => set('type')(key)}
                   className={`flex flex-1 flex-col items-center gap-1 rounded-xl border py-3 transition-all ${
-                    form.type === key ? 'ring-2' : 'border-neutral-200'
-                  }`}
-                  style={form.type === key ? { borderColor: meta.color, boxShadow: `0 0 0 2px ${meta.color}` } : {}}>
-                  <TIcon className="h-5 w-5" style={{ color: form.type === key ? meta.color : '#9CA3AF' }} />
-                  <span className="text-[12px] font-medium" style={{ color: form.type === key ? meta.color : '#6B7280' }}>
+                    active ? `border-accent-400 ring-2 ring-accent-200 ${meta.bgCls}` : 'border-neutral-200'
+                  }`}>
+                  <TIcon className={`h-5 w-5 ${active ? meta.colorCls : 'text-neutral-400'}`} />
+                  <span className={`text-[12px] font-medium ${active ? meta.colorCls : 'text-neutral-500'}`}>
                     {meta.label}
                   </span>
                 </button>
@@ -221,8 +218,8 @@ const DeleteModal = ({ address, onConfirm, onCancel }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center p-0" style={{ background: 'rgba(0,0,0,0.4)' }}>
       <div className="w-full rounded-t-2xl bg-white p-5 pb-8 shadow-2xl">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full" style={{ background: '#FDECEA' }}>
-          <Trash2 className="h-5 w-5 text-red-500" />
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-error-bg">
+          <Trash2 className="h-5 w-5 text-error" />
         </div>
         <h3 className="text-[17px] font-bold text-neutral-900">Remove address?</h3>
         <p className="mt-1.5 text-[14px] text-neutral-500">
@@ -245,6 +242,7 @@ const DeleteModal = ({ address, onConfirm, onCancel }) => {
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 const AddressesPage = () => {
+  const navigate = useNavigate();
   const [addresses, setAddresses] = useState(MOCK_ADDRESSES);
   const [sheet, setSheet]         = useState(null);   // null | { mode: 'add' | 'edit', address?: obj }
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -279,7 +277,7 @@ const AddressesPage = () => {
       {/* Top header */}
       <div className="sticky top-0 z-10 border-b border-neutral-100 bg-white px-4 py-3.5">
         <div className="flex items-center gap-3">
-          <button className="flex h-9 w-9 items-center justify-center rounded-xl bg-neutral-100">
+          <button onClick={() => navigate(-1)} className="flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-100">
             <ChevronLeft className="h-5 w-5 text-neutral-600" />
           </button>
           <h1 className="flex-1 text-[17px] font-bold text-neutral-900">My addresses</h1>
@@ -291,8 +289,8 @@ const AddressesPage = () => {
       <div className="px-4 py-4 space-y-3">
         {addresses.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-2xl" style={{ background: '#EAF2FC' }}>
-              <MapPin className="h-8 w-8 text-blue-500" />
+            <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-50">
+              <MapPin className="h-8 w-8 text-accent-500" />
             </div>
             <p className="text-[16px] font-semibold text-neutral-800">No addresses yet</p>
             <p className="mt-1 text-[14px] text-neutral-500">Add a delivery address to speed up your bookings.</p>
@@ -310,8 +308,8 @@ const AddressesPage = () => {
         {/* Add address button */}
         <button onClick={() => setSheet({ mode: 'add' })}
           className="flex w-full items-center gap-3 rounded-2xl border-2 border-dashed border-neutral-200 bg-white px-4 py-4 text-left transition-colors active:bg-neutral-50">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: '#EAF2FC' }}>
-            <Plus className="h-5 w-5 text-blue-500" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-50">
+            <Plus className="h-5 w-5 text-accent-500" />
           </div>
           <div>
             <p className="text-[14px] font-semibold text-neutral-800">Add new address</p>

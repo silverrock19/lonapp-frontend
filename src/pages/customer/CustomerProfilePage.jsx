@@ -1,13 +1,17 @@
 import { useState, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import {
   Camera, User, AlertCircle, Trophy, Link2,
   CheckCircle2, XCircle, ChevronRight, Pencil,
-  Upload, Trash2, X, Phone, Mail,
+  Upload, Trash2, X, Phone, Mail, LogOut,
 } from 'lucide-react';
 import CustomerSettingsLayout, { SettingsSection } from '../../components/layout/CustomerSettingsLayout.jsx';
 import { MOCK_CUSTOMER } from '../../data/mockCustomer.js';
 import Input from '../../components/forms/Input.jsx';
+import Button from '../../components/ui/Button.jsx';
 import Toggle from '../../components/ui/Toggle.jsx';
+import { resetAuth } from '../../store/slices/authSlice.js';
 
 // ── Mock initial profile ──────────────────────────────────────────────────────
 
@@ -125,7 +129,9 @@ const PhotoModal = ({ preview, onConfirm, onCancel }) => {
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 
-const CustomerProfilePage = () => {
+export default function CustomerProfilePage() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [form, setForm]       = useState({ ...INITIAL });
   const [saved, setSaved]     = useState({ ...INITIAL });
   const [errors, setErrors]   = useState({});
@@ -134,6 +140,11 @@ const CustomerProfilePage = () => {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [showCropModal, setShowCropModal] = useState(false);
   const fileRef = useRef(null);
+
+  function handleSignOut() {
+    dispatch(resetAuth());
+    navigate('/login');
+  }
 
   const dirty = JSON.stringify(form) !== JSON.stringify(saved);
 
@@ -477,6 +488,16 @@ const CustomerProfilePage = () => {
             );
           })}
         </SettingsSection>
+
+        {/* Sign out */}
+        <SettingsSection id="signout" icon={LogOut} label="Sign out">
+          <p className="text-[14px] text-neutral-500 mb-4">
+            You'll be signed out of this device. Your data is safe.
+          </p>
+          <Button variant="outline" onClick={handleSignOut} className="w-full flex items-center justify-center gap-2 !text-error !border-error/30 hover:!bg-error-bg">
+            <LogOut className="h-4 w-4" /> Sign out
+          </Button>
+        </SettingsSection>
       </CustomerSettingsLayout>
 
       {/* Photo crop modal */}
@@ -489,6 +510,4 @@ const CustomerProfilePage = () => {
       )}
     </>
   );
-};
-
-export default CustomerProfilePage;
+}

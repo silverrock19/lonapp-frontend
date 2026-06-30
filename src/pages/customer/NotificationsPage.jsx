@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import {
   Bell, Mail, MessageSquare, Smartphone, Lock,
-  ShoppingBag, Star, Tag, Shield, Info,
+  ShoppingBag, Star, Tag, Shield, Info, CheckCircle2,
 } from 'lucide-react';
 import CustomerSettingsLayout, { SettingsSection } from '../../components/layout/CustomerSettingsLayout.jsx';
+import { usePushNotifications } from '../../hooks/usePushNotifications.js';
 import Toggle from '../../components/ui/Toggle.jsx';
 
 // ── Channels ──────────────────────────────────────────────────────────────────
@@ -66,14 +67,16 @@ const buildDefaults = () => {
 
 
 const NAV_SECTIONS = [
-  { id: 'global', icon: Bell,   label: 'Master toggle' },
-  { id: 'matrix', icon: Mail,   label: 'By category'   },
-  { id: 'quiet',  icon: Shield, label: 'Quiet hours'   },
+  { id: 'global', icon: Bell,       label: 'Master toggle'   },
+  { id: 'matrix', icon: Mail,       label: 'By category'     },
+  { id: 'push',   icon: Smartphone, label: 'Device push'     },
+  { id: 'quiet',  icon: Shield,     label: 'Quiet hours'     },
 ];
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
-const NotificationsPage = () => {
+export default function NotificationsPage() {
+  const push = usePushNotifications();
   const [globalOn, setGlobalOn] = useState(true);
   const [prefs, setPrefs]       = useState(buildDefaults);
   const [savedPrefs, setSaved]  = useState(null);
@@ -207,6 +210,57 @@ const NotificationsPage = () => {
         </div>
       </SettingsSection>
 
+      {/* ── Device push permission ─────────────────────────────────────────── */}
+      <SettingsSection id="push" icon={Smartphone} title="Device push notifications" helper="Allow LonApp to send notifications to this device">
+        {!push.isSupported ? (
+          <div className="rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-[13px] text-neutral-500">
+            Push notifications are not supported on this browser.
+          </div>
+        ) : push.permission === 'denied' ? (
+          <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] text-amber-800">
+            Notifications are blocked. Open your browser settings to re-enable them for this site.
+          </div>
+        ) : push.isSubscribed ? (
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3">
+              <CheckCircle2 className="h-5 w-5 shrink-0 text-green-600" />
+              <div>
+                <p className="text-[14px] font-semibold text-green-900">Notifications enabled</p>
+                <p className="text-[12px] text-green-700 mt-0.5">
+                  You'll receive order and payment updates on this device.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={push.unsubscribe}
+              className="text-[13px] font-medium text-neutral-400 hover:text-error transition-colors"
+            >
+              Disable push notifications
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <p className="text-[14px] text-neutral-600 leading-relaxed">
+              Get notified when your order is picked up, cleaned, and delivered — even when the app isn't open.
+            </p>
+            {push.error && (
+              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-[13px] text-red-700">
+                {push.error}
+              </div>
+            )}
+            <button
+              onClick={push.subscribe}
+              disabled={push.loading}
+              className="flex h-11 items-center justify-center gap-2 rounded-xl px-5 text-[14px] font-semibold text-white transition-colors disabled:opacity-60"
+              style={{ background: '#0E9AA7' }}
+            >
+              <Smartphone className="h-4 w-4" />
+              {push.loading ? 'Enabling…' : 'Enable push notifications'}
+            </button>
+          </div>
+        )}
+      </SettingsSection>
+
       {/* ── Quiet hours ────────────────────────────────────────────────────── */}
       <SettingsSection id="quiet" icon={Shield} title="Quiet hours" helper="Silence push and SMS notifications during set hours">
         <div className="space-y-4">
@@ -252,6 +306,4 @@ const NotificationsPage = () => {
       </SettingsSection>
     </CustomerSettingsLayout>
   );
-};
-
-export default NotificationsPage;
+}

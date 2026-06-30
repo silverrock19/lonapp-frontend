@@ -6,3 +6,77 @@
 body { margin: 0; }
 
 #root { min-height: 100svh; }
+
+/* ── Keyframes ───────────────────────────────────────────────── */
+@keyframes slide-in-right {
+  from { transform: translateX(calc(100% + 1.5rem)); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-in-bottom {
+  from { transform: translateY(1rem); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(8px); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { transform: scale(.96) translateY(4px); opacity: 0; }
+  to   { transform: scale(1)   translateY(0);   opacity: 1; }
+}
+
+@keyframes drawer-in-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0);    }
+}
+
+@keyframes shimmer {
+  from { background-position: -600px 0; }
+  to   { background-position:  600px 0; }
+}
+
+/* ── Animation helpers ───────────────────────────────────────── */
+.animate-slide-in-right  { animation: slide-in-right  200ms cubic-bezier(.22,.68,0,1.2) both; }
+.animate-slide-in-bottom { animation: slide-in-bottom 220ms cubic-bezier(.22,.68,0,1.2) both; }
+.animate-fade-in         { animation: fade-in         150ms ease-out both; }
+.animate-slide-up        { animation: slide-up        150ms ease-out both; }
+.animate-scale-in        { animation: scale-in        180ms cubic-bezier(.22,.68,0,1.2) both; }
+.animate-drawer-in       { animation: drawer-in-right 260ms cubic-bezier(.32,.72,0,1)   both; }
+
+.animate-shimmer {
+  background: linear-gradient(90deg,
+    theme('colors.neutral.100') 25%,
+    theme('colors.neutral.50')  50%,
+    theme('colors.neutral.100') 75%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ── Backdrop overlay (modals / drawers / bottom-sheets) ─────── */
+.ui-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 20, 27, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 40;
+  animation: fade-in 150ms ease-out both;
+}
+
+/* ── Motion preferences ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -25,7 +25,7 @@ export default {
         chart: { 1: '#0C5FC5', 2: '#0E9AA7', 3: '#7C5CFC', 4: '#E8833A', 5: '#E0457B', 6: '#2BB673' },
       },
       fontFamily: {
-        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       fontSize: {
         display: ['40px', { lineHeight: '1.1',  fontWeight: '700', letterSpacing: '-0.02em' }],

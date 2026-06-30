@@ -8,7 +8,7 @@ import { resetAuth } from '../../store/slices/authSlice.js';
 
 const PauseModal = ({ onClose }) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-neutral-900/40 backdrop-blur-[2px] animate-fade-in">
       <div className="w-full max-w-md rounded-t-3xl bg-white p-6 pb-10">
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-[17px] font-semibold text-neutral-900">Pause Account</h2>
@@ -19,18 +19,12 @@ const PauseModal = ({ onClose }) => {
         <p className="mb-6 text-[15px] text-neutral-600 leading-relaxed">
           Temporarily pausing your account will hide your profile and pause all notifications. You can resume anytime from settings.
         </p>
-        <button
-          onClick={onClose}
-          className="w-full h-12 rounded-2xl bg-[#0E9AA7] text-white text-[15px] font-semibold mb-3"
-        >
+        <Button variant="accent" size="lg" onClick={onClose} className="w-full !rounded-2xl mb-3">
           Pause My Account
-        </button>
-        <button
-          onClick={onClose}
-          className="w-full h-12 rounded-2xl border border-[#0E9AA7] text-[#0E9AA7] text-[15px] font-semibold"
-        >
+        </Button>
+        <Button variant="outline" size="lg" onClick={onClose} className="w-full !rounded-2xl">
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -46,7 +40,7 @@ const ConfirmDeactivateModal = ({ onClose, onConfirm }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-neutral-900/40 backdrop-blur-[2px] animate-fade-in">
       <div className="w-full max-w-md rounded-t-3xl bg-white p-6 pb-10">
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-[17px] font-semibold text-neutral-900">Are you sure?</h2>
@@ -64,19 +58,12 @@ const ConfirmDeactivateModal = ({ onClose, onConfirm }) => {
             placeholder="Enter your password"
           />
         </div>
-        <button
-          onClick={handleConfirm}
-          disabled={!password.trim()}
-          className="w-full h-12 rounded-2xl border border-amber-500 text-amber-700 text-[15px] font-semibold mb-3 disabled:opacity-40"
-        >
+        <Button variant="warning" size="lg" onClick={handleConfirm} disabled={!password.trim()} className="w-full !rounded-2xl mb-3">
           Deactivate Account
-        </button>
-        <button
-          onClick={onClose}
-          className="w-full h-12 rounded-2xl border border-neutral-200 text-neutral-600 text-[15px] font-semibold"
-        >
+        </Button>
+        <Button variant="outline" size="lg" onClick={onClose} className="w-full !rounded-2xl">
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -96,7 +83,7 @@ const DeleteModal = ({ onClose, onConfirm }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-neutral-900/40 backdrop-blur-[2px] animate-fade-in overflow-y-auto">
       <div className="w-full max-w-md rounded-t-3xl bg-white p-6 pb-10 mt-auto">
         <div className="mb-2 flex items-center justify-between">
           <h2 className="text-[17px] font-semibold text-neutral-900">This is permanent</h2>
@@ -156,19 +143,16 @@ const DeleteModal = ({ onClose, onConfirm }) => {
         >
           Delete Account
         </Button>
-        <button
-          onClick={onClose}
-          className="w-full h-12 rounded-2xl border border-neutral-200 text-neutral-600 text-[15px] font-semibold"
-        >
+        <Button variant="outline" size="lg" onClick={onClose} className="w-full !rounded-2xl">
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );
 };
 
 const LogOutAllDevicesModal = ({ onClose, onConfirm }) => (
-  <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40">
+  <div className="fixed inset-0 z-50 flex items-end justify-center bg-neutral-900/40 backdrop-blur-[2px] animate-fade-in">
     <div className="w-full max-w-md rounded-t-3xl bg-white p-6 pb-10">
       <div className="mb-2 flex items-center justify-between">
         <h2 className="text-[17px] font-semibold text-neutral-900">Log out all devices?</h2>
@@ -179,18 +163,12 @@ const LogOutAllDevicesModal = ({ onClose, onConfirm }) => (
       <p className="mb-6 text-[15px] text-neutral-600 leading-relaxed">
         This will sign you out of all browsers and devices. You'll need to sign in again on each device.
       </p>
-      <button
-        onClick={onConfirm}
-        className="w-full h-12 rounded-2xl bg-[#0E9AA7] text-white text-[15px] font-semibold mb-3"
-      >
+      <Button variant="accent" size="lg" onClick={onConfirm} className="w-full !rounded-2xl mb-3">
         Log Out All Devices
-      </button>
-      <button
-        onClick={onClose}
-        className="w-full h-12 rounded-2xl border border-neutral-200 text-neutral-600 text-[15px] font-semibold"
-      >
+      </Button>
+      <Button variant="outline" size="lg" onClick={onClose} className="w-full !rounded-2xl">
         Cancel
-      </button>
+      </Button>
     </div>
   </div>
 );
@@ -297,7 +275,7 @@ const AccountSettingsPage = () => {
         Deactivate Account
       </p>
       <div className="px-4">
-        <div className="rounded-2xl border border-neutral-200 bg-white p-4">
+        <div className="rounded-2xl border border-amber-200 bg-white p-4">
           {/* Warning icon + title */}
           <div className="mb-3 flex items-start gap-3">
             <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-50">
@@ -326,12 +304,9 @@ const AccountSettingsPage = () => {
           </div>
 
           {/* CTA */}
-          <button
-            onClick={() => setShowDeactivateModal(true)}
-            className="w-full h-12 rounded-2xl border border-amber-500 text-amber-700 text-[15px] font-semibold"
-          >
+          <Button variant="warning" size="lg" onClick={() => setShowDeactivateModal(true)} className="w-full !rounded-2xl">
             Deactivate My Account
-          </button>
+          </Button>
         </div>
       </div>
 

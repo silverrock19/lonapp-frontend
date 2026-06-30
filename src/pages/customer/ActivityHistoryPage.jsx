@@ -221,7 +221,7 @@ const ActivityHistoryPage = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 px-0">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-neutral-900/40 backdrop-blur-[2px] animate-fade-in px-0">
           <div className="w-full max-w-md rounded-t-3xl bg-white px-6 pt-6 pb-10">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-2">

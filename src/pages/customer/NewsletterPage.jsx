@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import Button from '../../components/ui/Button.jsx';
 import Toggle from '../../components/ui/Toggle.jsx';
 
 const initialTopics = [
@@ -199,7 +200,7 @@ const NewsletterPage = () => {
       {showPauseSheet && (
         <div className="fixed inset-0 z-40 flex flex-col justify-end">
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-neutral-900/40 backdrop-blur-[2px] animate-fade-in"
             onClick={() => setShowPauseSheet(false)}
           />
           <div className="relative z-50 bg-white rounded-t-2xl px-4 pt-4 pb-8">
@@ -233,7 +234,7 @@ const NewsletterPage = () => {
       {showFrequencyModal && selectedTopic && (
         <div className="fixed inset-0 z-40 flex items-center justify-center px-4">
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-neutral-900/40 backdrop-blur-[2px] animate-fade-in"
             onClick={() => setShowFrequencyModal(false)}
           />
           <div className="relative z-50 bg-white rounded-2xl w-full max-w-sm px-4 pt-5 pb-5">
@@ -284,7 +285,7 @@ const NewsletterPage = () => {
       {showUnsubscribeModal && (
         <div className="fixed inset-0 z-40 flex items-center justify-center px-4">
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-neutral-900/40 backdrop-blur-[2px] animate-fade-in"
             onClick={() => setShowUnsubscribeModal(false)}
           />
           <div className="relative z-50 bg-white rounded-2xl w-full max-w-sm px-5 pt-6 pb-5">
@@ -295,18 +296,12 @@ const NewsletterPage = () => {
               You'll no longer receive any marketing emails. Transactional emails (order updates, receipts) will still be sent.
             </p>
             <div className="flex gap-3">
-              <button
-                onClick={() => setShowUnsubscribeModal(false)}
-                className="flex-1 h-12 rounded-2xl border border-[#0E9AA7] text-[#0E9AA7] text-[15px] font-semibold"
-              >
+              <Button variant="outline" onClick={() => setShowUnsubscribeModal(false)} className="flex-1 !h-12 !rounded-2xl !text-[15px] !border-accent-400 !text-accent-600">
                 Cancel
-              </button>
-              <button
-                onClick={unsubscribeAll}
-                className="flex-1 h-12 rounded-2xl bg-red-500 text-white text-[15px] font-semibold"
-              >
+              </Button>
+              <Button variant="danger" onClick={unsubscribeAll} className="flex-1 !h-12 !rounded-2xl !text-[15px]">
                 Unsubscribe All
-              </button>
+              </Button>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Search, Star, WashingMachine, X } from 'lucide-react';
 import { MOCK_FAVORITE_LAUNDRIES } from '../../data/mockCustomer.js';
+import Button from '../../components/ui/Button.jsx';
 
 const FavoriteLaundriesPage = () => {
   const navigate = useNavigate();
@@ -120,12 +121,9 @@ const FavoriteLaundriesPage = () => {
                       >
                         Cancel
                       </button>
-                      <button
-                        onClick={() => handleUnfavorite(outlet.id)}
-                        className="h-9 px-4 rounded-full bg-red-500 text-white text-[13px] font-semibold"
-                      >
+                      <Button variant="danger" onClick={() => handleUnfavorite(outlet.id)} className="!rounded-full !h-9 !px-4 !text-[13px]">
                         Remove
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 )}

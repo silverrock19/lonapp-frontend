@@ -71,9 +71,9 @@ const AdminShell = () => {
                   <NavLink
                     key={to} to={to} end={end}
                     className={({ isActive }) => cn(
-                      'flex min-h-[40px] items-center gap-2.5 rounded-md px-3 text-small font-medium transition-colors',
+                      'flex min-h-[40px] items-center gap-2.5 rounded-lg px-3 text-small font-medium transition-all duration-150',
                       isActive
-                        ? 'bg-neutral-100 text-neutral-900'
+                        ? 'bg-primary-50 text-primary-700 shadow-sm'
                         : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900',
                     )}
                   >

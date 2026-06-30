@@ -10,6 +10,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice.js';
 import onboardingReducer from './slices/onboardingSlice.js';
 import uiReducer from './slices/uiSlice.js';
+import orderReducer from './slices/orderSlice.js';
 
 const authPersistConfig = {
   key: '__lonapp_auth__',
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, authReducer),
   onboarding: onboardingReducer, // transient — not persisted
   ui: uiReducer,
+  order: orderReducer,
 });
 
 export const store = configureStore({
