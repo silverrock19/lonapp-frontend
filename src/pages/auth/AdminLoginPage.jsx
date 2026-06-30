@@ -1,6 +1,7 @@
 ﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { setIsAuthenticated, setUser, setTokens } from '../../store/slices/authSlice.js';
 import Input from '../../components/forms/Input.jsx';
 import Button from '../../components/ui/Button.jsx';
 import PasswordInput from '../../components/forms/PasswordInput.jsx';
@@ -33,7 +34,9 @@ const AdminLoginPage = () => {
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setLoading(true);
     try {
-      // TODO: dispatch(adminLogin({ identifier: form.identifier, password: form.password, remember: form.remember }))
+      dispatch(setUser({ id: 'dev-user', name: 'Ama Kufuor', email: form.identifier, role: 'owner' }));
+      dispatch(setTokens({ accessToken: 'mock-token', refreshToken: 'mock-refresh' }));
+      dispatch(setIsAuthenticated(true));
       navigate('/');
     } catch {
       setServerError('Incorrect credentials or account not yet approved.');
