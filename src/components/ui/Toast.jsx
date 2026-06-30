@@ -22,7 +22,7 @@ function ToastItem({ toast }) {
   }, [toast.id, toast.duration, dispatch]);
 
   return (
-    <div className="pointer-events-auto flex w-80 overflow-hidden rounded-lg bg-white shadow-md border border-neutral-200">
+    <div className="pointer-events-auto flex w-80 overflow-hidden rounded-xl bg-white shadow-lg border border-neutral-100 animate-slide-in-right">
       <div className={cn('w-1 flex-shrink-0', bar)} aria-hidden="true" />
       <div className="flex flex-1 items-start gap-3 p-3">
         <Icon className={cn('mt-0.5 h-5 w-5 flex-shrink-0', text)} aria-hidden="true" />

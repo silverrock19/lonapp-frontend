@@ -7,7 +7,11 @@ const ProtectedRoute = ({ requiredRole }) => {
   const role = useSelector(selectUserRole);
 
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (requiredRole && role !== requiredRole) return <Navigate to="/" replace />;
+
+  if (requiredRole) {
+    const allowed = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
+    if (!allowed.includes(role)) return <Navigate to="/" replace />;
+  }
 
   return <Outlet />;
 };

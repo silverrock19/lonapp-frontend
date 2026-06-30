@@ -66,7 +66,7 @@ const CustomerHomePage = () => {
 
         {/* ── Primary CTA Card ─────────────────────────────────────────────────── */}
         <button
-          onClick={() => navigate('/app/orders/new')}
+          onClick={() => navigate('/app/discover')}
           className="w-full rounded-2xl p-5 flex items-center gap-4 text-left active:opacity-90 transition-opacity"
           style={{ background: 'linear-gradient(135deg, #0E9AA7 0%, #0B7C87 100%)' }}
         >

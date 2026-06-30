@@ -111,7 +111,7 @@ const PrivacySettingsPage = () => {
 
       {/* Share Partners Warning Modal */}
       {shareWarning && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/40 backdrop-blur-[2px] animate-fade-in px-6">
           <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
             <div className="flex items-center gap-3 mb-3">
               <AlertTriangle className="h-5 w-5 text-amber-500 flex-shrink-0" />

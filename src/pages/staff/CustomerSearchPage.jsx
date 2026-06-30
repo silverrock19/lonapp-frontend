@@ -423,7 +423,7 @@ const CustomerDetailPanel = ({ customer, onClose }) => {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-black/30"
+        className="fixed inset-0 z-40 bg-neutral-900/30 backdrop-blur-[2px] animate-fade-in"
         onClick={onClose}
       />
 

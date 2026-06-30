@@ -13,7 +13,7 @@ const Stepper = ({ steps, currentStep }) => {
               <div
                 aria-current={active ? 'step' : undefined}
                 className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-full text-small font-semibold transition-colors',
+                  'flex h-8 w-8 items-center justify-center rounded-full text-small font-semibold transition-all duration-200',
                   done   && 'bg-primary-500 text-white',
                   active && 'border-2 border-primary-500 bg-white text-primary-500',
                   !done && !active && 'border-2 border-neutral-300 bg-white text-neutral-400'
@@ -26,7 +26,7 @@ const Stepper = ({ steps, currentStep }) => {
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={cn('mb-5 h-0.5 w-12 flex-shrink-0 mx-2', done ? 'bg-primary-500' : 'bg-neutral-200')} aria-hidden="true" />
+              <div className={cn('mb-5 h-0.5 w-12 flex-shrink-0 mx-2 transition-colors duration-300', done ? 'bg-primary-500' : 'bg-neutral-200')} aria-hidden="true" />
             )}
           </div>
         );

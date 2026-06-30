@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Info, CheckCircle2, X } from 'lucide-react';
+import Button from '../../components/ui/Button.jsx';
 import GoogleIcon from '../../components/icons/GoogleIcon.jsx';
 import FacebookIcon from '../../components/icons/FacebookIcon.jsx';
 import AppleIcon from '../../components/icons/AppleIcon.jsx';
@@ -84,12 +85,9 @@ function UnlinkModal({ provider, onClose, onConfirm }) {
           >
             Cancel
           </button>
-          <button
-            onClick={onConfirm}
-            className="flex-1 h-12 rounded-2xl bg-red-500 text-white text-[15px] font-semibold"
-          >
+          <Button variant="danger" onClick={onConfirm} className="flex-1 !h-12 !rounded-2xl !text-[15px]">
             Unlink
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -240,8 +238,7 @@ const SocialAccountsPage = () => {
                 <button
                   onClick={() => canUnlink && handleAction(account)}
                   disabled={!canUnlink}
-                  className="min-h-[40px] px-3 text-[13px] font-medium"
-                  style={{ color: canUnlink ? '#EF4444' : '#D1D5DB' }}
+                  className={`min-h-[40px] px-3 text-[13px] font-medium transition-colors ${canUnlink ? 'text-error hover:text-red-700' : 'text-neutral-300 cursor-not-allowed'}`}
                   title={!canUnlink ? 'Keep at least one login method linked' : ''}
                 >
                   Unlink
@@ -249,8 +246,7 @@ const SocialAccountsPage = () => {
               ) : (
                 <button
                   onClick={() => handleAction(account)}
-                  className="min-h-[40px] px-4 rounded-xl text-[13px] font-semibold text-white"
-                  style={{ background: '#0E9AA7' }}
+                  className="min-h-[40px] px-4 rounded-xl text-[13px] font-semibold text-white bg-accent-500 hover:bg-accent-600 transition-colors"
                 >
                   Link
                 </button>

@@ -633,9 +633,9 @@ const BusinessApprovalPage = () => {
         <div
           className="fixed right-0 top-0 bottom-0 z-50 flex flex-col bg-white"
           style={{
-            width: 720,
+            width: 520,
             fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-            boxShadow: '-8px 0 32px -4px rgba(15,23,42,0.14), -2px 0 8px -2px rgba(15,23,42,0.08)',
+            boxShadow: '-12px 0 40px -4px rgba(15,23,42,0.18), -2px 0 8px -2px rgba(15,23,42,0.08)',
           }}
         >
           {/* ── Sticky header ── */}
