@@ -361,7 +361,7 @@ const App = () => {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
 
-        {import.meta.env.DEV && <DevRoleSwitcher />}
+        <DevRoleSwitcher />
       </BrowserRouter>
     </LogoProvider>
   );

@@ -1,7 +1,23 @@
 # LonApp Frontend — Claude Code Guide
 
-## Read wiki/ first
-Start every session with `wiki/INDEX.md` to find the relevant page. Append discoveries to `wiki/log.md`.
+## Session start (required — do this before any other work)
+At the start of **every new session**:
+1. Read `wiki/INDEX.md` to orient yourself — find the relevant epic/architecture pages before touching code.
+2. Read `wiki/log.md` to see what changed recently and avoid re-doing work.
+3. Append a `session` entry to `wiki/log.md` (see format below).
+
+## Session logging (required)
+At the **start** of every session, append a `session` entry to `wiki/log.md` with:
+- The session ID (found in the transcript path shown in the system context, e.g. `006ec48c-...`)
+- A one-line summary of the session's goal
+- The full transcript path
+
+Format:
+```
+YYYY-MM-DD | session | Session <id> — <goal summary>. Transcript: <full path to .jsonl>
+```
+
+At the **end** of the session, append `log` entries for every significant change made (refactor, fix, feat, scaffold, merge).
 
 ## Project
 LonApp is a laundry business management platform for Ghana. Two apps in one repo:

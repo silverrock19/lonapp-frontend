@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import AppShell from '../../components/layout/AppShell.jsx';
 import CompanyTab      from '../../features/business/CompanyTab.jsx';
 import OutletsTab      from '../../features/business/OutletsTab.jsx';
 import ServicesTab     from '../../features/business/ServicesTab.jsx';
@@ -22,8 +21,7 @@ const BusinessProfilePage = () => {
   const [activeTab, setActiveTab] = useState('Company');
 
   return (
-    <AppShell>
-      <div className="flex min-h-screen flex-col bg-neutral-50">
+    <div className="flex min-h-screen flex-col bg-neutral-50">
         <div className="border-b border-neutral-200 bg-white px-8 pt-8">
           <h1 className="text-h3 font-bold text-neutral-900">Business Profile</h1>
           <p className="mt-0.5 text-small text-neutral-500">Manage your business information, outlets, and settings</p>
@@ -47,8 +45,7 @@ const BusinessProfilePage = () => {
         <div className="flex-1 px-8 py-6">
           {TAB_CONTENT[activeTab]}
         </div>
-      </div>
-    </AppShell>
+    </div>
   );
 };
 

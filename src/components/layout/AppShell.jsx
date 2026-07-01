@@ -67,17 +67,7 @@ const ALL_NAV_GROUPS = [
   },
 ];
 
-// Paths accessible per role (null = all paths allowed)
-const ROLE_ALLOWED_PATHS = {
-  owner:        null,
-  ops_manager:  null,
-  cashier:      new Set(['/', '/orders', '/customers', '/profile', '/settings']),
-  receptionist: new Set(['/', '/orders', '/customers', '/profile', '/settings']),
-};
-
 const getNavGroups = (role) => {
-  const allowed = ROLE_ALLOWED_PATHS[role] ?? null;
-  if (!allowed) return ALL_NAV_GROUPS;
   return ALL_NAV_GROUPS
     .map(group => ({
       ...group,
